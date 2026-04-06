@@ -1,0 +1,188 @@
+.du-generic-swiper {
+  padding-inline: 50px;
+  padding-block: 5px;
+  background-color: white;
+}
+.du-generic-swiper[data-inline="small"] {
+  padding-inline: 25px;
+}
+.du-generic-swiper__container {
+  max-width: var(--du-max-width);
+  margin: 0 auto;
+  background-repeat: repeat-x;
+  background-position: 0 100px;
+}
+
+.du-generic-swiper__container.left {
+  max-width: var(--du-max-width-left);
+  margin:0;
+}
+
+
+/* HEADER */
+.du-generic-swiper__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.du-generic-swiper__header h2, .du-generic-swiper__header h3 {
+  font-size: 32px;
+  color: var(--du-color-secondary-dark);
+  font-weight: 900;
+  margin: 0;
+}
+.du-generic-swiper__header h3 { font-size: 24px; }
+
+.du-generic-swiper__header h2 span, .du-generic-swiper__header h3 span {
+  color: var(--du-color-primary);
+  font-weight: 900;
+}
+
+.du-generic-swiper__center{
+  justify-content: center;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.du-generic-swiper__title {
+  font-size: 32px;
+  font-weight: 900;
+  line-height: 1.1;
+}
+.du-generic-swiper__title span {
+  color: var(--du-color-primary);
+}
+.du-generic-swiper__text {
+  list-style: none;
+  max-height: 150px;
+  overflow: hidden;
+}
+
+.du-generic-swiper__actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+/* PERSONALIZACION GLOBAL */
+
+.du-generic-swiper .swiper-wrapper {
+  padding-bottom: 10px;
+}
+
+/* Flechas */
+.swiper-button-next, .swiper-button-prev {
+  color: var(--du-color-text-dark);
+  transform: scale(0.6);
+}
+.swiper-button-next::after, .swiper-button-prev::after {
+    font-size: 20px !important;
+    font-weight: 900 !important;
+}
+.swiper-button-next { right:-8px; } 
+.swiper-button-prev { left:-8px; }
+/* Pagination */
+.swiper-pagination {
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-inline: 20px;
+  overflow: auto;
+}
+/* Dots */
+ .swiper-pagination-bullet {
+  background: var(--du-color-primary);
+  opacity: 1;
+  width: 5px;
+  height: 5px;
+  border-radius: 4px;
+}
+.swiper-pagination-bullet-active {
+  background: var(--du-color-secondary-dark);
+  width: 40px;
+}
+
+
+/* PAGINACIÓN PERSONALIZADA swiper-expert */
+.du-swiper-program .swiper-wrapper {
+  padding-bottom: 50px;
+}
+
+.du-swiper-expert .swiper-pagination {
+  position: relative !important;
+  margin-top: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.du-swiper-expert .swiper-pagination-bullet, .du-swiper-program .swiper-pagination-bullet {
+  width: 25px !important;
+  min-width: 25px;
+  height: 25px !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--du-color-secondary-dark);
+  padding: 0;
+  padding-top: 2px !important;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.du-swiper-expert .swiper-pagination-bullet-active, .du-swiper-program .swiper-pagination-bullet-active {
+  color: var(--du-color-primary) !important;
+  background: var(--du-color-secondary-dark) !important;
+}
+
+.du-swiper-expert .nav-label {
+  font-size: 24px;
+  font-weight: 500;
+  text-transform: uppercase;
+  color: var(--du-color-secondary);
+  cursor: pointer;
+  margin: 0 10px;
+}
+
+
+/* PAGINACIÓN PERSONALIZADA swiper-oferta */
+
+.du-swiper-oferta .swiper-pagination {
+  bottom: 5px;
+  gap: 0;
+}
+
+.du-swiper-oferta .swiper-pagination-lock {
+  display: none !important;
+}
+
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .du-generic-swiper { padding-inline: 20px; }
+  .du-generic-swiper__header {
+    flex-direction: column;
+    text-align: center;
+    gap: 15px;
+  }
+  .du-generic-swiper__header h2, .du-generic-swiper__header h3 {  font-size:24px;  }
+  .du-swiper-oferta .swiper {  padding-bottom: 20px; }
+}
+
+@media (max-width: 992px) {
+ .du-generic-swiper__container.left {   max-width: 100%;  }
+}
+
+
+

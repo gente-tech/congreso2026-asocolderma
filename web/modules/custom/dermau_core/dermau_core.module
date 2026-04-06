@@ -1,0 +1,282 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function dermau_core_theme($existing, $type, $theme, $path)
+{
+  return [
+    'dermau_convenios_block_page' => [
+      'variables' => [
+        'convenios' => [],
+      ],
+      'template' => 'dermau-convenios-block-page',
+    ],
+    'dermau_slider_block' => [
+      'variables' => [
+        'sliders' => [],
+        'float_chat_image' => [
+          'url' => '',
+          'alt' => '',
+        ],
+      ],
+      'template' => 'dermau-slider-block',
+    ],
+    'dermau_programas_block' => [
+      'variables' => [
+        'programas' => NULL,
+        'terms' => NULL,
+      ],
+      'template' => 'dermau-programas-block',
+      'path' => $path . '/templates',
+    ],
+    'block_convenios' => [
+      'variables' => [
+        'titulo_parte_1' => NULL,
+        'titulo_parte_2' => NULL,
+        'descripcion' => NULL,
+        'items' => [],
+      ],
+      'template' => 'block-convenios',
+    ],
+    'docentes_block_page' => [
+      'variables' => [
+        'docentes' => [],
+      ],
+      'template' => 'docentes-block-page',
+    ],
+    'programas_block_page' => [
+      'variables' => [
+        'programas' => NULL,
+      ],
+      'template' => 'programas-block-page',
+    ],
+    'block_testimonios' => [
+      'variables' => [
+        'titulo_parte_1' => NULL,
+        'titulo_parte_2' => NULL,
+        'texto_boton' => NULL,
+        'texto_boton_highlight' => NULL,
+        'url_boton' => NULL,
+        'items' => [],
+      ],
+      'template' => 'block-testimonios',
+    ],
+    'block_faq' => [
+      'variables' => [
+        'titulo_parte_1' => NULL,
+        'titulo_parte_2' => NULL,
+        'descripcion' => NULL,
+        'categorias' => [],
+      ],
+      'template' => 'block-faq',
+    ],
+    'block_bar_menu' => [
+      'variables' => [
+        'items' => [],
+      ],
+      'template' => 'block-bar-menu',
+    ],
+    'dermau_info_block' => [
+      'variables' => [
+        'bg_color' => NULL,
+        'titulo_normal' => NULL,
+        'titulo_resaltado' => NULL,
+        'titulo_tercero' => NULL,
+        'descripcion' => NULL,
+        'label_btn' => NULL,
+        'enlace_btn' => NULL,
+        'imagen' => NULL,
+      ],
+      'template' => 'dermau-info-block',
+    ],
+    'dermau_modal_registro_exitoso' => [
+      'variables' => [],
+      'template' => 'modal-registro-exitoso',
+      'path' => $path . '/templates',
+    ],
+    'info_simple_block' => [
+      'variables' => [
+        'titulo_normal' => '',
+        'titulo_color' => '',
+        'descripcion' => '',
+      ],
+      'template' => 'info-simple-block',
+    ],
+    'dermau_banner_simple_form_block' => [
+      'variables' => [
+        'titulo' => '',
+        'descripcion' => '',
+        'label_btn' => '',
+        'link' => '',
+        'imagen' => [
+          'url' => '',
+          'alt' => '',
+        ],
+      ],
+      'template' => 'dermau-banner-simple-form-block',
+    ],
+    'dermau_banner_simple_small_form_block' => [
+      'variables' => [
+        'titulo_normal' => '',
+        'titulo_color' => '',
+        'descripcion' => '',
+        'label_btn' => '',
+        'url_btn' => '',
+        'mostrar_formulario' => 0,
+        'imagen' => [
+          'url' => '',
+          'alt' => '',
+        ],
+      ],
+      'template' => 'dermau-banner-simple-small-form-block',
+    ],
+    'dermau_indicators_block' => [
+      'variables' => [
+        'heading_main' => NULL,
+        'heading_highlight' => NULL,
+        'body_text' => NULL,
+        'indicators' => [],
+      ],
+      'template' => 'dermau-indicators-block',
+    ],
+    'dermau_mission_vision_block' => [
+      'variables' => [
+        'mission_title_normal' => NULL,
+        'mission_title_color' => NULL,
+        'mission_description' => NULL,
+        'vision_title_normal' => NULL,
+        'vision_title_color' => NULL,
+        'vision_description' => NULL,
+      ],
+      'template' => 'dermau-mission-vision-block',
+    ],
+  ];
+}
+
+use Drupal\node\Entity\Node;
+
+function dermau_core_preprocess_node(&$variables)
+{
+
+  if (empty($variables['node'])) {
+    return;
+  }
+
+  $node = $variables['node'];
+
+  if ($node->bundle() !== 'programa') {
+    return;
+  }
+
+  $query = \Drupal::entityQuery('node')
+    ->condition('type', 'programa')
+    ->condition('status', 1)
+    ->condition('nid', $node->id(), '<>')
+    ->range(0, 6)
+    ->accessCheck(TRUE);
+
+  $nids = $query->execute();
+
+  $variables['otros_programas'] = !empty($nids)
+    ? Node::loadMultiple($nids)
+    : [];
+}
+
+// function dermau_core_views_query_alter(&$view, &$query) {
+//   // if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
+//   //   return;
+//   // }
+
+//   // $tipo_programa = \Drupal::request()->query->get('tipo_programa_docente');
+
+//   // if (empty($tipo_programa) || $tipo_programa === 'All') {
+//   //   return;
+//   // }
+
+//   // $connection = \Drupal::database();
+
+//   // $subquery = $connection->select('node_field_data', 'p');
+//   // $subquery->innerJoin('node__field_docentes', 'fd', 'fd.entity_id = p.nid');
+//   // $subquery->innerJoin('node__field_tipo_de_programa', 'ftp', 'ftp.entity_id = p.nid');
+
+//   // $subquery->addField('fd', 'field_docentes_target_id');
+//   // $subquery->condition('p.type', 'programa');
+//   // $subquery->condition('p.status', 1);
+//   // $subquery->condition('ftp.field_tipo_de_programa_target_id', (int) $tipo_programa, '=');
+//   // $subquery->distinct();
+
+//   // $docente_ids = $subquery->execute()->fetchCol();
+
+//   // if (empty($docente_ids)) {
+//   //   $docente_ids = [0];
+//   // }
+
+//   // $query->addWhere(0, 'node_field_data.nid', $docente_ids, 'IN');
+  
+
+//   // dump_1
+//   // if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
+//   //   return;
+//   // }
+
+//   // $tipo_programa = \Drupal::request()->query->get('tipo_programa_docente');
+
+//   // \Drupal::logger('dermau_docentes_debug')->notice(
+//   //   'HOOK ejecutado. View: @view | Display: @display | tipo_programa_docente: <pre>@tipo</pre>',
+//   //   [
+//   //     '@view' => $view->id(),
+//   //     '@display' => $view->current_display,
+//   //     '@tipo' => print_r($tipo_programa, TRUE),
+//   //   ]
+//   // );
+
+
+//   // dump_2
+//   if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
+//     return;
+//   }
+
+//   $tipo_programa = \Drupal::request()->query->get('tipo_programa_docente');
+
+//   dump([
+//     'HOOK_OK' => TRUE,
+//     'view_id' => $view->id(),
+//     'display' => $view->current_display,
+//     'tipo_programa_docente' => $tipo_programa,
+//     'query_params' => \Drupal::request()->query->all(),
+//   ]);
+// }
+
+function dermau_core_views_query_alter(\Drupal\views\ViewExecutable $view, \Drupal\views\Plugin\views\query\QueryPluginBase $query) {
+
+  if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
+    return;
+  }
+
+  $tipo_programa = \Drupal::request()->query->get('tipo_programa_docente');
+
+  if (empty($tipo_programa) || $tipo_programa === 'All') {
+    return;
+  }
+
+  $connection = \Drupal::database();
+
+  $subquery = $connection->select('node_field_data', 'p');
+  $subquery->innerJoin('node__field_docentes', 'fd', 'fd.entity_id = p.nid');
+  $subquery->innerJoin('node__field_tipo_de_programa', 'ftp', 'ftp.entity_id = p.nid');
+
+  $subquery->addField('fd', 'field_docentes_target_id');
+  $subquery->condition('p.type', 'programa');
+  $subquery->condition('p.status', 1);
+  $subquery->condition('ftp.field_tipo_de_programa_target_id', (int) $tipo_programa, '=');
+  $subquery->distinct();
+
+  $docente_ids = $subquery->execute()->fetchCol();
+
+  if (empty($docente_ids)) {
+    $docente_ids = [0];
+  }
+
+  $query->addWhere(0, 'node_field_data.nid', $docente_ids, 'IN');
+}

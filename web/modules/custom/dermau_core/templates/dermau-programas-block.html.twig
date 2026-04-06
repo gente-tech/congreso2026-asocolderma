@@ -1,0 +1,117 @@
+<section class="du-generic-swiper du-swiper-oferta"  id="oferta-academica">
+        <div class="du-generic-swiper__container du-swiper-oferta__container">
+          <div class="du-generic-swiper__center">
+            <h2 class="du-generic-swiper__title">Explora nuestra <span>oferta académica</span> </h2>
+            <p class="du-generic-swiper__text">Encuentra el programa ideal para tu especialización académica y profesional en el área de la salud.</p>
+          </div>
+
+          <div class="swiper" id="bloque-programa-swiper">
+            <div class="swiper-wrapper">
+                
+                {% for programa in programas %}
+
+                  <div class="swiper-slide">
+                    <article class="du-card__diplomat">
+                      <div class="du-card__diplomat-image-container">
+                        <span class="du-card__diplomat-badge tag" data-tag="{{ programa.tipo_programa_id }}" >{{ programa.tipo_programa }}</span>
+                        <img
+                          src="{{ programa.image_url }}"
+                          alt="{{ programa.image_alt }}"
+                          class="du-card__diplomat-image"
+                        />
+                      </div>
+                      <div class="du-card__diplomat-content">
+                        <h3 class="du-card__diplomat-title">
+                          {{ programa.title }}
+                        </h3>
+                        <p class="du-card__diplomat-description">
+                          {{ programa.descripcion_corta }}
+                        </p>
+
+                        <div class="du-card__diplomat-info">
+                          <div class="du-card__diplomat-info-item">
+                            <svg
+                              width="15"
+                              height="15"
+                              viewBox="0 0 15 15"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M7.22917 13.9583C10.9456 13.9583 13.9583 10.9456 13.9583 7.22917C13.9583 3.51275 10.9456 0.5 7.22917 0.5C3.51275 0.5 0.5 3.51275 0.5 7.22917C0.5 10.9456 3.51275 13.9583 7.22917 13.9583Z"
+                                stroke="#007BE3"
+                              />
+                              <path
+                                d="M10.7916 7.22921H7.42704C7.37455 7.22921 7.32421 7.20836 7.28709 7.17124C7.24998 7.13412 7.22913 7.08378 7.22913 7.03129V4.45837"
+                                stroke="#007BE3"
+                                stroke-linecap="round"
+                              />
+                            </svg>
+                            {{ programa.duracion_programa }}
+                          </div>
+                          <div class="du-card__diplomat-info-item">
+                            <svg
+                              width="20"
+                              height="16"
+                              viewBox="0 0 20 16"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M0 0.625C0 0.45924 0.065848 0.300269 0.183058 0.183058C0.300268 0.0658481 0.45924 9.75268e-08 0.625 9.75268e-08H6.8725C8.1775 9.75268e-08 9.32667 0.666667 9.99833 1.67833C10.3404 1.16218 10.805 0.738778 11.3506 0.445918C11.8962 0.153058 12.5058 -0.000141109 13.125 9.75268e-08H19.375C19.5408 9.75268e-08 19.6997 0.0658481 19.8169 0.183058C19.9342 0.300269 20 0.45924 20 0.625V13.1775C20 13.2599 19.9837 13.3415 19.952 13.4176C19.9204 13.4937 19.8739 13.5628 19.8155 13.6209C19.757 13.679 19.6876 13.725 19.6113 13.7561C19.535 13.7873 19.4533 13.8031 19.3708 13.8025L12.9692 13.7592C12.638 13.7568 12.3097 13.8203 12.0033 13.9459C11.6968 14.0715 11.4184 14.2567 11.1842 14.4908L10.4425 15.2333C10.3845 15.2914 10.3155 15.3375 10.2397 15.3689C10.1638 15.4004 10.0825 15.4165 10.0004 15.4165C9.91831 15.4165 9.837 15.4004 9.76115 15.3689C9.68529 15.3375 9.61637 15.2914 9.55833 15.2333L8.80667 14.4825C8.33793 14.0136 7.70215 13.7501 7.03917 13.75H0.625C0.45924 13.75 0.300268 13.6842 0.183058 13.5669C0.065848 13.4497 0 13.2908 0 13.125L0 0.625ZM10.625 13.3183C11.2942 12.7888 12.1241 12.5033 12.9775 12.5092L18.75 12.5483V1.25H13.125C12.462 1.25 11.8261 1.51339 11.3572 1.98223C10.8884 2.45107 10.625 3.08696 10.625 3.75V13.3183ZM9.3725 3.7475C9.37184 3.08489 9.10815 2.44965 8.63938 1.98135C8.17061 1.51305 7.53511 1.25 6.8725 1.25H1.25V12.5H7.03917C7.8875 12.5 8.71083 12.7883 9.375 13.3167L9.3725 3.7475Z"
+                                fill="#007BE3"
+                              />
+                            </svg>
+                            {{ programa.modulos_count }} módulos
+                          </div>
+                          <div class="du-card__diplomat-info-item">
+                            <svg
+                              width="16"
+                              height="14"
+                              viewBox="0 0 16 14"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                d="M10.6111 13.5V12.0555C10.6111 11.2893 10.3067 10.5545 9.76497 10.0128C9.2232 9.47099 8.4884 9.16663 7.72222 9.16663H3.38889C2.62271 9.16663 1.88791 9.47099 1.34614 10.0128C0.804364 10.5545 0.5 11.2893 0.5 12.0555V13.5M10.6111 0.592407C11.2306 0.753008 11.7792 1.11476 12.1709 1.6209C12.5625 2.12703 12.775 2.74888 12.775 3.38885C12.775 4.02882 12.5625 4.65067 12.1709 5.15681C11.7792 5.66294 11.2306 6.0247 10.6111 6.1853M14.9444 13.5V12.0555C14.944 11.4154 14.7309 10.7936 14.3388 10.2877C13.9466 9.78186 13.3975 9.42054 12.7778 9.26052"
+                                stroke="#007BE3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                              <path
+                                d="M5.55551 6.27778C7.151 6.27778 8.4444 4.98438 8.4444 3.38889C8.4444 1.7934 7.151 0.5 5.55551 0.5C3.96003 0.5 2.66663 1.7934 2.66663 3.38889C2.66663 4.98438 3.96003 6.27778 5.55551 6.27778Z"
+                                stroke="#007BE3"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              />
+                            </svg>
+                            <span class="du-card__diplomat-info-text"
+                              >{{ programa.cupos_label }}</span
+                            >
+                          </div>
+                        </div>
+
+                        <a href="{{ programa.url }}" class="du-card__diplomat-btn">Ver detalle</a>
+                      </div>
+                    </article>
+                  </div>
+                  
+                {% endfor %}
+
+            </div>
+            
+            <div class="swiper-pagination"></div>
+          </div>
+
+          <div class="du-generic-swiper__actions">
+            <a href="/programas" class="du-btn du-btn--secundary-dark">
+              <svg width="20" height="14" viewBox="0 0 20 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1.73072 4.84077V11.3204M0.931527 4.34797C0.36454 4.12221 0.36454 3.51312 0.931527 3.28736C1.67493 2.99134 2.78552 2.57119 4.35642 2.02724C6.53903 1.27151 8.02994 0.823397 8.83037 0.596269C9.28111 0.46791 9.77043 0.46791 10.2212 0.596269C11.0212 0.823397 12.5129 1.27151 14.6951 2.02724C16.2664 2.57119 17.3766 2.99134 18.1204 3.28736C18.6866 3.51312 18.6866 4.12221 18.1204 4.34797C17.3766 4.64399 16.266 5.06414 14.6951 5.60809C12.5125 6.36382 11.0216 6.81194 10.2212 7.03907C9.77043 7.16742 9.28111 7.16742 8.83037 7.03907C8.03035 6.81194 6.53862 6.36382 4.35642 5.60809C2.78511 5.0638 1.67493 4.64399 0.931527 4.34797Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"></path>
+                <path d="M4.23424 5.56543C4.20539 6.02441 4.19144 6.48394 4.19239 6.94354C4.19239 7.9987 4.25762 8.66133 4.32162 9.05795C4.37783 9.40444 4.6166 9.69909 4.98912 9.86108C5.70955 10.1748 7.17297 10.6383 9.52584 10.6383C11.8787 10.6383 13.3421 10.1752 14.0626 9.86142C14.4351 9.69943 14.6739 9.40478 14.7301 9.05863C14.7941 8.66167 14.8593 7.99904 14.8593 6.94423C14.8602 6.48451 14.8463 6.02486 14.8174 5.56577M2.96159 12.3435C2.96159 12.6148 2.83192 12.875 2.6011 13.0669C2.37028 13.2588 2.05722 13.3666 1.7308 13.3666C1.40437 13.3666 1.09131 13.2588 0.860492 13.0669C0.629673 12.875 0.5 12.6148 0.5 12.3435C0.5 12.0721 0.629673 11.8119 0.860492 11.62C1.09131 11.4282 1.40437 11.3204 1.7308 11.3204C2.05722 11.3204 2.37028 11.4282 2.6011 11.62C2.83192 11.8119 2.96159 12.0721 2.96159 12.3435Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+                Ver todos los <span class="du-btn__link">programas</span>
+            </a>
+          </div>
+
+        </div>
+</section>

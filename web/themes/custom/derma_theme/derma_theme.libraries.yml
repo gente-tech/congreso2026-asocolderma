@@ -1,0 +1,41 @@
+global:
+  version: 1.x
+  css:
+    theme:
+      assets/css/main.css: {}
+  js:
+    assets/js/script.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+    - derma_theme/swiper   
+
+swiper:
+  js:
+    https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js:
+      type: external
+  dependencies:
+    - core/drupal
+
+convenios:
+  js:
+    assets/js/convenios.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+programas-filter:
+  css:
+    assets/css/filter_programas.css: {}
+  js:
+    assets/js/programas-filter.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
+
+docentes-filter:
+  js:
+    assets/js/docentes-filter.js: {}
+  dependencies:
+    - core/drupal
+    - core/once

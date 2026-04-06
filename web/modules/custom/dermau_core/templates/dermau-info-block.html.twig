@@ -1,0 +1,28 @@
+<section class="du-footer-info" {% if bg_color %} data-variation="{{bg_color}}" {% endif %}>
+	<div class="du-footer-info__text">
+	  <div>
+			<h2 class="du-footer-info__title">
+				{% if titulo_normal %}
+					{{ titulo_normal }}
+				{% endif %}
+				<span>
+					{% if titulo_resaltado %}
+						{{ titulo_resaltado }}
+					{% endif %}
+				</span>
+				{% if titulo_tercero %}
+					{{ titulo_tercero }}
+				{% endif %}
+			</h2>
+			<p class="du-footer-info__description">
+				{% if descripcion %}
+					{{ descripcion }}
+				{% endif %}
+			</p>
+	  </div>
+	</div>
+	<div class="du-footer-info__image">
+		<img src="{{ imagen.url }}" alt="{{ imagen.alt }}" width="400" height="267">
+		<a class="du-footer-info__link" href="{{ enlace_btn ?: '#' }}">{{ label_btn }}</a>
+	</div>
+</section>

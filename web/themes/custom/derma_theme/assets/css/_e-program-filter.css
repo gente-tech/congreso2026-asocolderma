@@ -1,0 +1,85 @@
+.du-programs-container{
+    display: flex;
+    justify-content: start;
+    align-items: start;
+    flex-wrap: wrap;
+    gap: 40px;
+}
+
+.du-programs-grid__item, .du-programs-item{
+  width: 100%;
+  min-width: 250px;
+  max-width: 330px;
+  /*flex:1;*/
+}
+
+.du-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.du-pagination nav ul {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    list-style: none;
+}
+
+.du-pagination li.pager__item a{
+    width: 28px;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	text-decoration: none;
+    font-size: 16px;
+	border:none;
+}
+
+.du-pagination li.pager__item a:hover {
+    background: #66dbff3d;
+}
+
+.du-pagination li.pager__item.is-active a{
+    background: #1c224a;
+    color: #66dafe;
+}
+
+.du-pagination li.pager__item a span {
+    display: block;
+    padding: 0;
+    margin: 0;
+	font-size:0;
+}
+
+.du-pagination li.pager__item--next a::before{
+  content:"›";
+  font-size:25px;
+  margin-top: -5px;
+}
+
+.du-pagination li.pager__item--last  a::before{
+  content:"»";
+  font-size:25px;
+  margin-top: -5px;
+}
+
+.du-programs-message {
+    padding: 50px;
+    text-align: center;
+    font-size: 18px;
+    color: #1c224a;
+    font-weight: 400;
+}
+
+.view-dermau-programas-catalogo {  min-height: 43vh; }
+
+@media (max-width: 768px) {
+  .du-programs-container {
+    justify-content: center;
+  }
+}
