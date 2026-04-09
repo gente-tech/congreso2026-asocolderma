@@ -58,7 +58,7 @@
 
 .du-header__nav-link {
   text-decoration: none;
-  color: var(--du-color-text-dark);
+  color: var(--du-color-blue-07);
   font-size: 14px;
   transition: var(--du-transition);
   display: flex;
@@ -69,7 +69,7 @@
 
 .du-header__nav-link--active,
 .du-header__nav-link:hover {
-  color: var(--du-color-secondary);
+  color: var(--du-color-blue-06);
 }
 
 /* DROPDOWN DESKTOP */
@@ -102,12 +102,12 @@
   padding-block: 10px;
   display: block;
   text-decoration: none;
-  color: var(--du-color-text-dark);
+  color: var(--du-color-blue-07);
   font-size: 14px;
 }
 
 .du-header__nav-dropdown-link:hover {
-  color: var(--du-color-secondary);
+  color: var(--du-color-blue-06);
 }
 
 /* BOTÓN CAMPUS */

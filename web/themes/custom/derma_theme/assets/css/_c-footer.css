@@ -46,7 +46,7 @@
 }
 
 .du-footer__info-logo-text a:hover {
-    color: var(--du-color-primary);
+    color: var(--du-color-blue-05);
 }
 
 .du-footer__info-detail {
@@ -76,7 +76,7 @@
 }
 
 .du-footer__nav-item-link:hover {
-    color: var(--du-color-primary);
+    color: var(--du-color-blue-05);
 }
 
 /* Redes Sociales */
@@ -106,7 +106,7 @@
 }
 
 .du-footer__social-link:hover {
-    background-color: var(--du-color-primary);
+    background-color: var(--du-color-blue-05);
     transform: translateY(-5px);
 }
 

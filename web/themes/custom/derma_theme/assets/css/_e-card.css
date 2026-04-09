@@ -129,7 +129,7 @@
 }
 .du-card__diplomat-title a {
     text-decoration: none;
-    color: var(--du-color-text-dark);
+    color: var(--du-color-blue);
 }
 .du-card__diplomat-description {
   font-size: 14px;
@@ -183,9 +183,11 @@
 .du-card__diplomat.destacar .du-card__diplomat-btn{
 	background: var(--du-color-primary);
 	border-color: var(--du-color-primary);
+  color: white;
 }
 .du-card__diplomat.destacar .du-card__diplomat-btn:hover{
   border-color: var(--du-color-secondary-dark);
+  color: white;
 }
 
 

@@ -42,7 +42,7 @@ span.du-btn__link{
 }
 
 .du-link-download {
-    color: var(--du-color-secondary);
+    color: var(--du-color-blue-06);
     text-decoration: underline;
     text-underline-offset: 6px;
     font-weight: 700;
@@ -50,14 +50,14 @@ span.du-btn__link{
 }
 
 .du-link-more{
-    color: var(--du-color-secondary);
+    color: var(--du-color-blue-06);
     text-decoration: none;
     font-weight: 700;
     font-size: 14px;
 }
 
 .du-link-external {
-  color: #007be3 !important;
+  color: var(--du-color-blue-06) !important;
 }
 
 .du-btn.full {
