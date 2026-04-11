@@ -53,6 +53,7 @@
   font-size: 32px;
   font-weight: 900;
   line-height: 1.1;
+  color: var(--du-color-blue);
 }
 .du-generic-swiper__title span {
   color: var(--du-color-primary);
@@ -61,6 +62,7 @@
   list-style: none;
   max-height: 150px;
   overflow: hidden;
+  color: var(--du-color-text-black);
 }
 
 .du-generic-swiper__actions{

@@ -31,11 +31,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0.8) 0%,
-    rgba(0, 0, 0, 0.2) 100%
-  );
+  background: linear-gradient(90deg, rgb(213, 235, 255) 0%, rgba(0, 0, 0, 0.2) 100%);
   z-index: 2;
 }
 
@@ -52,6 +48,7 @@
   max-width: 650px;
   min-height: 450px;
   padding-top: 3rem;
+  color: var(--du-color-secondary-dark);
 }
 
 .du-hero-swiper__title {
@@ -59,6 +56,7 @@
   font-weight: 900;
   line-height: 1.1;
   margin-bottom: 15px;
+  color: var(--du-color-blue);
 }
 
 .du-hero-swiper__title--highlight {
@@ -82,7 +80,7 @@
 
 .du-hero-swiper__item::before {
   content: "•";
-  color: #fff;
+  color: var(--du-color-secondary-dark);
   font-size: 24px;
 }
 
@@ -112,7 +110,7 @@
 }
 
 .du-hero-swiper .swiper-pagination-bullet-active {
-  background: #fff !important;
+  background: var(--du-color-blue-07) !important;
   width: 40px !important;
 }
 

@@ -38,15 +38,17 @@
 	text-decoration: none;
     font-size: 16px;
 	border:none;
+    color: var(--du-color-primary);
 }
 
 .du-pagination li.pager__item a:hover {
     background: color-mix(in srgb, var(--du-color-primary) 30%, transparent);
+    color: var(--du-color-primary);
 }
 
 .du-pagination li.pager__item.is-active a{
-    background: var(--du-color-text-black);
-    color: #66dafe;
+    background: var(--du-color-primary);
+    color: white;
 }
 
 .du-pagination li.pager__item a span {

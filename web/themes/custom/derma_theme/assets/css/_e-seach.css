@@ -2,7 +2,7 @@
 .du-seach {
   width: 100%;
   padding: 1rem;
-  background-color: #007ee633;
+  background-color: var(--du-color-blue);
   position: relative;
 }
 

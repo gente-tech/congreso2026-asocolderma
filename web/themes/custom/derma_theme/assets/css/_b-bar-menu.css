@@ -1,6 +1,6 @@
 /* --- SECCIÓN BARRA AZUL --- */
 .du-bar-menu {
-  background-color: var(--du-color-secondary-dark);
+  background-color: var(--du-color-blue);
   width: 100%;
   min-height: 60px;
   display: flex;
@@ -25,7 +25,7 @@
 
 .du-bar-menu__link {
   text-decoration: none;
-  color: var(--du-color-primary);
+  color: white;
   font-size: 14px;
   font-weight: 700;
   display: flex;
@@ -37,9 +37,9 @@
   justify-content: center;
 }
 .du-bar-menu__link:hover {
-    color: var(--du-color-primary);
+    color: var(--du-color-blue-02);
     background: rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 -2px 0 var(--du-color-primary);
+    box-shadow: inset 0 -2px 0 var(--du-color-blue-02);
 }
 
 /* Divider "|" centrada */

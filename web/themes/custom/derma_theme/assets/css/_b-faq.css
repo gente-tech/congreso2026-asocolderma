@@ -16,14 +16,14 @@
 }
 .du-faq__title {
   font-size: 28px;
-  color: var(--du-color-secondary-dark);
+  color: var(--du-color-blue);
   font-weight: 700;
 }
 .du-faq__title span {
   color: var(--du-color-primary);
 }
 .du-faq__detail {
-  color: var(--du-color-text-dark);
+  color: var(--du-color-text-black);
   font-size: 14px;
 }
 
@@ -146,9 +146,9 @@
   }
 
   .du-faq__tab-btn.active {
-    color: var(--du-color-primary);
+    color: var(--du-color-blue-02);
     background: rgba(255, 255, 255, 0.05);
-    box-shadow: inset 0 -4px 0 var(--du-color-primary);
+    box-shadow: inset 0 -4px 0 var(--du-color-blue-02);
   }
 
   .du-faq__mobile-trigger {

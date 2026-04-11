@@ -22,12 +22,12 @@
   color: white;
 }
 .du-btn--secundary-dark {
-  background-color: var(--du-color-secondary-dark);
+  background-color: var(--du-color-blue);
   color: white;
 }
 
 span.du-btn__link{
-  color: var(--du-color-primary);
+  color: var(--du-color-blue-02);
 }
 
 .du-btn--outline {
@@ -50,7 +50,7 @@ span.du-btn__link{
 }
 
 .du-link-more{
-    color: var(--du-color-blue-06);
+    color: var(--du-color-primary);
     text-decoration: none;
     font-weight: 700;
     font-size: 14px;
