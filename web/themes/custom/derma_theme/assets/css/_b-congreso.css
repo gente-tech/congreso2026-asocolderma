@@ -1,0 +1,467 @@
+.du-congreso{}
+.du-congreso__wrapper{}
+
+.du-congreso__container{
+  padding-block:20px;
+  max-width: var(--du-max-width);
+  margin: 0 auto;
+}
+.du-congreso__title{
+  font-size: 28px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--du-color-blue);
+}
+.du-congreso__blink{
+  font-size: 58px;
+  color: var(--du-color-primary);
+  font-weight: 700;
+
+}
+
+.du-congreso__subtitle{
+  font-size: 18px;
+  font-weight: 900;
+  line-height: 1.1;
+  color: var(--du-color-blue);
+}
+.du-congreso__description{
+  font-size: 17px;
+  line-height: 1.5;
+  color: var(--du-color-text-black);
+  padding-block: 10px;
+}
+.du-congreso-actions{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding-block: 10px;
+}
+
+.du-btn-opt{
+    padding: 10px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    gap: 5px;
+    text-decoration: none;
+    color: var(--du-color-blue);
+    font-weight: 600;
+}
+.du-btn-opt:hover{
+  background-color: color-mix(in srgb, var(--du-color-primary) 30%, transparent);
+}
+.du-btn-opt.active{
+  background-color: var(--du-color-primary);
+  color: white;
+}
+
+.du-congreso-section-info{}
+.du-congreso-section-info .container{
+  text-align: center;
+}
+.du-congreso-section-info__menu{
+  background-color: var(--du-color-gray-02);
+  display: inline-flex;
+  border-radius: 8px;
+  margin-top: 15px;
+  padding: 10px;
+  gap: 10px;
+}
+
+
+.du-congreso-section-filter{}
+.du-congreso-section-filter__content{
+    padding: 15px;
+    border: 1px solid var(--du-color-gray-02);
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px 2px #00000017;
+}
+.du-congreso-section-filter__header{
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+.du-congreso-section-filter__options{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.du-congreso-section-filter__options .du-form-select{
+    flex: 1;
+}
+
+.du-congreso-section-register{
+    background-color: white;
+    background-image: url(../img/bg-onda-lg.png);
+    background-size: cover;
+    background-position: 0 -40px;
+    min-height: 200px;
+}
+.du-congreso-section-register__img{
+    position: absolute;
+    bottom: -75px;
+    right: 0;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+}
+.du-congreso-section-register .container{
+  text-align: center;
+  position: relative;
+}
+
+.du-congreso-section-footer{
+  background-color: white;
+  background-image: url(../img/bg-footer-info.png);
+}
+.du-congreso-section-footer .container{
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding-block:0;
+}
+.du-congreso-section-footer__image{ flex:1; }
+.du-congreso-section-footer__image img {
+    width: 100%;
+    object-fit: cover;
+    max-height: 350px;
+}
+.du-congreso-section-footer__content{ 
+  flex:1;
+  padding-top: 30px; 
+}
+.du-congreso-section-footer__list{
+  padding-top: 20px;
+  list-style: none;
+  padding-left: 5px;
+  font-size: 18px;
+  line-height: 1.1;
+  color: var(--du-color-text-black);
+}
+.du-congreso-section-footer__list li{
+  display: flex;
+  gap: 10px;
+  justify-content: start;
+  margin-bottom: 10px;
+}
+.du-congreso-section-footer__list li span{
+  color: var(--du-color-blue-06);
+  min-width: 18px;
+}
+
+.du-congreso-section-footer__actions{
+  padding-block: 20px;
+}
+
+
+.du-congreso-section-hero{
+    background-color: white;
+    background-image: url(../img/bg-footer-info.png);
+    background-size: cover;
+    margin-bottom: 20px;
+}
+.du-congreso-section-hero .container{
+    display: flex;
+    gap: 15px;
+    padding-block:0;
+}
+.du-congreso-section-hero__left{
+  position: relative;
+  padding-left: 20%;
+  z-index: 3;
+}
+.du-congreso-section-hero__left .du-congreso-actions{
+  justify-content: flex-start;
+}
+.du-congreso-section-hero__left .du-btn-tag{
+  float: right;
+  margin-right: 15px;
+}
+.du-congreso-section-hero__left .logo {
+    position: absolute;
+    left: -80px;
+    top: -20px;
+    z-index: -1;
+}
+
+.du-congreso-section-hero__right{
+  position: relative;
+}
+.du-congreso-section-hero__right .logo {
+    position: absolute;
+    left: -35px;
+    bottom: -45px;
+    z-index: 2;
+}
+.du-congreso-section-hero__right .bg-rectangle{
+    background-color: transparent;
+    background-image: url(../img/bg-retangle-w.png);
+    background-size: cover;
+    width: 100%;
+    height: 46px;
+    z-index: 3;
+    position: relative;
+    bottom: -2px;
+    text-align: center;
+    display: none;
+}
+.du-congreso-section-hero__right .icon-down{
+    width: 44px;
+    height: auto;
+    display: inline-block;
+    margin-top: -20px;
+}
+.du-congreso-section-hero__bg{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  z-index: 1;
+}
+.du-congreso-section-hero__overlay{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient( 90deg,  rgba(0, 0, 0, 0.8) 0%,  rgba(0, 0, 0, 0.2) 100% );
+  z-index: 2;
+}
+.du-congreso-section-hero__wrapper{
+    position: relative;
+    z-index: 3;
+    max-width: 800px;
+    color: #fff;
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.du-congreso-section-hero__wrapper .du-congreso__subtitle{
+  color: #fff;
+  margin-bottom: 15px;
+  text-align: center;
+}
+.du-congreso-section-hero__items {
+    display: flex;
+    gap: 10px;
+    margin-block: 5px;
+}
+.du-congreso-section-hero__items .du-icon__calendar, .du-congreso-section-hero__items .du-icon__location{
+    color: var(--du-color-blue-02);
+}
+
+
+.du-congreso-section-calendar{}
+.du-congreso-section-calendar .container{}
+.du-congreso-section-calendar__wrapper {
+    position: relative;
+}
+.du-congreso-section-calendar__salas {
+    display: flex;
+    justify-content: space-between;
+}
+.du-congreso-section-calendar__salas > div {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+}
+.du-congreso-section-calendar__salas  .empty {
+    width: 50px;
+    max-width: 50px;
+    min-width: 50px;
+}
+
+.du-calendar__item{
+  display: flex;
+  justify-content: space-between;
+}
+.du-calendar__item > div{ flex: 1; padding: 5px; }
+.du-calendar__item-time{
+   width: 50px;
+    max-width: 50px;
+    min-width: 50px;
+    background: #f7f7f7;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    text-align: center;
+}
+.du-calendar__item-break{
+  background: #F07F1629;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--du-color-blue);
+  padding: 10px !important;
+  margin: 5px;
+}
+.du-congreso__card {
+    background: #F7F7F7;
+    width: 100%;
+    min-height: 200px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 4px 0px #00000014;
+}
+
+.du-congreso__card-trigger {
+   width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.du-congreso__card-header{
+   display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    flex-wrap: wrap;
+}
+.du-congreso__card-header .sala, .du-congreso__card-resumen .description, .du-congreso__card-desglose, .du-filter-calendar{
+  display: none;
+}
+.du-congreso__card-resumen{
+  padding-inline: 10px;
+}
+.du-congreso__card-detail{
+    padding-block: 10px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.du-congreso__card-detail-item{
+  display: flex;
+  gap: 5px;
+  margin-bottom: 5px;
+}
+.du-congreso__card-detail-item .du-icon__user, .du-congreso__card-detail-item .du-icon__micro {
+    color: var(--du-color-blue-06);
+    font-size: 12px;
+}
+.du-congreso__card-resumen .du-congreso__subtitle{
+  font-size: 16px;
+}
+.du-congreso__card-desglose{
+  padding-inline: 15px;
+    text-align: justify;
+    font-size: 14px;
+    font-weight: 400;
+    padding: 10px 25px;
+}
+.du-congreso__card-desglose-item{
+  .tag-flex {
+      margin-left: -18px;
+      color: var(--du-color-blue);
+  }
+  h3{ color: var(--du-color-blue); margin-block: 5px; }
+  p{  margin-bottom: 5px; }
+  .blink{
+      color: var(--du-color-primary);
+      font-weight: 600;
+  }
+}
+.du-congreso__card-top{     
+    display: none;
+    padding-block: 15px;
+    justify-content: center;
+    align-items: center;
+}
+.du-congreso__card-top a {
+    width: 14px;
+    height: 8px;
+    display: inline-block;
+}
+.du-congreso__card-detail-item{}
+.du-calendar__item-card.is-open{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+    background: #F7F7F7;
+    z-index: 999;
+
+  .du-congreso__card{
+    border: 1px solid;
+    border-color: var(--du-color-secondary);
+    background: color-mix(in srgb, var(--du-color-secondary) 10%, white);
+  }
+  .sala, .description, .du-congreso__card-desglose{ display: block; }
+  .du-congreso__subtitle{ font-size: 22px; }
+  .du-congreso__card-detail{
+      border-bottom: 1px solid;
+      border-top: 1px solid;
+      border-color: var(--du-color-primary);
+  }
+}
+
+@media (max-width: 768px) {
+  .du-congreso-section-register{
+    background-image: url(../img/bg-onda-sm.png);
+    background-position: 0;
+    min-height: 300px
+  }
+  .du-congreso-section-register__img{
+    display: none;
+  }
+
+  .du-congreso-section-footer .container {
+    gap: 0;
+    flex-direction: column;
+  }
+  .du-congreso-section-footer__content {
+    padding-inline: 20px;
+  }
+  .du-congreso-section-footer__actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .du-congreso-section-hero{ margin-bottom: -20px; }
+  .du-congreso-section-hero .container {
+    flex-direction: column;
+    gap: 30px;
+  }
+  .du-congreso-section-hero__left { padding-left: 32%; }
+  .du-congreso-section-hero__left .logo { width: 200px; }
+  .du-congreso-section-hero__left .du-congreso-actions{
+        position: absolute;
+        bottom: -60px;
+        width: 100%;
+        justify-content: center;
+        left: 0;
+        z-index: 3;
+  }
+  .du-congreso-section-hero__right .logo { display: none; }
+  .du-congreso-section-hero__right .bg-rectangle{ display: block; }
+  .du-congreso-section-filter__options{ flex-direction: column; }
+
+  .du-congreso-section-info, .du-congreso-section-filter, .du-congreso-section-register .container {
+    padding-inline: 10px;
+  }
+
+  .du-congreso-section-calendar__salas, .du-congreso-section-calendar__hours.hour-2, .du-calendar__item-time{
+    display: none;
+  }
+  .du-calendar__item{ flex-direction: column; }
+
+  .du-calendar__item-card.is-open .du-congreso__card-top{ display: flex; }
+  .du-filter-calendar { display: block; }
+}

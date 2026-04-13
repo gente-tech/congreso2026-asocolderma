@@ -69,3 +69,19 @@ span.du-btn__link{
   width: 50%;
   display: block;
 }
+
+.du-btn.min300 {
+  min-width: 300px;
+}
+
+.du-btn-tag{
+  padding: 5px 15px;
+  border-radius: 4px;
+  background-color: var(--du-color-blue);
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}

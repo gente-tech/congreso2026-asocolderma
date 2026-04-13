@@ -42,6 +42,15 @@
     box-shadow: inset 0 -2px 0 var(--du-color-blue-02);
 }
 
+.du-bar-menu__item.active a {
+    background: var(--du-color-primary);
+    border-radius: 8px;
+    &:hover {
+      color: white;
+      box-shadow: inset 0 -2px 0 var(--du-color-primary-02);
+    }
+}
+
 /* Divider "|" centrada */
 .du-bar-menu__divider {
   width: 1px;

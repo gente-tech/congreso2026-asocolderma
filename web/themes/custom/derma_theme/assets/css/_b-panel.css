@@ -1,6 +1,5 @@
 .du-panel-block {
-    padding-inline: 50px;
-    padding-block: 25px;
+    padding-block: 20px;
 }
 
 .du-panel-block__container {
@@ -50,6 +49,77 @@
     border: none;
     cursor: pointer;
 }
+
+
+.du-panel-block__content{
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    text-align: left;
+    flex-wrap: wrap;
+}
+.du-panel-block__resumen{
+    padding: 0 25px 25px 25px;
+    border-top: 1px solid var(--du-color-gray-02);
+}
+
+.du-panel-block__body[data-variation="resumen"] {
+    padding: 0 25px 25px 25px;
+}
+.du-panel-block__body[data-variation="resumen"] > div {
+    margin-top: 25px;
+}
+.du-panel-block__detail {
+    border-bottom: 1px solid;
+    border-top: 1px solid;
+    padding: 10px 5px;
+    border-color: var(--du-color-primary);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.du-panel-block__detail-item {
+    display: flex;
+    gap: 5px;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.du-panel-block__desglose {
+    padding-inline: 15px;
+    text-align: justify;
+    font-size: 14px;
+    font-weight: 400;
+}
+.du-panel-block__desglose-item .tag-flex {
+    margin-left: -18px;
+    color: var(--du-color-blue);
+}
+.du-panel-block__desglose-item .tag-flex span {
+    color: var(--du-color-primary);
+}
+.du-panel-block__desglose-item h3{ color: var(--du-color-blue); margin-block: 5px; }
+.du-panel-block__desglose .blink{
+    color: var(--du-color-primary);
+    font-weight: 600;
+}
+.du-panel-block__desglose-item p{  margin-bottom: 5px; }
+.du-panel-block__detail-item .du-icon__user, .du-panel-block__detail-item .du-icon__micro {
+    color: var(--du-color-blue-06);
+    font-size: 12px;
+}
+.du-panel-block__top {
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+.du-panel-block__top a {
+    width: 14px;
+    height: 8px;
+    display: inline-block;
+}
+
 
 .du-panel-block__info {
     display: flex;
@@ -147,11 +217,12 @@
 
 /* Responsive */
 @media (max-width: 992px) {
-    .du-panel-block { padding: 25px; }
+    .du-panel-block { padding: 10px; }
     .du-panel-block__inner { padding: 10px 20px 25px 20px; }
     .du-panel-block__number { width: 35px; height: 35px; font-size: 16px; }
     .du-panel-block__container { max-width: 100%; }
     .du-panel-block__header { flex-direction: column; gap: 10px; }
     .du-panel-block__number.large{ width: 100px; height: 40px; }
     .du-panel-block__header h2 { font-size:24px; }
+    .du-panel-block__top { display: flex; }
 }
