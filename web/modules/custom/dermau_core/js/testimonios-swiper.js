@@ -2,12 +2,12 @@
   Drupal.behaviors.testimoniosSwiper = {
     attach: function (context) {
 
-      const swiperElement = context.querySelector('.du-testimonials__swiper');
+      const swiperElement = context.querySelector('#block-testimonial-swiper');
       if (!swiperElement || swiperElement.classList.contains('swiper-initialized')) {
         return;
       }
 
-      new Swiper('.du-testimonials__swiper', {
+      new Swiper('#block-testimonial-swiper', {
         loop: true,
         slidesPerView: 1,
         navigation: {
