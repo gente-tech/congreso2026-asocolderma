@@ -304,6 +304,71 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function initFiltrosBusqueda() {
+    const selectSimposio     = document.getElementById('simposio');
+    const selectTema         = document.getElementById('tema');
+    const selectSala         = document.getElementById('sala');
+    const selectConferencista = document.getElementById('conferencista');
+    const items              = document.querySelectorAll('.du-panel-block__item');
+
+    if (!items.length) return;
+
+    function filtrar() {
+      const valorSimposio      = selectSimposio ? selectSimposio.value : '';
+      const valorTema          = selectTema ? selectTema.value : '';
+      const valorSala          = selectSala ? selectSala.value : '';
+      const valorConferencista = selectConferencista ? selectConferencista.value : '';
+
+      items.forEach(function (item) {
+        const tipo          = item.dataset.tipo || '';
+        const tematica      = item.dataset.tematica || '';
+        const sala          = item.dataset.sala || '';
+        const conferencistas = item.dataset.conferencistas || '';
+
+        const matchSimposio      = !valorSimposio      || tipo === valorSimposio;
+        const matchTema          = !valorTema          || tematica === valorTema;
+        const matchSala          = !valorSala          || sala === valorSala;
+        const matchConferencista = !valorConferencista || conferencistas.split('|').some(function (c) {
+          return c.trim() === valorConferencista.trim();
+        });
+
+        if (matchSimposio && matchTema && matchSala && matchConferencista) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      mostrarMensajeVacio();
+    }
+
+    function mostrarMensajeVacio() {
+      const wrapper    = document.querySelector('.du-panel-block__wrapper');
+      if (!wrapper) return;
+
+      const existente  = wrapper.querySelector('.du-panel-block__empty');
+      const hayVisibles = Array.from(items).some(function (item) {
+        return item.style.display !== 'none';
+      });
+
+      if (!hayVisibles) {
+        if (!existente) {
+          const msg = document.createElement('p');
+          msg.className = 'du-panel-block__empty';
+          msg.textContent = 'No se encontraron eventos con los filtros seleccionados.';
+          wrapper.appendChild(msg);
+        }
+      } else {
+        if (existente) existente.remove();
+      }
+    }
+
+    [selectSimposio, selectTema, selectSala, selectConferencista].forEach(function (select) {
+      if (select) select.addEventListener('change', filtrar);
+    });
+  }
+
+
   document.addEventListener('DOMContentLoaded', function () {
     deduplicarSelect('simposio');
     deduplicarSelect('tema');
@@ -311,6 +376,7 @@ document.addEventListener("DOMContentLoaded", () => {
     deduplicarSelect('conferencista');
     deduplicarSelect('sala-cal');
     deduplicarSelect('horario-cal');
+    initFiltrosBusqueda();
     initCalendarTabs();
   });
 })();

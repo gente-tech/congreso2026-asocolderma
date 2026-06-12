@@ -123,7 +123,15 @@
     <div class="du-panel-block__wrapper">
       {% for key, evento_item in node.field_listado_eventos_congreso %}
         {% set evento = evento_item.entity %}
-        <div class="du-panel-block__item"  id="simposio-{{ key + 1 }}">
+        <div class="du-panel-block__item"
+             id="simposio-{{ key + 1 }}"
+             data-tipo="{{ evento.field_tipo_evento.entity.tid.value }}"
+             data-tematica="{{ evento.field_tematica_evento.entity.tid.value }}"
+             data-sala="{{ evento.field_sala_evento.value }}"
+             data-conferencistas="{% for conf_item in evento.field_listado_conferencias %}
+                                    {{ conf_item.entity.field_nombre_conferencista.value }}|
+                                  {% endfor %}"
+        >
           <button class="du-panel-block__trigger">
             <div class="du-panel-block__content">
               <span class="tag-outline" data-tag="9">{{ evento.field_tematica_evento.entity.name.value }}</span>
