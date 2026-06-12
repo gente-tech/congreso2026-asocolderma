@@ -1,0 +1,338 @@
+{# ============================================================
+   DATOS DEL CONGRESO - HERO
+   (reutilizado de node--congreso.html.twig)
+   ============================================================ #}
+
+{% set salas = {
+  'sala_1': 'Sala 1',
+  'sala_2': 'Sala 2',
+  'sala_3': 'Sala 3'
+} %}
+
+{#
+  Franjas horarias del calendario.
+  - 'label': lo que se muestra en la columna de hora
+  - 'hora_from': valor en segundos que debe coincidir con field_hora_evento.from
+  - 'break': si es true, renderiza la fila de descanso en lugar de celdas
+#}
+{% set franjas = [
+  { label: '8 AM',  hora_from: 28800,  break: false },
+  { label: '9 AM',  hora_from: 32400,  break: false },
+  { label: '10 AM', hora_from: 36000,  break: false },
+  { label: '11 AM', hora_from: 39600,  break: false },
+  { label: '12 M',  hora_from: 43200,  break: true  },
+  { label: '2 PM',  hora_from: 50400,  break: false },
+  { label: '3 PM',  hora_from: 54000,  break: false },
+  { label: '4 PM',  hora_from: 57600,  break: false },
+  { label: '5 PM',  hora_from: 61200,  break: false }
+] %}
+
+{# Lista de keys de sala en el orden que aparecen las columnas #}
+{% set sala_keys = ['sala_1', 'sala_2', 'sala_3'] %}
+
+<section class="du-congreso-section-hero">
+  <div class="du-congreso__container container">
+    <div class="du-congreso-section-hero__left">
+      <img class="logo" src="../../assets/img/logo-congreso7.png" alt="logo congreso 7">
+      <div class="du-btn-tag">Evento Académico</div>
+      <h1 class="du-congreso__title">
+        <span class="du-congreso__blink">7°</span> {{ node.field_titulo_congreso.value }}
+      </h1>
+      <div class="du-congreso-actions">
+        <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">
+          {{ node.field_boton_inscripcion.title }}
+        </a>
+      </div>
+    </div>
+    <div class="du-congreso-section-hero__right">
+      <div class="du-congreso-section-hero__bg" style="background-image: url(../../assets/img/bg-reference.png)"></div>
+      <div class="du-congreso-section-hero__overlay"></div>
+      <div class="du-congreso-section-hero__wrapper">
+        <h2 class="du-congreso__subtitle">{{ node.field_subtitulo_congreso.value }}</h2>
+        <div class="du-congreso-section-hero__items">
+          <span class="du-icon__calendar"></span>
+          <span>{{ node.field_fecha_congreso.value }}</span>
+        </div>
+        <div class="du-congreso-section-hero__items">
+          <span class="du-icon__location"></span>
+          <span>{{ node.field_lugar_congreso.value }}</span>
+        </div>
+      </div>
+      <img class="logo" src="../../assets/img/logo-congreso7-sm.png" alt="logo congreso 7">
+      <div class="bg-rectangle">
+        <img class="icon-down" src="../../assets/img/icon-down.png" alt="arrow down">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="du-congreso-section-info">
+  <div class="du-congreso__container container">
+    <h2 class="du-congreso__title">Simposios y Agenda Académica</h2>
+    <p class="du-congreso__description">Aprende de expertos internacionales reconocidos.</p>
+    <div class="du-congreso-section-info__menu">
+      <a href="/congreso/search" target="_self" class="du-btn-opt">
+        <span class="du-icon__search"></span> Búsqueda avanzada
+      </a>
+      <a href="/congreso/schedule" target="_self" class="du-btn-opt active">
+        <span class="du-icon__calendar"></span> Agenda académica
+      </a>
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   BAR MENU DE DÍAS
+   Se generan los días únicos desde field_dia_evento de los eventos
+   ============================================================ #}
+<section class="du-bar-menu">
+  <ul class="du-bar-menu__list">
+    {% set dias_vistos = [] %}
+    {% for evento_item in node.field_listado_eventos_congreso %}
+      {% set evento = evento_item.entity %}
+      {% set dia = evento.field_dia_evento.value %}
+      {% if dia and dia not in dias_vistos %}
+        {% set dias_vistos = dias_vistos|merge([dia]) %}
+        <li class="du-bar-menu__item{% if loop.first %} active{% endif %}">
+          <a href="#dia-{{ dia|replace({'-': ''}) }}" class="du-bar-menu__link">
+            <span class="du-bar-menu__text">{{ dia|date('l j \\d\\e F', 'UTC') }}</span>
+          </a>
+        </li>
+        {% if not loop.last %}
+          <div class="du-bar-menu__divider"></div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </ul>
+</section>
+
+{# ============================================================
+   FILTROS CALENDARIO (solo sala y horario)
+   ============================================================ #}
+<section class="du-congreso-section-filter du-filter-calendar">
+  <div class="du-congreso__container">
+    <div class="du-congreso-section-filter__content">
+      <div class="du-congreso-section-filter__header">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.75286 0.75H17.7986C18.0646 0.75 18.3197 0.855658 18.5078 1.04373C18.6958 1.2318 18.8015 1.48689 18.8015 1.75286V3.3434C18.8015 3.60935 18.6958 3.86439 18.5077 4.05242L12.0753 10.4848C11.8872 10.6728 11.7815 10.9278 11.7815 11.1938V17.5168C11.7815 17.6693 11.7467 17.8197 11.6799 17.9567C11.613 18.0937 11.5158 18.2136 11.3956 18.3074C11.2754 18.4012 11.1354 18.4664 10.9863 18.4979C10.8372 18.5295 10.6828 18.5267 10.5349 18.4896L8.5292 17.9882C8.31233 17.9339 8.11984 17.8086 7.98229 17.6324C7.84475 17.4561 7.77004 17.239 7.77003 17.0154V11.1938C7.76997 10.9278 7.66428 10.6728 7.47619 10.4848L1.04384 4.05242C0.855752 3.86439 0.750057 3.60935 0.75 3.3434V1.75286C0.75 1.48689 0.855658 1.2318 1.04373 1.04373C1.2318 0.855658 1.48689 0.75 1.75286 0.75Z" stroke="#F07F16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="du-congreso__subtitle">Filtrar Simposio</h3>
+      </div>
+      <div class="du-congreso-section-filter__options">
+
+        {# SELECT: Sala #}
+        <select class="du-form-select" name="sala" id="sala-cal">
+          <option value="" selected="selected">Salas</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %}
+            {% if evento.field_sala_evento.value %}
+              <option value="{{ evento.field_sala_evento.value }}">
+                {{ salas[evento.field_sala_evento.value] ?? evento.field_sala_evento.value }}
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+        {# SELECT: Horario — se arman desde los eventos #}
+        <select class="du-form-select" name="horario" id="horario-cal">
+          <option value="" selected="selected">Horarios</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %}
+            {% if evento.field_hora_evento.from %}
+              <option value="{{ evento.field_hora_evento.from }}">
+                {{ evento.field_hora_evento.from|date('g:i A', 'UTC') }} - {{ evento.field_hora_evento.to|date('g:i A', 'UTC') }}
+              </option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{# ============================================================
+   CALENDARIO
+   Lógica: iterar por días → por franja horaria → por sala
+   En cada celda buscar el evento que coincida con esa franja y sala
+   ============================================================ #}
+
+{# Agrupar eventos por día primero #}
+{% set dias_procesados = [] %}
+
+{% for evento_item in node.field_listado_eventos_congreso %}
+  {% set evento = evento_item.entity %}
+  {% set dia = evento.field_dia_evento.value %}
+  {% if dia and dia not in dias_procesados %}
+    {% set dias_procesados = dias_procesados|merge([dia]) %}
+  {% endif %}
+{% endfor %}
+
+{% for dia in dias_procesados %}
+
+  <section class="du-congreso-section-calendar" id="dia-{{ dia|replace({'-': ''}) }}">
+    <div class="du-congreso__container container">
+      <div class="du-congreso-section-calendar__wrapper">
+
+        {# Cabecera de salas #}
+        <div class="du-congreso-section-calendar__salas">
+          <div class="empty"> </div>
+          {% for sala_key in sala_keys %}
+            <div class="bg-{{ sala_key|replace({'_': '-'}) }}">{{ salas[sala_key] }}</div>
+          {% endfor %}
+        </div>
+
+        {# Franjas horarias #}
+        {% for franja in franjas %}
+
+          {% if franja.break %}
+            {# Fila de break/almuerzo #}
+            <div class="du-congreso-section-calendar__hours hour-break">
+              <div class="du-calendar__item">
+                <div class="du-calendar__item-time">{{ franja.label }}</div>
+                <div class="du-calendar__item-break">BREAK - LUNCH</div>
+              </div>
+            </div>
+
+          {% else %}
+            {# Fila normal con celdas por sala #}
+            <div class="du-calendar__item">
+              <div class="du-calendar__item-time">{{ franja.label }}</div>
+
+              {% for sala_key in sala_keys %}
+                <div class="du-calendar__item-card"
+                     data-sala="{{ sala_key }}"
+                     data-hora="{{ franja.hora_from }}">
+
+                  {# Buscar el evento que corresponde a este día + franja + sala #}
+                  {% set evento_encontrado = null %}
+                  {% for evento_item in node.field_listado_eventos_congreso %}
+                    {% set ev = evento_item.entity %}
+                    {% if ev.field_dia_evento.value == dia
+                      and ev.field_sala_evento.value == sala_key
+                      and ev.field_hora_evento.from == franja.hora_from %}
+                      {% set evento_encontrado = ev %}
+                    {% endif %}
+                  {% endfor %}
+
+                  {% if evento_encontrado %}
+                    {# ---- CARD DEL EVENTO ---- #}
+                    <div class="du-congreso__card" id="simposio-{{ evento_encontrado.id.value }}">
+
+                      <button class="du-congreso__card-trigger">
+                        <div class="du-congreso__card-header">
+                          <span class="tag-outline" data-tag="{{ evento_encontrado.field_tematica_evento.entity.tid.value }}">
+                            {{ evento_encontrado.field_tematica_evento.entity.name.value }}
+                          </span>
+                          <span class="tag-solid {{ sala_key|replace({'_': '-'}) }} sala">
+                            {{ salas[sala_key] }}
+                          </span>
+                          <div class="tag-flex">
+                            <span class="du-icon__clock"></span>
+                            {{ evento_encontrado.field_hora_evento.from|date('g:i', 'UTC') }} -
+                            {{ evento_encontrado.field_hora_evento.to|date('g:i A', 'UTC') }}
+                          </div>
+                        </div>
+                        <div class="du-icon-trigger__plus"></div>
+                      </button>
+
+                      <div class="du-congreso__card-resumen">
+                        <h3 class="du-congreso__subtitle">{{ evento_encontrado.title.value }}</h3>
+                        <p class="du-congreso__description description">
+                          {{ evento_encontrado.field_descripcion_evento.value }}
+                        </p>
+                        <div class="du-congreso__card-detail">
+                          <div class="du-congreso__card-detail-item">
+                            <span class="du-icon__user"></span>
+                            <strong>Coordinador:</strong>
+                            <span>{{ evento_encontrado.field_coordinador_evento.value }}</span>
+                          </div>
+                          <div class="du-congreso__card-detail-item">
+                            <span class="du-icon__micro"></span>
+                            <strong>Conferencista:</strong>
+                            <span>{{ evento_encontrado.field_conferencista_evento.value }}</span>
+                            <span class="du-icon__flag-{{ evento_encontrado.field_pais_conf_evento.value }}" title="País"></span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="du-congreso__card-desglose">
+                        {% for conf_item in evento_encontrado.field_listado_conferencias %}
+                          {% set conferencia = conf_item.entity %}
+                          <div class="du-congreso__card-desglose-item">
+                            <div class="tag-flex">
+                              <span class="du-icon__clock"></span>
+                              {{ conferencia.field_hora_conferencia.value }}
+                            </div>
+                            <h3>
+                              <span class="blink">Conferencia:</span>
+                              {{ conferencia.field_titulo_conferencia.value }}
+                            </h3>
+                            <p>{{ conferencia.field_descripcion_conferencia.value }}</p>
+                            <div class="du-congreso__card-detail-item">
+                              <span class="blink">Conferencista:</span>
+                              <span>{{ conferencia.field_nombre_conferencista.value }}</span>
+                              <span class="du-icon__flag-{{ conferencia.field_pais_conferencista.value }}" title="País"></span>
+                            </div>
+                          </div>
+                        {% endfor %}
+                      </div>
+
+                      <div class="du-congreso__card-top">
+                        <a href="#simposio-{{ evento_encontrado.id.value }}" class="du-icon__top"></a>
+                      </div>
+
+                    </div>
+                    {# ---- FIN CARD ---- #}
+
+                  {% else %}
+                    {# Celda vacía #}
+                    <div class="du-congreso__card"></div>
+                  {% endif %}
+
+                </div>
+              {% endfor %}
+              {# fin loop salas #}
+
+            </div>
+            {# fin du-calendar__item #}
+
+          {% endif %}
+        {% endfor %}
+        {# fin loop franjas #}
+
+      </div>
+    </div>
+  </section>
+
+{% endfor %}
+{# fin loop días #}
+
+
+{# ============================================================
+   BLOQUE BENEFICIOS
+   ============================================================ #}
+<section class="du-congreso-section-footer">
+  <div class="du-congreso__container container">
+    <div class="du-congreso-section-footer__image">
+      <img src="../../assets/img/bg-reference-bottom.png" alt="Profesional de la salud" />
+    </div>
+    <div class="du-congreso-section-footer__content">
+      <h2 class="du-congreso__title">Tu inscripción incluye:</h2>
+      <ul class="du-congreso-section-footer__list">
+        <li><span class="du-icon__check"></span> Acceso a todas las conferencias y simposios</li>
+        <li><span class="du-icon__check"></span> Material académico digital</li>
+        <li><span class="du-icon__check"></span> Coffee breaks y almuerzo incluido</li>
+        <li><span class="du-icon__check"></span> Certificado de asistencia</li>
+        <li><span class="du-icon__check"></span> Conferencistas internacionales</li>
+        <li><span class="du-icon__check"></span> Kit de bienvenida del congreso</li>
+      </ul>
+      <div class="du-congreso-section-footer__actions">
+        <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">
+          Inscríbete Ahora
+        </a>
+      </div>
+    </div>
+  </div>
+</section>

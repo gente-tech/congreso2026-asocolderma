@@ -241,3 +241,76 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+(function () {
+
+  function initCalendarTabs() {
+    const menuLinks = document.querySelectorAll('.du-bar-menu__link');
+    const secciones = document.querySelectorAll('.du-congreso-section-calendar');
+
+    if (!menuLinks.length || !secciones.length) return;
+
+    function activarDia(diaId) {
+      // Actualizar estado activo en el menú
+      menuLinks.forEach(function (link) {
+        const item = link.closest('.du-bar-menu__item');
+        if (link.getAttribute('href') === '#' + diaId) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Mostrar solo la sección del día seleccionado
+      secciones.forEach(function (seccion) {
+        if (seccion.id === diaId) {
+          seccion.style.display = 'block';
+        } else {
+          seccion.style.display = 'none';
+        }
+      });
+    }
+
+    // Activar el primer día por defecto
+    const primerDia = secciones[0].id;
+    activarDia(primerDia);
+
+    // Escuchar clicks en el menú
+    menuLinks.forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const diaId = this.getAttribute('href').replace('#', '');
+        activarDia(diaId);
+      });
+    });
+  }
+
+  function deduplicarSelect(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const vistas = new Set();
+    const opciones = select.querySelectorAll('option');
+
+    opciones.forEach(function (opcion) {
+      const valor = opcion.value;
+      if (valor === '') return; // dejar siempre la opción vacía
+
+      if (vistas.has(valor)) {
+        opcion.remove();
+      } else {
+        vistas.add(valor);
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    deduplicarSelect('simposio');
+    deduplicarSelect('tema');
+    deduplicarSelect('sala');
+    deduplicarSelect('conferencista');
+    deduplicarSelect('sala-cal');
+    deduplicarSelect('horario-cal');
+    initCalendarTabs();
+  });
+})();
