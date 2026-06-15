@@ -74,4 +74,6 @@
     padding-block: 40px;
     padding-inline: 15px;
   }
+  .du-agreements[data-active="true"] .swiper-slide-active::after {  bottom: -15px; }
+  .du-convenio-block{ margin-top: -42px; }
 }
