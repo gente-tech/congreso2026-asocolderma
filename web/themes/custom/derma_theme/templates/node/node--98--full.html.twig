@@ -30,6 +30,10 @@
 {# Lista de keys de sala en el orden que aparecen las columnas #}
 {% set sala_keys = ['sala_1', 'sala_2', 'sala_3'] %}
 
+{# url de los nodos #}
+{% set url_search = path('entity.node.canonical', {'node': 97}) %}
+{% set url_schedule = path('entity.node.canonical', {'node': node.id}) %}
+
 <section class="du-congreso-section-hero">
   <div class="du-congreso__container container">
     <div class="du-congreso-section-hero__left">
@@ -71,20 +75,16 @@
     <h2 class="du-congreso__title">Simposios y Agenda Académica</h2>
     <p class="du-congreso__description">Aprende de expertos internacionales reconocidos.</p>
     <div class="du-congreso-section-info__menu">
-      <a href="/congreso/search" target="_self" class="du-btn-opt">
+      <a href="{{ url_search }}" target="_self" class="du-btn-opt">
         <span class="du-icon__search"></span> Búsqueda avanzada
       </a>
-      <a href="/congreso/schedule" target="_self" class="du-btn-opt active">
+      <a href="{{ url_schedule }}" target="_self" class="du-btn-opt active">
         <span class="du-icon__calendar"></span> Agenda académica
       </a>
     </div>
   </div>
 </section>
 
-{# ============================================================
-   BAR MENU DE DÍAS
-   Se generan los días únicos desde field_dia_evento de los eventos
-   ============================================================ #}
 <section class="du-bar-menu">
   <ul class="du-bar-menu__list">
     {% set dias_vistos = [] %}
@@ -106,9 +106,7 @@
   </ul>
 </section>
 
-{# ============================================================
-   FILTROS CALENDARIO (solo sala y horario)
-   ============================================================ #}
+
 <section class="du-congreso-section-filter du-filter-calendar">
   <div class="du-congreso__container">
     <div class="du-congreso-section-filter__content">
@@ -151,14 +149,6 @@
   </div>
 </section>
 
-
-{# ============================================================
-   CALENDARIO
-   Lógica: iterar por días → por franja horaria → por sala
-   En cada celda buscar el evento que coincida con esa franja y sala
-   ============================================================ #}
-
-{# Agrupar eventos por día primero #}
 {% set dias_procesados = [] %}
 
 {% for evento_item in node.field_listado_eventos_congreso %}
@@ -330,7 +320,7 @@
       </ul>
       <div class="du-congreso-section-footer__actions">
         <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">
-          Inscríbete Ahora
+          {{ node.field_boton_inscripcion.title }}
         </a>
       </div>
     </div>

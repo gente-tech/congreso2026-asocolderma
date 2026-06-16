@@ -1,6 +1,8 @@
 {# ============================================================
    DATOS DEL CONGRESO
    ============================================================ #}
+
+
   
 <section class="du-congreso-section-hero">
   <div class="du-congreso__container  container">
@@ -28,13 +30,16 @@
   </div>
 </section>
 
+{% set url_search = path('entity.node.canonical', {'node': node.id}) %}
+{% set url_schedule = path('entity.node.canonical', {'node': 98}) %}
+
 <section class="du-congreso-section-info">
   <div class="du-congreso__container  container">
     <h2 class="du-congreso__title">Simposios y Agenda Académica</h2>
     <p class="du-congreso__description">  Aprende de expertos internacionales reconocidos.  </p>
     <div class="du-congreso-section-info__menu">
-      <a href="/congreso/search" target="_self" class="du-btn-opt active"> <span class="du-icon__search"></span> Búsqueda avanzada</a>
-      <a href="/congreso/schedule" target="_self" class="du-btn-opt"> <span class="du-icon__calendar"></span> Agenda académica</a>
+      <a href="{{ url_search }}" target="_self" class="du-btn-opt active"> <span class="du-icon__search"></span> Búsqueda avanzada</a>
+      <a href="{{ url_schedule }}" target="_self" class="du-btn-opt"> <span class="du-icon__calendar"></span> Agenda académica</a>
     </div>
   </div>
 </section>
