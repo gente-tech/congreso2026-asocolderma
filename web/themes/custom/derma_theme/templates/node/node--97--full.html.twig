@@ -1,0 +1,227 @@
+{# ============================================================
+   DATOS DEL CONGRESO
+   ============================================================ #}
+  
+<section class="du-congreso-section-hero">
+  <div class="du-congreso__container  container">
+    <div class="du-congreso-section-hero__left">
+      <img class="logo" src="../../assets/img/logo-congreso7.png" alt="logo congreso 7">
+      <div class="du-btn-tag">Evento Académico</div>
+      <h1 class="du-congreso__title"> <span class="du-congreso__blink">{{ node.label }}</span> {{ node.field_titulo_congreso.value }}</h1>
+      <div class="du-congreso-actions">
+        <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">{{ node.field_boton_inscripcion.title }}</a>
+      </div>
+    </div>
+    <div class="du-congreso-section-hero__right">
+      <div  class="du-congreso-section-hero__bg" style="background-image: url(../../assets/img/bg-reference.png)"></div>
+      <div class="du-congreso-section-hero__overlay"></div>
+      <div class="du-congreso-section-hero__wrapper">
+        <h2 class="du-congreso__subtitle">{{ node.field_subtitulo_congreso.value }}</h2>
+        <div class="du-congreso-section-hero__items"> <span class="du-icon__calendar"></span> <span>{{ node.field_fecha_congreso.value }}</span>  </div>
+        <div class="du-congreso-section-hero__items"> <span class="du-icon__location"></span> <span>{{ node.field_lugar_congreso.value }}</span>  </div>
+      </div>
+      <img class="logo" src="../../assets/img/logo-congreso7-sm.png" alt="logo congreso 7">
+      <div class="bg-rectangle">
+        <img class="icon-down" src="../../assets/img/icon-down.png" alt="arrow down">
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="du-congreso-section-info">
+  <div class="du-congreso__container  container">
+    <h2 class="du-congreso__title">Simposios y Agenda Académica</h2>
+    <p class="du-congreso__description">  Aprende de expertos internacionales reconocidos.  </p>
+    <div class="du-congreso-section-info__menu">
+      <a href="/congreso/search" target="_self" class="du-btn-opt active"> <span class="du-icon__search"></span> Búsqueda avanzada</a>
+      <a href="/congreso/schedule" target="_self" class="du-btn-opt"> <span class="du-icon__calendar"></span> Agenda académica</a>
+    </div>
+  </div>
+</section>
+
+{% set salas = {
+                'sala_1': 'Sala 1',
+                'sala_2': 'Sala 2',
+                'sala_3': 'Sala 3'
+              } 
+%}
+<section class="du-congreso-section-filter">
+  <div class="du-congreso__container">
+    <div class="du-congreso-section-filter__content">
+      <div class="du-congreso-section-filter__header">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.75286 0.75H17.7986C18.0646 0.75 18.3197 0.855658 18.5078 1.04373C18.6958 1.2318 18.8015 1.48689 18.8015 1.75286V3.3434C18.8015 3.60935 18.6958 3.86439 18.5077 4.05242L12.0753 10.4848C11.8872 10.6728 11.7815 10.9278 11.7815 11.1938V17.5168C11.7815 17.6693 11.7467 17.8197 11.6799 17.9567C11.613 18.0937 11.5158 18.2136 11.3956 18.3074C11.2754 18.4012 11.1354 18.4664 10.9863 18.4979C10.8372 18.5295 10.6828 18.5267 10.5349 18.4896L8.5292 17.9882C8.31233 17.9339 8.11984 17.8086 7.98229 17.6324C7.84475 17.4561 7.77004 17.239 7.77003 17.0154V11.1938C7.76997 10.9278 7.66428 10.6728 7.47619 10.4848L1.04384 4.05242C0.855752 3.86439 0.750057 3.60935 0.75 3.3434V1.75286C0.75 1.48689 0.855658 1.2318 1.04373 1.04373C1.2318 0.855658 1.48689 0.75 1.75286 0.75Z" stroke="#F07F16" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <h3 class="du-congreso__subtitle">Filtrar Simposio</h3>
+      </div>
+
+      <div class="du-congreso-section-filter__options">
+
+        {# ---- SELECT: Tipo de evento (Simposio, Taller, etc.) ---- #}
+        <select class="du-form-select" name="simposio" id="simposio">
+          <option value="" selected="selected">Simposios</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %}
+            {% set tipo = evento.field_tipo_evento.entity %}
+            {% if tipo %}
+              <option value="{{ tipo.tid.value }}">{{ tipo.name.value }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+        {# ---- SELECT: Temática ---- #}
+        <select class="du-form-select" name="tema" id="tema">
+          <option value="" selected="selected">Temas</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %}
+            {% set tematica = evento.field_tematica_evento.entity %}
+            {% if tematica %}
+              <option value="{{ tematica.tid.value }}">{{ tematica.name.value }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+        {# ---- SELECT: Sala ---- #}
+        <select class="du-form-select" name="sala" id="sala">
+          <option value="" selected="selected">Salas</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %} 
+            {% if evento.field_sala_evento.value %}
+              <option value="{{ evento.field_sala_evento.value }}">{{ salas[evento.field_sala_evento.value] ?? evento.field_sala_evento.value }}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+
+        {# ---- SELECT: Conferencistas (desde los paragraphs) ---- #}
+        <select class="du-form-select" name="conferencista" id="conferencista">
+          <option value="" selected="selected">Conferencistas</option>
+          {% for evento_item in node.field_listado_eventos_congreso %}
+            {% set evento = evento_item.entity %}
+            {% for conf_item in evento.field_listado_conferencias %}
+              {% set conferencia = conf_item.entity %}
+              {% if conferencia.field_nombre_conferencista.value %}
+                <option value="{{ conferencia.field_nombre_conferencista.value }}">
+                  {{ conferencia.field_nombre_conferencista.value }}
+                </option>
+              {% endif %}
+            {% endfor %}
+          {% endfor %}
+        </select>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+{# ============================================================
+   DATOS EVENTOS DEL CONGRESO
+   ============================================================ #}
+
+<section class="du-panel-block">
+  <div class="du-panel-block__container">
+    <div class="du-panel-block__wrapper">
+      {% for key, evento_item in node.field_listado_eventos_congreso %}
+        {% set evento = evento_item.entity %}
+        <div class="du-panel-block__item"
+             id="simposio-{{ key + 1 }}"
+             data-tipo="{{ evento.field_tipo_evento.entity.tid.value }}"
+             data-tematica="{{ evento.field_tematica_evento.entity.tid.value }}"
+             data-sala="{{ evento.field_sala_evento.value }}"
+             data-conferencistas="{% for conf_item in evento.field_listado_conferencias %}
+                                    {{ conf_item.entity.field_nombre_conferencista.value }}|
+                                  {% endfor %}"
+        >
+          <button class="du-panel-block__trigger">
+            <div class="du-panel-block__content">
+              <span class="tag-outline" data-tag="9">{{ evento.field_tematica_evento.entity.name.value }}</span>
+              <span class="tag-solid {{ evento.field_sala_evento.value|replace({'_': '-'}) }}">{{ salas[evento.field_sala_evento.value] ?? evento.field_sala_evento.value }}</span>
+              <div class="tag-flex"> <span class="du-icon__clock"></span> {{ evento.field_hora_evento.from|date('H:i', 'UTC')  }} - {{ evento.field_hora_evento.to|date('g:i A', 'UTC')  }} </div>
+            </div>
+            <div class="du-icon-trigger__plus"></div>
+          </button>
+          <div class="du-panel-block__resumen">
+            <h3 class="du-congreso__subtitle">{{ evento.title.value }}</h3>
+            <p class="du-congreso__description">{{ evento.field_descripcion_evento.value }}</p>
+          </div>
+
+          <div class="du-panel-block__body" data-variation="resumen">
+              <div class="du-panel-block__detail">
+                <div class="du-panel-block__detail-item">
+                  <span class="du-icon__user"></span>
+                  <strong>Coordinadora:</strong>
+                  <span>{{ evento.field_coordinador_evento.value }}</span>
+                </div>
+                <div class="du-panel-block__detail-item">
+                  <span class="du-icon__micro"></span>
+                  <strong>Conferencista:</strong>
+                  <span>{{ evento.field_conferencista_evento.value }}</span>
+                  <span class="du-icon__flag-{{ evento.field_pais_conf_evento.value }}" title="Pais"></span>
+                </div>
+              </div>
+              <div class="du-panel-block__desglose">
+                {% for conf_item in evento.field_listado_conferencias %}
+                  {% set conferencia = conf_item.entity %}
+                  <div class="du-panel-block__desglose-item">
+                    <div class="tag-flex"> <span class="du-icon__clock"></span> {{ conferencia.field_hora_conferencia.value }}</div>
+                    <h3><span class="blink">Conferencia:</span> {{ conferencia.field_titulo_conferencia.value }}</h3>
+                    <p>{{ conferencia.field_descripcion_conferencia.value }}</p>
+                    <div class="du-panel-block__detail-item">
+                      <span class="blink">Conferencista:</span>
+                      <span>{{ conferencia.field_nombre_conferencista.value }}</span>
+                      <span class="du-icon__flag-{{ conferencia.field_pais_conferencista.value }}" title="País"></span>
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+
+              <div class="du-panel-block__top">
+                    <a href="#simposio-{{ key + 1 }}" class="du-icon__top"></a>
+              </div>
+              
+          </div>
+        </div>
+      {% endfor %}
+      
+    </div>
+  </div>
+</section>
+
+{# ============================================================
+   BLOQUE INSCRIBETE
+   ============================================================ #}
+<section class="du-congreso-section-register">
+  <div class="du-congreso__container  container">
+    <h2 class="du-congreso__title"> ¡Asegura tu lugar en el congreso! </h2>
+    <p class="du-congreso__description"> Únete a los líderes de la dermatología colombiana en el evento académico más importante del año </p>
+    <div class="du-congreso-actions">
+      <a href="#" class="du-btn min300 du-btn--primary">Inscríbete Ahora</a>
+    </div>
+    <img class="du-congreso-section-register__img" src="assets/img/logo-congreso7-sm.png" alt="logo congreso 7">
+  </div>
+</section>
+
+{# ============================================================
+   BLOQUE BENEFICIOS
+   ============================================================ #}
+<section class="du-congreso-section-footer">
+  <div class="du-congreso__container  container">
+    <div class="du-congreso-section-footer__image">
+      <img  src="../../assets/img/bg-reference-bottom.png"  alt="Profesional de la salud"  />
+    </div>
+    <div class="du-congreso-section-footer__content">
+        <h2 class="du-congreso__title"> Tu inscripción incluye: </h2>
+        <ul class="du-congreso-section-footer__list">
+          <li><span class="du-icon__check"></span> Acceso a todas las conferencias y simposios</li>
+          <li><span class="du-icon__check"></span> Material académico digital</li>
+          <li><span class="du-icon__check"></span> Coffee breaks y almuerzo incluido</li>
+          <li><span class="du-icon__check"></span> Certificado de asistencia</li>
+          <li><span class="du-icon__check"></span> Conferenciastas internacionales</li>
+          <li><span class="du-icon__check"></span> Kit de bienvenida del congreso</li>
+        </ul>
+        <div class="du-congreso-section-footer__actions">
+            <a href="" class="du-btn min300 du-btn--primary">Inscríbete Ahora</a>
+        </div>
+    </div>
+  </div>
+</section>

@@ -241,3 +241,142 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+(function () {
+
+  function initCalendarTabs() {
+    const menuLinks = document.querySelectorAll('.du-bar-menu__link');
+    const secciones = document.querySelectorAll('.du-congreso-section-calendar');
+
+    if (!menuLinks.length || !secciones.length) return;
+
+    function activarDia(diaId) {
+      // Actualizar estado activo en el menú
+      menuLinks.forEach(function (link) {
+        const item = link.closest('.du-bar-menu__item');
+        if (link.getAttribute('href') === '#' + diaId) {
+          item.classList.add('active');
+        } else {
+          item.classList.remove('active');
+        }
+      });
+
+      // Mostrar solo la sección del día seleccionado
+      secciones.forEach(function (seccion) {
+        if (seccion.id === diaId) {
+          seccion.style.display = 'block';
+        } else {
+          seccion.style.display = 'none';
+        }
+      });
+    }
+
+    // Activar el primer día por defecto
+    const primerDia = secciones[0].id;
+    activarDia(primerDia);
+
+    // Escuchar clicks en el menú
+    menuLinks.forEach(function (link) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        const diaId = this.getAttribute('href').replace('#', '');
+        activarDia(diaId);
+      });
+    });
+  }
+
+  function deduplicarSelect(selectId) {
+    const select = document.getElementById(selectId);
+    if (!select) return;
+
+    const vistas = new Set();
+    const opciones = select.querySelectorAll('option');
+
+    opciones.forEach(function (opcion) {
+      const valor = opcion.value;
+      if (valor === '') return; // dejar siempre la opción vacía
+
+      if (vistas.has(valor)) {
+        opcion.remove();
+      } else {
+        vistas.add(valor);
+      }
+    });
+  }
+
+  function initFiltrosBusqueda() {
+    const selectSimposio     = document.getElementById('simposio');
+    const selectTema         = document.getElementById('tema');
+    const selectSala         = document.getElementById('sala');
+    const selectConferencista = document.getElementById('conferencista');
+    const items              = document.querySelectorAll('.du-panel-block__item');
+
+    if (!items.length) return;
+
+    function filtrar() {
+      const valorSimposio      = selectSimposio ? selectSimposio.value : '';
+      const valorTema          = selectTema ? selectTema.value : '';
+      const valorSala          = selectSala ? selectSala.value : '';
+      const valorConferencista = selectConferencista ? selectConferencista.value : '';
+
+      items.forEach(function (item) {
+        const tipo          = item.dataset.tipo || '';
+        const tematica      = item.dataset.tematica || '';
+        const sala          = item.dataset.sala || '';
+        const conferencistas = item.dataset.conferencistas || '';
+
+        const matchSimposio      = !valorSimposio      || tipo === valorSimposio;
+        const matchTema          = !valorTema          || tematica === valorTema;
+        const matchSala          = !valorSala          || sala === valorSala;
+        const matchConferencista = !valorConferencista || conferencistas.split('|').some(function (c) {
+          return c.trim() === valorConferencista.trim();
+        });
+
+        if (matchSimposio && matchTema && matchSala && matchConferencista) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      mostrarMensajeVacio();
+    }
+
+    function mostrarMensajeVacio() {
+      const wrapper    = document.querySelector('.du-panel-block__wrapper');
+      if (!wrapper) return;
+
+      const existente  = wrapper.querySelector('.du-panel-block__empty');
+      const hayVisibles = Array.from(items).some(function (item) {
+        return item.style.display !== 'none';
+      });
+
+      if (!hayVisibles) {
+        if (!existente) {
+          const msg = document.createElement('p');
+          msg.className = 'du-panel-block__empty';
+          msg.textContent = 'No se encontraron eventos con los filtros seleccionados.';
+          wrapper.appendChild(msg);
+        }
+      } else {
+        if (existente) existente.remove();
+      }
+    }
+
+    [selectSimposio, selectTema, selectSala, selectConferencista].forEach(function (select) {
+      if (select) select.addEventListener('change', filtrar);
+    });
+  }
+
+
+  document.addEventListener('DOMContentLoaded', function () {
+    deduplicarSelect('simposio');
+    deduplicarSelect('tema');
+    deduplicarSelect('sala');
+    deduplicarSelect('conferencista');
+    deduplicarSelect('sala-cal');
+    deduplicarSelect('horario-cal');
+    initFiltrosBusqueda();
+    initCalendarTabs();
+  });
+})();
