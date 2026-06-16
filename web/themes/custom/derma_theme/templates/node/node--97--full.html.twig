@@ -1,13 +1,13 @@
 {# ============================================================
    DATOS DEL CONGRESO
    ============================================================ #}
-
+  
 <section class="du-congreso-section-hero">
   <div class="du-congreso__container  container">
     <div class="du-congreso-section-hero__left">
       <img class="logo" src="../../assets/img/logo-congreso7.png" alt="logo congreso 7">
       <div class="du-btn-tag">Evento Académico</div>
-      <h1 class="du-congreso__title"> <span class="du-congreso__blink">7°</span> {{ node.field_titulo_congreso.value }}</h1>
+      <h1 class="du-congreso__title"> <span class="du-congreso__blink">{{ node.label }}</span> {{ node.field_titulo_congreso.value }}</h1>
       <div class="du-congreso-actions">
         <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">{{ node.field_boton_inscripcion.title }}</a>
       </div>
