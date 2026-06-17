@@ -34,13 +34,23 @@
 {% set url_search = path('entity.node.canonical', {'node': 97}) %}
 {% set url_schedule = path('entity.node.canonical', {'node': node.id}) %}
 
+{% set dias_es = {
+  'Monday': 'Lunes', 'Tuesday': 'Martes', 'Wednesday': 'Miércoles',
+  'Thursday': 'Jueves', 'Friday': 'Viernes', 'Saturday': 'Sábado', 'Sunday': 'Domingo'
+} %}
+{% set meses_es = {
+  'January': 'enero', 'February': 'febrero', 'March': 'marzo', 'April': 'abril',
+  'May': 'mayo', 'June': 'junio', 'July': 'julio', 'August': 'agosto',
+  'September': 'septiembre', 'October': 'octubre', 'November': 'noviembre', 'December': 'diciembre'
+} %}
+
 <section class="du-congreso-section-hero">
   <div class="du-congreso__container container">
     <div class="du-congreso-section-hero__left">
       <img class="logo" src="/sites/default/files/2026-06/logo-congreso7.png" alt="logo congreso 7">
       <div class="du-btn-tag">Evento Académico</div>
       <h1 class="du-congreso__title">
-        <span class="du-congreso__blink">{{ node.label }}</span> {{ node.field_titulo_congreso.value }}
+        <span class="du-congreso__blink">{{ node.field_edicion_congreso.value ?? '' }}</span> {{ node.field_titulo_congreso.value }}
       </h1>
       <div class="du-congreso-actions">
         <a href="{{ node.field_boton_inscripcion.uri }}" class="du-btn min300 du-btn--primary">
@@ -95,7 +105,8 @@
         {% set dias_vistos = dias_vistos|merge([dia]) %}
         <li class="du-bar-menu__item{% if loop.first %} active{% endif %}">
           <a href="#dia-{{ dia|replace({'-': ''}) }}" class="du-bar-menu__link">
-            <span class="du-bar-menu__text">{{ dia|date('l j \\d\\e F', 'UTC') }}</span>
+            {# <span class="du-bar-menu__text">{{ dia|date('l j \\d\\e F', 'UTC') }}</span> #}
+            <span class="du-bar-menu__text">{{ dias_es[dia|date('l', 'UTC')] }} {{ dia|date('j', 'UTC') }} de {{ meses_es[dia|date('F', 'UTC')] }}</span>
           </a>
         </li>
         {% if not loop.last %}
