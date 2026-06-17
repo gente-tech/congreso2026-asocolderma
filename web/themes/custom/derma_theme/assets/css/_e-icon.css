@@ -91,7 +91,15 @@
   mask-size: contain;
 }
 
-.du-icon__flag-co{
+[class*="du-icon__flag-"] {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+/*.du-icon__flag-co{
   display: inline-block;
   background-image: url(../img/flag-co.png);
   background-size: cover;
@@ -116,7 +124,7 @@
   width: 1em;
   height: 1em;
   margin-top: 2px;
-}
+}*/
 
 .du-icon__top{
   display: inline-block;
