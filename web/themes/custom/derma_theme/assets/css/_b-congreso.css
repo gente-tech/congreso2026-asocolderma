@@ -265,9 +265,7 @@
 
 .du-congreso-section-calendar{}
 .du-congreso-section-calendar .container{}
-.du-congreso-section-calendar__wrapper {
-    position: relative;
-}
+/*.du-congreso-section-calendar__wrapper {  position: relative; }*/
 .du-congreso-section-calendar__salas {
     display: flex;
     justify-content: space-between;
@@ -388,8 +386,10 @@
     display: inline-block;
 }
 .du-congreso__card-detail-item{}
+
+
 .du-calendar__item-card.is-open{
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -397,11 +397,15 @@
     min-height: 100%;
     background: #1c224ab5;
     z-index: 999;
+    overflow: auto;
+    height: 100vh;
 
   .du-congreso__card{
     border: 1px solid;
     border-color: var(--du-color-secondary);
-    background: color-mix(in srgb, var(--du-color-secondary) 10%, white);
+    /*background: color-mix(in srgb, var(--du-color-secondary) 10%, white);*/
+    margin: 5rem auto;
+    max-width: 800px;
   }
   .sala, .description, .du-congreso__card-desglose{ display: block; }
   .du-congreso__subtitle{ font-size: 22px; }

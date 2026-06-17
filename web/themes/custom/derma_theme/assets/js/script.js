@@ -186,10 +186,14 @@ document.querySelectorAll('.du-congreso__card-trigger').forEach(trigger => {
   trigger.addEventListener('click', () => {
     const parent = trigger.parentElement.parentElement;
     const isOpen = parent.classList.contains('is-open');
+    document.body.style.overflow = 'auto';
     document.querySelectorAll('.du-calendar__item-card').forEach(item => {
       item.classList.remove('is-open');
     });
-    if (!isOpen) parent.classList.add('is-open');
+    if (!isOpen) {
+      parent.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
   });
 });
 
