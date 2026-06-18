@@ -372,6 +372,67 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function initFiltrosAgenda() {
+    const selectedRoom = document.getElementById('sala-cal');
+    const selectedHour = document.getElementById('horario-cal');
+    const items_cal = document.querySelectorAll('.du-calendar__item-card');
+
+    if (!items_cal.length) return;
+
+    function tieneEvento(item) {
+      const card = item.querySelector('.du-congreso__card');
+      // Si no existe el card, o existe pero no tiene hijos, está vacío
+      return !!(card && card.children.length > 0);
+    }
+
+    function filtrar_agenda() {
+      const valorSala = selectedRoom ? selectedRoom.value : '';
+      const valorHora = selectedHour ? selectedHour.value : '';
+
+      items_cal.forEach(function (item) {
+        const sala = item.dataset.sala || '';
+        const hora = item.dataset.hora || '';
+
+        const matchHora = !valorHora || hora === valorHora;
+        const matchSala = !valorSala || sala === valorSala;
+        const conEvento = tieneEvento(item);
+
+        if (matchSala && matchHora && conEvento) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      mensajeVacio();
+    }
+
+    function mensajeVacio() {
+      const wrapper = document.querySelector('.du-congreso-section-calendar__wrapper');
+      if (!wrapper) return;
+
+      const existente = wrapper.querySelector('.du-panel-block__empty');
+      const hayVisibles = Array.from(items_cal).some(function (item) {
+        return item.style.display !== 'none';
+      });
+
+      if (!hayVisibles) {
+        if (!existente) {
+          const msg = document.createElement('p');
+          msg.className = 'du-panel-block__empty';
+          msg.textContent = 'No se encontraron eventos con los filtros seleccionados.';
+          wrapper.appendChild(msg);
+        }
+      } else {
+        if (existente) existente.remove();
+      }
+    }
+
+    [selectedRoom, selectedHour].forEach(function (select) {
+      if (select) select.addEventListener('change', filtrar_agenda);
+    });
+  }
+
 
   document.addEventListener('DOMContentLoaded', function () {
     deduplicarSelect('simposio');
@@ -381,6 +442,7 @@ document.addEventListener("DOMContentLoaded", () => {
     deduplicarSelect('sala-cal');
     deduplicarSelect('horario-cal');
     initFiltrosBusqueda();
+    initFiltrosAgenda();
     initCalendarTabs();
   });
 })();
