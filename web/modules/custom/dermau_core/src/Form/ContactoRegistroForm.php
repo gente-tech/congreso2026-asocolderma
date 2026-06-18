@@ -63,7 +63,7 @@ class ContactoRegistroForm extends FormBase {
     -------------------------------------------------
     */
 
-    $query = \Drupal::entityQuery('node')
+    /*$query = \Drupal::entityQuery('node')
       ->condition('type', 'programa')
       ->condition('status', 1)
       ->sort('title')
@@ -76,7 +76,7 @@ class ContactoRegistroForm extends FormBase {
 
     foreach ($nodes as $programa) {
       $programas[$programa->id()] = $programa->getTitle();
-    }
+    }*/
 
     /*
     -------------------------------------------------
@@ -104,7 +104,7 @@ class ContactoRegistroForm extends FormBase {
       ]
     ];
 
-    $form['group_container']['group1']['programa'] = [
+    /*$form['group_container']['group1']['programa'] = [
       '#type' => 'select',
       '#options' => $programas,
       '#default_value' => $current_program,
@@ -115,7 +115,7 @@ class ContactoRegistroForm extends FormBase {
       ],
       '#title_display' => 'invisible',
       '#required' => TRUE
-    ];
+    ];*/
 
     $form['group_container']['group1']['nombre'] = [
       '#type' => 'textfield',
@@ -273,161 +273,161 @@ class ContactoRegistroForm extends FormBase {
 
   public function submitForm(array &$form, FormStateInterface $form_state) {
 
-  $programa_id = $form_state->getValue('programa');
-
-  /*
-  ---------------------------------
-  Datos del formulario
-  ---------------------------------
-  */
-
-  $nombre = $form_state->getValue('nombre');
-  $apellido = $form_state->getValue('apellido');
-  $correo_real = $form_state->getValue('email');
-
-  /*
-  ---------------------------------
-  Generar username único
-  ---------------------------------
-  */
-
-  $timestamp = date('YmdHis');
-
-  $username = strtolower($nombre . '.' . $apellido . '.' . $timestamp);
-
-  $email_sistema = $username . '@registro.local';
-
-  /*
-  ---------------------------------
-  Crear usuario Drupal
-  ---------------------------------
-  */
-
-  $user = User::create([
-    'name' => $username,
-    'mail' => $email_sistema,
-    'status' => 0,
-  ]);
-
-  $user->addRole('registro');
-
-  /*
-  ---------------------------------
-  Guardar campos personalizados
-  ---------------------------------
-  */
-
-  $user->set('field_correo_real', $correo_real);
-  $user->set('field_programa', $form_state->getValue('programa'));
-  $user->set('field_telefono', $form_state->getValue('telefono'));
-  $user->set('field_ciudad', $form_state->getValue('ciudad'));
-  $user->set('field_profesion', $form_state->getValue('profesion'));
-  $user->set('field_mensaje', $form_state->getValue('mensaje'));
-
-  $user->save();
+    //$programa_id = $form_state->getValue('programa');
 
     /*
-  ---------------------------------
-  Envío de correo
-  ---------------------------------
-  */
+    ---------------------------------
+    Datos del formulario
+    ---------------------------------
+    */
 
-  $programa = '';
-  $node = Node::load($programa_id);
+    $nombre = $form_state->getValue('nombre');
+    $apellido = $form_state->getValue('apellido');
+    $correo_real = $form_state->getValue('email');
 
-  if ($node) {
-    $programa = $node->getTitle();
-  }
+    /*
+    ---------------------------------
+    Generar username único
+    ---------------------------------
+    */
 
-  $telefono = trim((string) $form_state->getValue('telefono'));
-  $ciudad = trim((string) $form_state->getValue('ciudad'));
-  $profesion = trim((string) $form_state->getValue('profesion'));
-  $mensaje = trim((string) $form_state->getValue('mensaje'));
+    $timestamp = date('YmdHis');
 
-  $config = \Drupal::config('enterprise_integrations.settings');
-  $template = (string) $config->get('mandrill.default_html_template');
+    $username = strtolower($nombre . '.' . $apellido . '.' . $timestamp);
 
-  $html = $this->mandrillService->renderTemplate($template, [
-    'nombre' => trim($nombre . ' ' . $apellido),
-    'email' => $correo_real,
-    'telefono' => $telefono,
-    'programa' => $programa,
-    'ciudad' => $ciudad,
-    'profesion' => $profesion,
-    'mensaje' => $mensaje,
-  ]);
+    $email_sistema = $username . '@registro.local';
 
-  $result = $this->mandrillService->send([
-    'to_email' => $correo_real,
-    'to_name' => trim($nombre . ' ' . $apellido),
-    'subject' => 'Gracias por registrarte en DermaU',
-    'html' => $html,
-    'reply_to' => $correo_real,
-    'tags' => ['contacto_registro'],
-    'metadata' => [
-      'form' => 'contacto_registro',
-      'programa_id' => (string) $programa_id,
+    /*
+    ---------------------------------
+    Crear usuario Drupal
+    ---------------------------------
+    */
+
+    $user = User::create([
+      'name' => $username,
+      'mail' => $email_sistema,
+      'status' => 0,
+    ]);
+
+    $user->addRole('registro');
+
+    /*
+    ---------------------------------
+    Guardar campos personalizados
+    ---------------------------------
+    */
+
+    $user->set('field_correo_real', $correo_real);
+    $user->set('field_programa', $form_state->getValue('programa') ?? '');
+    $user->set('field_telefono', $form_state->getValue('telefono'));
+    $user->set('field_ciudad', $form_state->getValue('ciudad'));
+    $user->set('field_profesion', $form_state->getValue('profesion'));
+    $user->set('field_mensaje', $form_state->getValue('mensaje'));
+
+    $user->save();
+
+      /*
+    ---------------------------------
+    Envío de correo
+    ---------------------------------
+    */
+
+    /*$programa = '';
+    $node = Node::load($programa_id);
+
+    if ($node) {
+      $programa = $node->getTitle();
+    }
+
+    $telefono = trim((string) $form_state->getValue('telefono'));
+    $ciudad = trim((string) $form_state->getValue('ciudad'));
+    $profesion = trim((string) $form_state->getValue('profesion'));
+    $mensaje = trim((string) $form_state->getValue('mensaje'));
+
+    $config = \Drupal::config('enterprise_integrations.settings');
+    $template = (string) $config->get('mandrill.default_html_template');
+
+    $html = $this->mandrillService->renderTemplate($template, [
+      'nombre' => trim($nombre . ' ' . $apellido),
+      'email' => $correo_real,
+      'telefono' => $telefono,
       'programa' => $programa,
-    ],
-  ]);
+      'ciudad' => $ciudad,
+      'profesion' => $profesion,
+      'mensaje' => $mensaje,
+    ]);
 
-  // Crear usuario en hubspot
-  $hubspotData = [
-  'email' => $correo_real,
-  'firstname' => $nombre,
-  'lastname' => $apellido,
-  'phone' => $telefono,
-  ];
+    $result = $this->mandrillService->send([
+      'to_email' => $correo_real,
+      'to_name' => trim($nombre . ' ' . $apellido),
+      'subject' => 'Gracias por registrarte en DermaU',
+      'html' => $html,
+      'reply_to' => $correo_real,
+      'tags' => ['contacto_registro'],
+      'metadata' => [
+        'form' => 'contacto_registro',
+        'programa_id' => (string) $programa_id,
+        'programa' => $programa,
+      ],
+    ]);
 
-  $hubspotResult = $this->hubspotService->createContact($hubspotData);
+    // Crear usuario en hubspot
+    $hubspotData = [
+    'email' => $correo_real,
+    'firstname' => $nombre,
+    'lastname' => $apellido,
+    'phone' => $telefono,
+    ];
 
-  if (!$hubspotResult['success']) {
-    \Drupal::logger('enterprise_integrations')->warning(
-      'No se pudo crear el contacto en HubSpot para %email. Mensaje: %message',
-      [
-      '%email' => $hubspotData['email'],
-      '%message' => $hubspotResult['message'],
-      ]
-    );
-  }
+    $hubspotResult = $this->hubspotService->createContact($hubspotData);
 
-  /*
-  ---------------------------------
-  Obtener PDF del programa
-  ---------------------------------
-  */
+    if (!$hubspotResult['success']) {
+      \Drupal::logger('enterprise_integrations')->warning(
+        'No se pudo crear el contacto en HubSpot para %email. Mensaje: %message',
+        [
+        '%email' => $hubspotData['email'],
+        '%message' => $hubspotResult['message'],
+        ]
+      );
+    }
 
-  $node_pdf = Node::load($programa_id);
-  $pdf_url = '';
+    /*
+    ---------------------------------
+    Obtener PDF del programa
+    ---------------------------------
+    */
 
-  if ($node_pdf && $node_pdf->hasField('field_pdf_registro')) {
+    /*$node_pdf = Node::load($programa_id);
+    $pdf_url = '';
 
-    $file = $node_pdf->get('field_pdf_registro')->entity;
+    if ($node_pdf && $node_pdf->hasField('field_pdf_registro')) {
 
-    if ($file) {
+      $file = $node_pdf->get('field_pdf_registro')->entity;
 
-      $pdf_url = \Drupal::service('file_url_generator')
-        ->generateAbsoluteString($file->getFileUri());
+      if ($file) {
+
+        $pdf_url = \Drupal::service('file_url_generator')
+          ->generateAbsoluteString($file->getFileUri());
+
+      }
 
     }
 
+    /*
+    ---------------------------------
+    Redirección descarga
+    ---------------------------------
+    */
+
+    /*if ($pdf_url) {
+
+      $form_state->setRedirect(
+        'dermau_core.descargar',
+        ['node' => $programa_id]
+      );
+
+    }*/
+
   }
-
-  /*
-  ---------------------------------
-  Redirección descarga
-  ---------------------------------
-  */
-
-  if ($pdf_url) {
-
-    $form_state->setRedirect(
-  'dermau_core.descargar',
-  ['node' => $programa_id]
-);
-
-  }
-
-}
 
 }
