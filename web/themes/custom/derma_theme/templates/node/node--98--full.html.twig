@@ -254,33 +254,36 @@
                           </div>
                           <div class="du-congreso__card-detail-item du-congreso__card-speakers">
                             <span class="du-icon__micro" aria-hidden="true"></span>
-                          
+
                             <strong>Conferencistas:</strong>
-                          
+
                             <div class="du-congreso__speaker-list">
                               {% for conferencista_item in evento_encontrado.field_conferencistas_del_evento %}
                                 {% set conferencista_paragraph = conferencista_item.entity %}
                                 {% set docente = conferencista_paragraph.field_conferencista.entity %}
                                 {% set pais = conferencista_paragraph.field_pais_conferencista.value|default('') %}
-                          
+
                                 {% if docente %}
                                   <button
                                     type="button"
                                     class="du-congreso__speaker js-conferencista-modal-open"
-                                    data-conferencista-id="{{ docente.id }}"
+                                    data-modal-target="conferencista-modal-{{ docente.id }}"
+                                    aria-haspopup="dialog"
+                                    aria-controls="conferencista-modal-{{ docente.id }}"
                                   >
                                     <span class="du-congreso__speaker-name">
                                       {{ docente.label }}
                                     </span>
-                          
+
                                     {% if pais %}
                                       <span
                                         class="du-icon__flag-{{ pais|clean_class }}"
                                         title="{{ pais }}"
+                                        aria-label="{{ pais }}"
                                       ></span>
                                     {% endif %}
                                   </button>
-                          
+
                                   {% if not loop.last %}
                                     <span class="du-congreso__speaker-separator">,</span>
                                   {% endif %}
@@ -343,6 +346,357 @@
 {% endfor %}
 {# fin loop días #}
 
+{# ============================================================
+   DOCENTES ÚNICOS PARA LOS POPUPS
+   ============================================================ #}
+
+{% set docentes_popup = {} %}
+
+{% for evento_item in node.field_listado_eventos_congreso %}
+  {% set evento_popup = evento_item.entity %}
+
+  {% for conferencista_item in evento_popup.field_conferencistas_del_evento %}
+    {% set conferencista_paragraph = conferencista_item.entity %}
+    {% set docente = conferencista_paragraph.field_conferencista.entity %}
+
+    {% if docente %}
+      {% set docente_key = 'docente_' ~ docente.id %}
+
+      {% if docentes_popup[docente_key] is not defined %}
+        {% set docentes_popup = docentes_popup|merge({
+          (docente_key): {
+            'docente': docente,
+            'pais': conferencista_paragraph.field_pais_conferencista.value|default('')
+          }
+        }) %}
+      {% endif %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{# ============================================================
+   POPUPS DE CONFERENCISTAS
+   ============================================================ #}
+
+{% for docente_popup in docentes_popup %}
+  {% set docente = docente_popup.docente %}
+  {% set pais = docente_popup.pais %}
+  {% set foto_item = docente.field_foto_docente.0 %}
+  {% set foto_archivo = foto_item.entity %}
+  {% set especialidad = docente.field_especialidad.entity %}
+  {% set ciudad = docente.field_ciudad.entity %}
+  {% set universidad = docente.field_universidad.entity %}
+
+  {% set linkedin = docente.field_linkedin.0.url|default(null) %}
+  {% set instagram = docente.field_instagram.0.url|default(null) %}
+  {% set facebook = docente.field_facebook.0.url|default(null) %}
+  {% set pagina_web = docente.field_pagina_web.value|default('')|trim %}
+
+  {% if pagina_web %}
+    {% set pagina_web_url = pagina_web starts with 'http'
+      ? pagina_web
+      : 'https://' ~ pagina_web
+    %}
+  {% else %}
+    {% set pagina_web_url = null %}
+  {% endif %}
+
+  <dialog
+    id="conferencista-modal-{{ docente.id }}"
+    class="du-conferencista-modal"
+    aria-labelledby="conferencista-modal-title-{{ docente.id }}"
+  >
+    <div class="du-conferencista-modal__surface">
+
+      <button
+        type="button"
+        class="du-conferencista-modal__close"
+        data-modal-close
+        aria-label="Cerrar información de {{ docente.label }}"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+
+      <div class="du-conferencista-modal__layout">
+
+        {# Columna izquierda #}
+        <aside class="du-conferencista-modal__identity">
+
+          <div class="du-conferencista-modal__photo">
+            {% if foto_archivo %}
+              <img
+                src="{{ file_url(foto_archivo.uri.value) }}"
+                alt="{{ foto_item.alt|default(docente.label) }}"
+                loading="lazy"
+                width="{{ foto_item.width|default(400) }}"
+                height="{{ foto_item.height|default(500) }}"
+              >
+            {% else %}
+              <div class="du-conferencista-modal__photo-placeholder">
+                {{ docente.label|slice(0, 1)|upper }}
+              </div>
+            {% endif %}
+          </div>
+
+          <h2
+            id="conferencista-modal-title-{{ docente.id }}"
+            class="du-conferencista-modal__name"
+          >
+            {{ docente.label }}
+          </h2>
+
+          {% if especialidad %}
+            <div class="du-conferencista-modal__specialty">
+              {{ especialidad.label }}
+            </div>
+          {% endif %}
+
+          <div class="du-conferencista-modal__metadata">
+
+            {% if pais %}
+              <div class="du-conferencista-modal__metadata-item">
+                <strong>País:</strong>
+
+                <span class="du-conferencista-modal__country">
+                  <span
+                    class="du-icon__flag-{{ pais|clean_class }}"
+                    aria-hidden="true"
+                  ></span>
+
+                  {{ pais }}
+                </span>
+              </div>
+            {% endif %}
+
+            {% if ciudad %}
+              <div class="du-conferencista-modal__metadata-item">
+                <strong>Ciudad:</strong>
+                <span>{{ ciudad.label }}</span>
+              </div>
+            {% endif %}
+
+            {% if universidad %}
+              <div class="du-conferencista-modal__metadata-item">
+                <strong>Universidad:</strong>
+                <span>{{ universidad.label }}</span>
+              </div>
+            {% endif %}
+
+            {% if docente.field_correo_electronico.value %}
+              <div class="du-conferencista-modal__metadata-item">
+                <strong>Correo:</strong>
+
+                <a href="mailto:{{ docente.field_correo_electronico.value }}">
+                  {{ docente.field_correo_electronico.value }}
+                </a>
+              </div>
+            {% endif %}
+
+          </div>
+
+          {% if linkedin or instagram or facebook or pagina_web_url %}
+            <div class="du-conferencista-modal__social">
+
+              {% if linkedin %}
+                <a
+                  href="{{ linkedin }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  LinkedIn
+                </a>
+              {% endif %}
+
+              {% if instagram %}
+                <a
+                  href="{{ instagram }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Instagram
+                </a>
+              {% endif %}
+
+              {% if facebook %}
+                <a
+                  href="{{ facebook }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Facebook
+                </a>
+              {% endif %}
+
+              {% if pagina_web_url %}
+                <a
+                  href="{{ pagina_web_url }}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Página web
+                </a>
+              {% endif %}
+
+            </div>
+          {% endif %}
+
+        </aside>
+
+        {# Columna derecha #}
+        <div class="du-conferencista-modal__content">
+
+          <section class="du-conferencista-modal__section">
+            <h3 class="du-conferencista-modal__section-title">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M3 10L12 5L21 10L12 15L3 10Z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M7 12V17C10 19 14 19 17 17V12"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M21 10V16"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                />
+              </svg>
+
+              Perfil profesional
+            </h3>
+
+            {% if docente.field_perfil_profesional.value %}
+              <div class="du-conferencista-modal__profile">
+                {{ docente.field_perfil_profesional.value|nl2br }}
+              </div>
+            {% else %}
+              <p class="du-conferencista-modal__empty">
+                Perfil profesional no disponible.
+              </p>
+            {% endif %}
+          </section>
+
+          <section class="du-conferencista-modal__section">
+            <h3 class="du-conferencista-modal__section-title du-conferencista-modal__section-title--conferences">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 19.67 4 20.5V5.5Z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+                <path
+                  d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 19.67 20 20.5V5.5Z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+              </svg>
+
+              Conferencias vinculadas
+            </h3>
+
+            <div class="du-conferencista-modal__events">
+              {% set tiene_eventos_vinculados = false %}
+
+              {% for evento_item in node.field_listado_eventos_congreso %}
+                {% set evento_vinculado = evento_item.entity %}
+                {% set docente_vinculado = false %}
+
+                {% for relacion_item in evento_vinculado.field_conferencistas_del_evento %}
+                  {% set relacion = relacion_item.entity %}
+
+                  {% if relacion.field_conferencista.target_id == docente.id %}
+                    {% set docente_vinculado = true %}
+                  {% endif %}
+                {% endfor %}
+
+                {% if docente_vinculado %}
+                  {% set tiene_eventos_vinculados = true %}
+                  {% set sala_evento = evento_vinculado.field_sala_evento.value %}
+                  {% set dia_evento = evento_vinculado.field_dia_evento.value %}
+
+                  <a
+                    href="#simposio-{{ evento_vinculado.id.value }}"
+                    class="du-conferencista-event js-conferencista-event-link"
+                  >
+                    <div class="du-conferencista-event__tags">
+
+                      {% if evento_vinculado.field_tipo_evento.entity %}
+                        <span class="du-conferencista-event__tag">
+                          {{ evento_vinculado.field_tipo_evento.entity.name.value }}
+                        </span>
+                      {% endif %}
+
+                      {% if evento_vinculado.field_tematica_evento.entity %}
+                        <span class="du-conferencista-event__tag du-conferencista-event__tag--orange">
+                          {{ evento_vinculado.field_tematica_evento.entity.name.value }}
+                        </span>
+                      {% endif %}
+
+                      {% if sala_evento %}
+                        <span class="du-conferencista-event__tag du-conferencista-event__tag--room">
+                          {{ salas[sala_evento]|default(sala_evento) }}
+                        </span>
+                      {% endif %}
+
+                      {% if dia_evento %}
+                        <span class="du-conferencista-event__date">
+                          {{ dia_evento|date('d/m/Y', 'UTC') }}
+                        </span>
+                      {% endif %}
+
+                      {% if evento_vinculado.field_hora_evento.from %}
+                        <span class="du-conferencista-event__time">
+                          <span class="du-icon__clock" aria-hidden="true"></span>
+
+                          {{ evento_vinculado.field_hora_evento.from|date('g:i', 'UTC') }}
+                          -
+                          {{ evento_vinculado.field_hora_evento.to|date('g:i A', 'UTC') }}
+                        </span>
+                      {% endif %}
+
+                    </div>
+
+                    <div class="du-conferencista-event__title">
+                      <strong>Conferencia:</strong>
+                      {{ evento_vinculado.title.value }}
+                    </div>
+                  </a>
+                {% endif %}
+              {% endfor %}
+
+              {% if not tiene_eventos_vinculados %}
+                <p class="du-conferencista-modal__empty">
+                  No existen conferencias vinculadas.
+                </p>
+              {% endif %}
+            </div>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </dialog>
+{% endfor %}
 
 {# ============================================================
    BLOQUE BENEFICIOS
