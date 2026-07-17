@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
+use Drupal\Core\Entity\Display\EntityFormDisplayInterface;
+use Drupal\Core\Entity\Entity\EntityFormDisplay;
+use Drupal\Core\Entity\Entity\EntityViewDisplay;
+use Drupal\field\Entity\FieldConfig;
+use Drupal\field\Entity\FieldStorageConfig;
+use Drupal\node\Entity\NodeType;
+
 /**
  * @file
  * Install, update and uninstall hooks for the Dermau Core module.
@@ -149,4 +158,208 @@ function dermau_core_update_9002() {
 			'default' => '',
 		]);
 	}
+}
+
+/**
+ * Crea los campos de patrocinadores en el tipo de contenido Convenio.
+ */
+function dermau_core_update_11001(): string {
+  if (!NodeType::load('convenio')) {
+    throw new RuntimeException(
+      'No existe el tipo de contenido con machine name "convenio".'
+    );
+  }
+
+  _dermau_core_create_convenio_string_field(
+    'field_numero_stand',
+    'Número de stand',
+    100
+  );
+
+  _dermau_core_create_convenio_string_field(
+    'field_piso_stand',
+    'Piso del stand',
+    100
+  );
+
+  _dermau_core_create_convenio_image_field(
+    'field_ubicacion_stand',
+    'Ubicación del stand'
+  );
+
+  _dermau_core_configure_convenio_sponsor_form_display();
+  _dermau_core_hide_convenio_sponsor_fields_from_default_view();
+
+  return 'Campos de patrocinadores creados en el tipo de contenido Convenio.';
+}
+
+/**
+ * Crea un campo de texto corto en node.convenio.
+ */
+function _dermau_core_create_convenio_string_field(
+  string $field_name,
+  string $label,
+  int $length
+): void {
+  $storage = FieldStorageConfig::loadByName('node', $field_name);
+
+  if (!$storage) {
+    $storage = FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'node',
+      'type' => 'string',
+      'cardinality' => 1,
+      'settings' => [
+        'max_length' => $length,
+        'is_ascii' => FALSE,
+        'case_sensitive' => FALSE,
+      ],
+    ]);
+
+    $storage->save();
+  }
+
+  $field = FieldConfig::loadByName(
+    'node',
+    'convenio',
+    $field_name
+  );
+
+  if (!$field) {
+    FieldConfig::create([
+      'field_storage' => $storage,
+      'bundle' => 'convenio',
+      'label' => $label,
+      'required' => FALSE,
+      'translatable' => TRUE,
+      'settings' => [],
+    ])->save();
+  }
+}
+
+/**
+ * Crea un campo de imagen en node.convenio.
+ */
+function _dermau_core_create_convenio_image_field(
+  string $field_name,
+  string $label
+): void {
+  $storage = FieldStorageConfig::loadByName('node', $field_name);
+
+  if (!$storage) {
+    $storage = FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'node',
+      'type' => 'image',
+      'cardinality' => 1,
+      'settings' => [
+        'target_type' => 'file',
+        'display_field' => FALSE,
+        'display_default' => FALSE,
+        'uri_scheme' => 'public',
+      ],
+    ]);
+
+    $storage->save();
+  }
+
+  $field = FieldConfig::loadByName(
+    'node',
+    'convenio',
+    $field_name
+  );
+
+  if (!$field) {
+    FieldConfig::create([
+      'field_storage' => $storage,
+      'bundle' => 'convenio',
+      'label' => $label,
+      'required' => FALSE,
+      'translatable' => TRUE,
+      'settings' => [
+        'file_directory' => 'convenios/ubicaciones',
+        'file_extensions' => 'png jpg jpeg webp',
+        'max_filesize' => '',
+        'max_resolution' => '',
+        'min_resolution' => '',
+        'alt_field' => TRUE,
+        'alt_field_required' => TRUE,
+        'title_field' => FALSE,
+        'title_field_required' => FALSE,
+        'default_image' => [
+          'uuid' => NULL,
+          'alt' => '',
+          'title' => '',
+          'width' => NULL,
+          'height' => NULL,
+        ],
+      ],
+    ])->save();
+  }
+}
+
+/**
+ * Agrega los campos al formulario de edición de Convenio.
+ */
+function _dermau_core_configure_convenio_sponsor_form_display(): void {
+  $form_display = EntityFormDisplay::load('node.convenio.default');
+
+  if (!$form_display instanceof EntityFormDisplayInterface) {
+    $form_display = EntityFormDisplay::create([
+      'targetEntityType' => 'node',
+      'bundle' => 'convenio',
+      'mode' => 'default',
+      'status' => TRUE,
+    ]);
+  }
+
+  $form_display
+    ->setComponent('field_numero_stand', [
+      'type' => 'string_textfield',
+      'weight' => 90,
+      'region' => 'content',
+      'settings' => [
+        'size' => 60,
+        'placeholder' => 'Ejemplo: 22 o A-14',
+      ],
+      'third_party_settings' => [],
+    ])
+    ->setComponent('field_piso_stand', [
+      'type' => 'string_textfield',
+      'weight' => 91,
+      'region' => 'content',
+      'settings' => [
+        'size' => 60,
+        'placeholder' => 'Ejemplo: Piso 2',
+      ],
+      'third_party_settings' => [],
+    ])
+    ->setComponent('field_ubicacion_stand', [
+      'type' => 'image_image',
+      'weight' => 92,
+      'region' => 'content',
+      'settings' => [
+        'progress_indicator' => 'throbber',
+        'preview_image_style' => 'thumbnail',
+      ],
+      'third_party_settings' => [],
+    ])
+    ->save();
+}
+
+/**
+ * Evita mostrar los campos automáticamente en el display estándar.
+ */
+function _dermau_core_hide_convenio_sponsor_fields_from_default_view(): void {
+  $view_display = EntityViewDisplay::load('node.convenio.default');
+
+  if (!$view_display) {
+    return;
+  }
+
+  $view_display
+    ->removeComponent('field_numero_stand')
+    ->removeComponent('field_piso_stand')
+    ->removeComponent('field_ubicacion_stand')
+    ->save();
 }
