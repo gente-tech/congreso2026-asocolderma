@@ -10,10 +10,11 @@
         Patrocinadores del Congreso
       </h1>
 
-      <p class="du-patrocinadores__description">
-        Conoce las organizaciones que apoyan el desarrollo académico,
-        científico y profesional del Congreso.
-      </p>
+      {% if intro_text %}
+  <p class="du-patrocinadores__description">
+    {{ intro_text }}
+  </p>
+{% endif %}
     </header>
 
     {% if patrocinadores %}
