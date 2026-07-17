@@ -87,22 +87,6 @@
 									<span>{{ universidad_label }}</span>
 								</div>
 							{% endif %}
-							{% if programas %}
-								<div class="du-card__expert-uni">
-									<svg width="15" height="13" viewbox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<path d="M7.5 1.99463C7.5 1.99463 4 -1.00537 0.5 1.49463V12.4946C4 9.99463 7.5 12.4946 7.5 12.4946M7.5 1.99463C7.5 1.99463 11 -1.00537 14.5 1.49463V12.4946C11 9.99463 7.5 12.4946 7.5 12.4946M7.5 1.99463V12.4946" stroke="#007BE3" stroke-linecap="round" stroke-linejoin="round"/>
-									</svg>
-									<span>Programas:
-									</span>
-								</div>
-								<div class="du-card__expert-tags">
-									{% for programa in programas %}
-										<span class="tag" data-tag="{{ programa.tipo_programa_color }}">
-											{{ programa.title }}
-										</span>
-									{% endfor %}
-								</div>
-							{% endif %}
 							{% if perfil != '' %}
 								<div class="du-card__expert-detail">
 									<p>{{ perfil|striptags|trim }}
