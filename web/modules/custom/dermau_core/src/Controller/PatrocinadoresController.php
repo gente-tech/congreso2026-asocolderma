@@ -20,6 +20,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Drupal\Component\Utility\Html;
 use Drupal\Core\Locale\CountryManagerInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Config\ImmutableConfig;
 
 /**
  * Controlador público de patrocinadores.
@@ -35,6 +37,7 @@ final class PatrocinadoresController extends ControllerBase {
     private readonly LanguageManagerInterface $languageManagerService,
     private readonly RendererInterface $rendererService,
     private readonly CountryManagerInterface $countryManagerService,
+    private readonly ConfigFactoryInterface $configFactoryService,
   ) {}
 
   /**
@@ -47,6 +50,7 @@ final class PatrocinadoresController extends ControllerBase {
       $container->get('language_manager'),
       $container->get('renderer'),
       $container->get('country_manager'),
+      $container->get('config.factory'),
     );
   }
 
@@ -93,8 +97,26 @@ final class PatrocinadoresController extends ControllerBase {
       );
     }
 
+    $settings = $this->configFactoryService->get(
+      'dermau_core.patrocinadores_settings'
+    );
+    
+    $intro_text = trim(
+      (string) $settings->get('intro_text')
+    );
+    
+    if ($intro_text === '') {
+      $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
+    }
+    
+    $cache_tags = Cache::mergeTags(
+      $cache_tags,
+      $settings->getCacheTags(),
+    );
+
     return [
       '#theme' => 'patrocinadores_page',
+      '#intro_text' => $intro_text,
       '#patrocinadores' => $patrocinadores,
       '#attached' => [
         'library' => [
@@ -131,6 +153,15 @@ final class PatrocinadoresController extends ControllerBase {
 
     $cache_dependencies = [$convenio];
 
+    $settings = $this->configFactoryService->get(
+      'dermau_core.patrocinadores_settings'
+    );
+    
+    $plano_pdf = $this->getPlanoPdfData(
+      $settings,
+      $cache_dependencies,
+    );
+
     $relaciones = $this->getEventosYConferencistas(
       $convenio,
       $cache_dependencies,
@@ -138,6 +169,7 @@ final class PatrocinadoresController extends ControllerBase {
 
     $patrocinador = [
       'id' => (int) $convenio->id(),
+      'plano_pdf' => $plano_pdf,
       'nombre' => $convenio->label(),
       'logo' => $this->getImageData(
         $convenio,
@@ -195,7 +227,7 @@ final class PatrocinadoresController extends ControllerBase {
       'Content-Type',
       'text/html; charset=UTF-8',
     );
-
+    $response->addCacheableDependency($settings);
     return $response;
   }
 
@@ -848,6 +880,38 @@ private function getCountryData(string $value): array {
   return [
     'label' => $value,
     'class' => Html::getClass($value),
+  ];
+}
+
+  /**
+ * Obtiene el PDF global del plano.
+ */
+private function getPlanoPdfData(
+  ImmutableConfig $settings,
+  array &$cache_dependencies,
+): array {
+  $fid = (int) (
+    $settings->get('plano_pdf_fid') ?? 0
+  );
+
+  if ($fid <= 0) {
+    return [];
+  }
+
+  $file = $this->entityTypeManagerService
+    ->getStorage('file')
+    ->load($fid);
+
+  if (!$file instanceof FileInterface) {
+    return [];
+  }
+
+  $cache_dependencies[] = $file;
+
+  return [
+    'url' => $this->fileUrlGeneratorService
+      ->generateString($file->getFileUri()),
+    'filename' => $file->getFilename(),
   ];
 }
 
