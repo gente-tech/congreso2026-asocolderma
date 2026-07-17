@@ -77,15 +77,18 @@
             <button
               type="button"
               class="du-patrocinadores__card-button js-patrocinador-open"
-              data-patrocinador-id="{{ patrocinador.id }}"
+              data-patrocinador-url="{{ path(
+                'dermau_core.patrocinadores_detail',
+                {'convenio': patrocinador.id}
+              ) }}"
               aria-label="Ver información de {{ patrocinador.nombre }}"
             >
               <div class="du-patrocinadores__logo-wrapper">
-                {% if patrocinador.logo_url %}
+                {% if patrocinador.logo.url %}
                   <img
                     class="du-patrocinadores__logo"
-                    src="{{ patrocinador.logo_url }}"
-                    alt="{{ patrocinador.logo_alt }}"
+                    src="{{ patrocinador.logo.url }}"
+                    alt="{{ patrocinador.logo.alt }}"
                     loading="lazy"
                   >
                 {% else %}
