@@ -469,3 +469,496 @@
   .du-calendar__item-card.is-open .du-congreso__card-top{ display: flex; }
   .du-filter-calendar { display: block; }
 }
+
+/********************************************************/
+/* ============================================================
+   POPUP CONFERENCISTA
+   ============================================================ */
+
+html.du-modal-is-open,
+body.du-modal-is-open {
+  overflow: hidden !important;
+}
+
+/* Reset completo del dialog nativo */
+dialog.du-conferencista-modal {
+  position: fixed !important;
+  inset: 0 !important;
+
+  width: min(690px, calc(100vw - 24px)) !important;
+  max-width: 690px !important;
+  height: auto !important;
+  max-height: calc(100vh - 24px) !important;
+
+  margin: auto !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+
+  overflow: visible !important;
+}
+
+dialog.du-conferencista-modal:not([open]) {
+  display: none !important;
+}
+
+dialog.du-conferencista-modal[open] {
+  display: block !important;
+}
+
+dialog.du-conferencista-modal::backdrop {
+  background: rgba(5, 15, 39, 0.74);
+  backdrop-filter: blur(2px);
+}
+
+/* Contenedor principal */
+.du-conferencista-modal__surface {
+  position: relative;
+
+  width: 100%;
+  max-height: calc(100vh - 24px);
+
+  box-sizing: border-box;
+  padding: 26px 28px 24px;
+
+  border: 8px solid #17213f;
+  border-radius: 5px;
+
+  background: #ffffff;
+  box-shadow: 0 20px 60px rgba(4, 15, 42, 0.35);
+
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Botón cerrar */
+.du-conferencista-modal__close {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  z-index: 10;
+
+  display: flex;
+  width: 25px;
+  height: 25px;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+
+  border: 1.5px solid #168cff;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #168cff;
+
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+.du-conferencista-modal__close span {
+  display: block;
+  transform: translateY(-1px);
+}
+
+.du-conferencista-modal__close:hover,
+.du-conferencista-modal__close:focus-visible {
+  background: #168cff;
+  color: #ffffff;
+  outline: none;
+}
+
+/* Dos columnas */
+.du-conferencista-modal__layout {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  gap: 35px;
+
+  align-items: start;
+}
+
+/* ============================================================
+   COLUMNA IZQUIERDA
+   ============================================================ */
+
+.du-conferencista-modal__identity {
+  width: 200px;
+  margin-top: 18px;
+  text-align: center;
+}
+
+/* Foto exacta */
+.du-conferencista-modal__photo {
+  width: 188px;
+  height: 286px;
+
+  margin: 0 auto 14px;
+
+  border-radius: 3px;
+  background: #eef2f5;
+
+  overflow: hidden;
+}
+
+.du-conferencista-modal__photo img {
+  display: block;
+
+  width: 100% !important;
+  max-width: none !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+
+  object-fit: cover;
+  object-position: center top;
+}
+
+.du-conferencista-modal__photo-placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+
+  align-items: center;
+  justify-content: center;
+
+  background: #eaf4fa;
+  color: #46b8cf;
+
+  font-size: 72px;
+  font-weight: 700;
+}
+
+/* Nombre */
+.du-conferencista-modal__name {
+  margin: 0;
+  padding: 7px 4px 8px;
+
+  border-bottom: 1px solid #72bce9;
+
+  color: #46b8cf;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+/* Especialidad */
+.du-conferencista-modal__specialty {
+  margin-top: 10px;
+  padding: 3px 4px;
+
+  color: #ef1313;
+
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+/* Estos datos no aparecen en el diseño solicitado */
+.du-conferencista-modal__metadata,
+.du-conferencista-modal__social {
+  display: none;
+}
+
+/* ============================================================
+   COLUMNA DERECHA
+   ============================================================ */
+
+.du-conferencista-modal__content {
+  min-width: 0;
+  padding-top: 15px;
+}
+
+.du-conferencista-modal__section {
+  margin: 0;
+}
+
+.du-conferencista-modal__section + .du-conferencista-modal__section {
+  margin-top: 10px;
+}
+
+/* Títulos */
+.du-conferencista-modal__section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  margin: 0 0 8px;
+
+  color: #17213f;
+
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.du-conferencista-modal__section-title svg {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+
+  color: #158cff;
+}
+
+.du-conferencista-modal__section-title--conferences {
+  margin-bottom: 9px;
+  color: #ef1616;
+}
+
+/* Perfil */
+.du-conferencista-modal__profile {
+  color: #515966;
+
+  font-size: 11.5px;
+  font-weight: 400;
+  line-height: 1.47;
+
+  text-align: left;
+}
+
+.du-conferencista-modal__profile br {
+  display: none;
+}
+
+.du-conferencista-modal__empty {
+  margin: 0;
+  padding: 12px;
+
+  border-radius: 8px;
+
+  background: #f3f6f8;
+  color: #697280;
+
+  font-size: 12px;
+}
+
+/* ============================================================
+   CONFERENCIAS VINCULADAS
+   ============================================================ */
+
+.du-conferencista-modal__events {
+  display: grid;
+  gap: 9px;
+}
+
+.du-conferencista-event {
+  display: block;
+
+  padding: 9px 10px 11px;
+
+  border: 1px solid transparent;
+  border-radius: 10px;
+
+  background: #dcecf9;
+  color: inherit;
+
+  text-decoration: none;
+
+  transition:
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.du-conferencista-event:hover,
+.du-conferencista-event:focus-visible {
+  border-color: #2992dd;
+  box-shadow: 0 5px 14px rgba(22, 90, 151, 0.15);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+.du-conferencista-event__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.du-conferencista-event__tag,
+.du-conferencista-event__date {
+  display: inline-flex;
+  min-height: 20px;
+
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+
+  padding: 2px 6px;
+
+  border-radius: 12px;
+
+  font-size: 7px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Simposio */
+.du-conferencista-event__tag {
+  border: 1px solid #17213f;
+
+  background: #ffffff;
+  color: #17213f;
+}
+
+/* Temática */
+.du-conferencista-event__tag--orange {
+  border-color: #ee881d;
+  background: #ee881d;
+  color: #ffffff;
+}
+
+/* Sala */
+.du-conferencista-event__tag--room {
+  border-color: #07958d;
+  background: #07958d;
+  color: #ffffff;
+}
+
+/* Fecha */
+.du-conferencista-event__date {
+  border: 1px solid #07101d;
+  background: #07101d;
+  color: #ffffff;
+
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+/* Hora */
+.du-conferencista-event__time {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+
+  margin-left: 1px;
+
+  color: #111827;
+
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.du-conferencista-event__time .du-icon__clock {
+  width: 13px;
+  height: 13px;
+  flex: 0 0 13px;
+}
+
+/* Título conferencia */
+.du-conferencista-event__title {
+  margin-top: 8px;
+
+  color: #26364e;
+
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+.du-conferencista-event__title strong {
+  color: #1588e5;
+  font-weight: 700;
+}
+
+/* ============================================================
+   TABLET
+   ============================================================ */
+
+@media (max-width: 760px) {
+  dialog.du-conferencista-modal {
+    width: min(560px, calc(100vw - 16px)) !important;
+    max-height: calc(100vh - 16px) !important;
+  }
+
+  .du-conferencista-modal__surface {
+    max-height: calc(100vh - 16px);
+    padding: 48px 22px 24px;
+
+    border-width: 5px;
+  }
+
+  .du-conferencista-modal__layout {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .du-conferencista-modal__identity {
+    width: min(100%, 270px);
+    margin: 0 auto;
+  }
+
+  .du-conferencista-modal__photo {
+    width: 190px;
+    height: 260px;
+  }
+
+  .du-conferencista-modal__content {
+    padding-top: 0;
+  }
+}
+
+/* ============================================================
+   MÓVIL
+   ============================================================ */
+
+@media (max-width: 480px) {
+  dialog.du-conferencista-modal {
+    width: calc(100vw - 10px) !important;
+    max-height: calc(100vh - 10px) !important;
+  }
+
+  .du-conferencista-modal__surface {
+    max-height: calc(100vh - 10px);
+
+    padding: 46px 14px 20px;
+
+    border-width: 4px;
+  }
+
+  .du-conferencista-modal__close {
+    top: 12px;
+    right: 12px;
+  }
+
+  .du-conferencista-modal__photo {
+    width: 170px;
+    height: 225px;
+  }
+
+  .du-conferencista-modal__name {
+    font-size: 17px;
+  }
+
+  .du-conferencista-modal__specialty {
+    font-size: 16px;
+  }
+
+  .du-conferencista-modal__section-title {
+    font-size: 15px;
+  }
+
+  .du-conferencista-modal__profile {
+    font-size: 11px;
+  }
+
+  .du-conferencista-event__tags {
+    gap: 3px;
+  }
+
+  .du-conferencista-event__time {
+    width: 100%;
+    margin-top: 3px;
+  }
+}
