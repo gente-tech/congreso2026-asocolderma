@@ -144,3 +144,27 @@ span.du-btn__link{
 .du-congreso__speaker-separator {
   margin-right: 2px;
 }
+
+.du-congreso__card-speakers {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.du-congreso__card-speakers > .du-icon__micro {
+  display: inline-block;
+  flex: 0 0 auto;
+  min-width: 16px;
+  min-height: 20px;
+}
+
+.du-congreso__card-speakers > strong {
+  flex: 0 0 auto;
+}
+
+.du-congreso__speaker-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
