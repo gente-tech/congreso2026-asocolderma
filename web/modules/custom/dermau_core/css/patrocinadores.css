@@ -327,3 +327,314 @@
     grid-template-columns: 1fr;
   }
 }
+
+html.du-patrocinador-is-open,
+body.du-patrocinador-is-open {
+  overflow: hidden;
+}
+
+.du-patrocinador-modal__loading {
+  display: flex;
+  min-height: 260px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  color: #536071;
+  font-weight: 700;
+}
+
+.du-patrocinador-modal__spinner {
+  width: 38px;
+  height: 38px;
+  border: 4px solid #dce8ea;
+  border-top-color: #129ba6;
+  border-radius: 50%;
+  animation: du-sponsor-spin 700ms linear infinite;
+}
+
+@keyframes du-sponsor-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.du-patrocinador-modal__error {
+  padding: 60px 24px;
+  color: #d71927;
+  font-weight: 700;
+  text-align: center;
+}
+
+.du-sponsor-detail {
+  color: #263246;
+}
+
+.du-sponsor-detail__header {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 36px;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.du-sponsor-detail__logo-wrapper {
+  display: flex;
+  min-height: 170px;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  border: 1px solid #e2e8ee;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.du-sponsor-detail__logo {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 130px;
+  object-fit: contain;
+}
+
+.du-sponsor-detail__logo-placeholder {
+  display: flex;
+  width: 110px;
+  height: 110px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e7f6f8;
+  color: #1098a4;
+  font-size: 46px;
+  font-weight: 800;
+}
+
+.du-sponsor-detail__eyebrow {
+  color: #1199a5;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.du-sponsor-detail__title {
+  margin: 8px 0 14px;
+  color: #e71926;
+  font-size: clamp(28px, 4vw, 44px);
+  line-height: 1.05;
+}
+
+.du-sponsor-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.du-sponsor-detail__badge {
+  display: inline-flex;
+  min-height: 29px;
+  align-items: center;
+  padding: 5px 11px;
+  border-radius: 999px;
+  background: #edf7f8;
+  color: #087e88;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.du-sponsor-detail__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 15px;
+  color: #687385;
+  font-size: 13px;
+}
+
+.du-sponsor-detail__metadata strong {
+  color: #253047;
+}
+
+.du-sponsor-detail__section {
+  padding-top: 26px;
+  border-top: 1px solid #e4e9ee;
+}
+
+.du-sponsor-detail__section + .du-sponsor-detail__section {
+  margin-top: 28px;
+}
+
+.du-sponsor-detail__section-title {
+  margin: 0 0 17px;
+  color: #e71926;
+  font-size: 22px;
+}
+
+.du-sponsor-detail__description {
+  color: #505c6c;
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+.du-sponsor-detail__programs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.du-sponsor-detail__program {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 15px 17px;
+  border-radius: 10px;
+  background: #e6f2fb;
+  color: #1c4f78;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.du-sponsor-detail__program:hover {
+  background: #d7ebfa;
+  color: #107eb8;
+}
+
+.du-sponsor-detail__teachers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.du-sponsor-teacher {
+  display: grid;
+  grid-template-columns: 115px minmax(0, 1fr);
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #e0e6ec;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.du-sponsor-teacher__photo {
+  min-height: 170px;
+  background: #edf2f5;
+}
+
+.du-sponsor-teacher__photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.du-sponsor-teacher__placeholder {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #1299a4;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.du-sponsor-teacher__content {
+  padding: 17px;
+}
+
+.du-sponsor-teacher__name {
+  margin: 0;
+  color: #202c43;
+  font-size: 17px;
+}
+
+.du-sponsor-teacher__specialty {
+  margin-top: 4px;
+  color: #1199a5;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.du-sponsor-teacher__profile {
+  margin: 11px 0 0;
+  color: #657081;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.du-sponsor-teacher__link {
+  display: inline-flex;
+  gap: 5px;
+  margin-top: 12px;
+  color: #078d98;
+  font-size: 12px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.du-sponsor-detail__location {
+  overflow: hidden;
+  border: 1px solid #dce3e9;
+  border-radius: 12px;
+  background: #f7f9fb;
+}
+
+.du-sponsor-detail__location img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.du-sponsor-detail__footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 30px;
+}
+
+.du-sponsor-detail__external {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 19px;
+  border-radius: 24px;
+  background: #109ca6;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.du-sponsor-detail__external:hover {
+  background: #087f88;
+  color: #fff;
+}
+
+@media (max-width: 760px) {
+  .du-sponsor-detail__header {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  .du-sponsor-detail__logo-wrapper {
+    min-height: 130px;
+  }
+
+  .du-sponsor-detail__programs,
+  .du-sponsor-detail__teachers {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .du-patrocinador-modal__surface {
+    padding: 48px 16px 22px;
+    border-width: 4px;
+  }
+
+  .du-sponsor-teacher {
+    grid-template-columns: 90px minmax(0, 1fr);
+  }
+}
