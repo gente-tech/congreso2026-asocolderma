@@ -1,0 +1,192 @@
+<article class="du-sponsor-detail">
+
+  <header class="du-sponsor-detail__header">
+
+    <div class="du-sponsor-detail__logo-wrapper">
+      {% if patrocinador.logo.url %}
+        <img
+          class="du-sponsor-detail__logo"
+          src="{{ patrocinador.logo.url }}"
+          alt="{{ patrocinador.logo.alt }}"
+        >
+      {% else %}
+        <div class="du-sponsor-detail__logo-placeholder">
+          {{ patrocinador.nombre|slice(0, 1)|upper }}
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="du-sponsor-detail__heading">
+      <span class="du-sponsor-detail__eyebrow">
+        Patrocinador del Congreso
+      </span>
+
+      <h2 class="du-sponsor-detail__title">
+        {{ patrocinador.nombre }}
+      </h2>
+
+      <div class="du-sponsor-detail__badges">
+
+        {% if patrocinador.stand %}
+          <span class="du-sponsor-detail__badge">
+            Stand {{ patrocinador.stand }}
+          </span>
+        {% endif %}
+
+        {% if patrocinador.piso %}
+          <span class="du-sponsor-detail__badge">
+            {{ patrocinador.piso }}
+          </span>
+        {% endif %}
+
+        {% if patrocinador.programas_count %}
+          <span class="du-sponsor-detail__badge">
+            Programas vinculados:
+            {{ patrocinador.programas_count }}
+          </span>
+        {% endif %}
+
+      </div>
+
+      {% if patrocinador.ano_fundacion or patrocinador.ciudad %}
+        <div class="du-sponsor-detail__metadata">
+
+          {% if patrocinador.ano_fundacion %}
+            <span>
+              Fundación:
+              <strong>{{ patrocinador.ano_fundacion }}</strong>
+            </span>
+          {% endif %}
+
+          {% if patrocinador.ciudad %}
+            <span>
+              Ciudad:
+              <strong>{{ patrocinador.ciudad }}</strong>
+            </span>
+          {% endif %}
+
+        </div>
+      {% endif %}
+    </div>
+
+  </header>
+
+  {% if patrocinador.descripcion %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Sobre el patrocinador
+      </h3>
+
+      <div class="du-sponsor-detail__description">
+        {{ patrocinador.descripcion|nl2br }}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if patrocinador.programas %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Programas vinculados
+      </h3>
+
+      <div class="du-sponsor-detail__programs">
+        {% for programa in patrocinador.programas %}
+          <a
+            class="du-sponsor-detail__program"
+            href="{{ programa.url }}"
+          >
+            <span>{{ programa.nombre }}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if patrocinador.docentes %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Docentes vinculados
+      </h3>
+
+      <div class="du-sponsor-detail__teachers">
+        {% for docente in patrocinador.docentes %}
+          <article class="du-sponsor-teacher">
+
+            <div class="du-sponsor-teacher__photo">
+              {% if docente.foto.url %}
+                <img
+                  src="{{ docente.foto.url }}"
+                  alt="{{ docente.foto.alt }}"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="du-sponsor-teacher__placeholder">
+                  {{ docente.nombre|slice(0, 1)|upper }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="du-sponsor-teacher__content">
+              <h4 class="du-sponsor-teacher__name">
+                {{ docente.nombre }}
+              </h4>
+
+              {% if docente.especialidad %}
+                <div class="du-sponsor-teacher__specialty">
+                  {{ docente.especialidad }}
+                </div>
+              {% endif %}
+
+              {% if docente.perfil_resumen %}
+                <p class="du-sponsor-teacher__profile">
+                  {{ docente.perfil_resumen }}
+                </p>
+              {% endif %}
+
+              <a
+                class="du-sponsor-teacher__link"
+                href="{{ docente.url }}"
+              >
+                Ver detalle
+                <span aria-hidden="true">→</span>
+              </a>
+            </div>
+
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+
+  {% if patrocinador.ubicacion.url %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Ubicación del stand
+      </h3>
+
+      <div class="du-sponsor-detail__location">
+        <img
+          src="{{ patrocinador.ubicacion.url }}"
+          alt="{{ patrocinador.ubicacion.alt }}"
+          loading="lazy"
+        >
+      </div>
+    </section>
+  {% endif %}
+
+  {% if patrocinador.link.url %}
+    <footer class="du-sponsor-detail__footer">
+      <a
+        class="du-sponsor-detail__external"
+        href="{{ patrocinador.link.url }}"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {{ patrocinador.link.title }}
+        <span aria-hidden="true">↗</span>
+      </a>
+    </footer>
+  {% endif %}
+
+</article>
