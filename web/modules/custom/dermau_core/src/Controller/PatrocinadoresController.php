@@ -22,7 +22,6 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
-use Drupal\Core\Config\ImmutableConfig;
 
 /**
  * Controlador público de patrocinadores.
