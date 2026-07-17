@@ -122,7 +122,7 @@
 						{% set perfil = docente.field_perfil_profesional.value %}
 					{% endif %}
 
-					<div class="du-programs-item" data-tipo-conferencista="{{ tipo_conferencista }}" data-pais-conferencista="{{ pais_conferencista }}">
+					<div class="du-programs-item" data-tipo-conferencista="{{ tipo_conferencista }}" data-pais-conferencista="{{ pais_conferencista }}" data-docente-id="{{ docente.id() }}" data-fecha-evento="{{ row.fecha_evento_inicial|default('') }}">
 
 						<article class="du-card__expert">
 							<div class="du-card__expert-main">
@@ -201,7 +201,7 @@
 
 									<div class="du-card__expert-conferences-list">
 										{% for conferencia in conferencias_relacionadas %}
-											<article class="du-card__expert-conference">
+											<article class="du-card__expert-conference" data-evento-tipo="{{ conferencia.tipo }}" data-evento-tematica="{{ conferencia.tematica }}" data-evento-sala="{{ conferencia.sala_clase|replace({'sala-': 'sala_'}) }}" data-evento-fecha="{{ conferencia.dia }}">
 												<div class="du-card__expert-conference-meta">
 
 													{% if conferencia.tipo %}
