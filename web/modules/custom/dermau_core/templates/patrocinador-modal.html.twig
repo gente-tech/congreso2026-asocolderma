@@ -125,7 +125,7 @@
         </svg>
 
         Simposios vinculados:
-        {{ patrocinador.simposios_count|default(0) }}
+        {{ patrocinador.eventos_count|default(0) }}    
       </span>
 
     </div>
@@ -178,130 +178,150 @@
 </header>
 
   <section class="du-sponsor-detail__section">
-    <h3 class="du-sponsor-detail__section-title">
-      Simposios Vinculados
-    </h3>
+  <h3 class="du-sponsor-detail__section-title">
+    Simposios Vinculados
+  </h3>
 
-    {% if patrocinador.simposios %}
-      <div class="du-sponsor-detail__symposiums">
+  {% if patrocinador.eventos %}
+    <div class="du-sponsor-detail__symposiums">
 
-        {% for simposio in patrocinador.simposios %}
-          <a
-            href="{{ simposio.url }}"
-            class="du-sponsor-symposium"
-          >
-            <div class="du-sponsor-symposium__tags">
+      {% for evento in patrocinador.eventos %}
+        <a
+          href="{{ evento.url }}"
+          class="du-sponsor-symposium"
+        >
+          <div class="du-sponsor-symposium__tags">
 
+            {% if evento.tipo %}
               <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--sponsored">
-                Simp. Patrocinado
+                {{ evento.tipo }}
               </span>
-
-              {% if simposio.tematica %}
-                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--topic">
-                  {{ simposio.tematica }}
-                </span>
-              {% endif %}
-
-              {% if simposio.sala %}
-                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--room {{ simposio.sala_class }}">
-                  {{ simposio.sala }}
-                </span>
-              {% endif %}
-
-              {% if simposio.fecha %}
-                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--date">
-                  {{ simposio.fecha }}
-                </span>
-              {% endif %}
-
-              {% if simposio.hora %}
-                <span class="du-sponsor-symposium__time">
-                  <span class="du-icon__clock" aria-hidden="true"></span>
-                  {{ simposio.hora }}
-                </span>
-              {% endif %}
-
-            </div>
-
-            <div class="du-sponsor-symposium__title">
-              <strong>Conferencia:</strong>
-              {{ simposio.nombre }}
-            </div>
-          </a>
-        {% endfor %}
-
-      </div>
-    {% else %}
-      <p class="du-sponsor-detail__empty">
-        No tiene simposios vinculados.
-      </p>
-    {% endif %}
-  </section>
-
-  <section class="du-sponsor-detail__section">
-    <h3 class="du-sponsor-detail__section-title">
-      Conferencistas Vinculados
-    </h3>
-
-    {% if patrocinador.docentes %}
-      <div class="du-sponsor-detail__teachers">
-
-        {% for docente in patrocinador.docentes %}
-          <article class="du-sponsor-teacher">
-
-            <div class="du-sponsor-teacher__header">
-
-              <div class="du-sponsor-teacher__photo">
-                {% if docente.foto.url %}
-                  <img
-                    src="{{ docente.foto.url }}"
-                    alt="{{ docente.foto.alt }}"
-                    loading="lazy"
-                  >
-                {% else %}
-                  <div class="du-sponsor-teacher__placeholder">
-                    {{ docente.nombre|slice(0, 1)|upper }}
-                  </div>
-                {% endif %}
-              </div>
-
-              <div class="du-sponsor-teacher__identity">
-                <h4 class="du-sponsor-teacher__name">
-                  {{ docente.nombre }}
-                </h4>
-
-                {% if docente.especialidad %}
-                  <div class="du-sponsor-teacher__specialty">
-                    {{ docente.especialidad }}
-                  </div>
-                {% endif %}
-              </div>
-
-            </div>
-
-            {% if docente.perfil_resumen %}
-              <p class="du-sponsor-teacher__profile">
-                {{ docente.perfil_resumen }}
-              </p>
             {% endif %}
 
-            <a
-              href="{{ docente.url }}"
-              class="du-sponsor-teacher__link"
-            >
-              Ver detalle
-            </a>
+            {% if evento.tematica %}
+              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--topic">
+                {{ evento.tematica }}
+              </span>
+            {% endif %}
 
-          </article>
-        {% endfor %}
+            {% if evento.sala %}
+              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--room {{ evento.sala_class }}">
+                {{ evento.sala }}
+              </span>
+            {% endif %}
 
-      </div>
-    {% else %}
-      <p class="du-sponsor-detail__empty">
-        No tiene conferencistas vinculados.
-      </p>
-    {% endif %}
-  </section>
+            {% if evento.fecha %}
+              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--date">
+                {{ evento.fecha }}
+              </span>
+            {% endif %}
+
+            {% if evento.hora %}
+              <span class="du-sponsor-symposium__time">
+                <span
+                  class="du-icon__clock"
+                  aria-hidden="true"
+                ></span>
+
+                {{ evento.hora }}
+              </span>
+            {% endif %}
+
+          </div>
+
+          <div class="du-sponsor-symposium__title">
+            <strong>Conferencia:</strong>
+            {{ evento.nombre }}
+          </div>
+        </a>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <p class="du-sponsor-detail__empty">
+      No tiene simposios vinculados.
+    </p>
+  {% endif %}
+</section>
+
+ <section class="du-sponsor-detail__section">
+  <h3 class="du-sponsor-detail__section-title">
+    Conferencistas Vinculados
+  </h3>
+
+  {% if patrocinador.docentes %}
+    <div class="du-sponsor-detail__teachers">
+
+      {% for docente in patrocinador.docentes %}
+        <article class="du-sponsor-teacher">
+
+          <div class="du-sponsor-teacher__header">
+
+            <div class="du-sponsor-teacher__photo">
+              {% if docente.foto.url %}
+                <img
+                  src="{{ docente.foto.url }}"
+                  alt="{{ docente.foto.alt|default(docente.nombre) }}"
+                  loading="lazy"
+                >
+              {% else %}
+                <div class="du-sponsor-teacher__placeholder">
+                  {{ docente.nombre|slice(0, 1)|upper }}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="du-sponsor-teacher__identity">
+              <h4 class="du-sponsor-teacher__name">
+                {{ docente.nombre }}
+              </h4>
+
+              {% if docente.especialidad %}
+                <div class="du-sponsor-teacher__specialty">
+                  {{ docente.especialidad }}
+                </div>
+              {% endif %}
+
+              {% if docente.pais %}
+                <div class="du-sponsor-teacher__country">
+                  <strong>{{ docente.pais }}</strong>
+
+                  {% if docente.pais_class %}
+                    <span
+                      class="du-icon__flag-{{ docente.pais_class }}"
+                      title="{{ docente.pais }}"
+                      aria-label="{{ docente.pais }}"
+                    ></span>
+                  {% endif %}
+                </div>
+              {% endif %}
+            </div>
+
+          </div>
+
+          {% if docente.perfil_resumen %}
+            <p class="du-sponsor-teacher__profile">
+              {{ docente.perfil_resumen }}
+            </p>
+          {% endif %}
+
+          <a
+            href="{{ docente.url }}"
+            class="du-sponsor-teacher__link"
+          >
+            Ver detalle
+          </a>
+
+        </article>
+      {% endfor %}
+
+    </div>
+  {% else %}
+    <p class="du-sponsor-detail__empty">
+      No tiene conferencistas vinculados.
+    </p>
+  {% endif %}
+</section> 
 
   {% if patrocinador.ubicacion.url %}
     <section class="du-sponsor-detail__section">
