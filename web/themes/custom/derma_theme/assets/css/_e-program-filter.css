@@ -232,8 +232,17 @@
 }
 
 .du-card__expert-conferences-icon {
+  display: inline-flex;
+  flex: 0 0 28px;
+  align-items: center;
+  justify-content: center;
   color: #007be3;
-  font-size: 20px;
+}
+
+.du-card__expert-conferences-icon svg {
+  display: block;
+  width: 28px;
+  height: 24px;
 }
 
 .du-card__expert-conferences-list {
