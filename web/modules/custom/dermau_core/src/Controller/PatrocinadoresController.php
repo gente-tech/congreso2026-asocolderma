@@ -15,7 +15,7 @@ use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Página pública de patrocinadores.
+ * Controlador de la página pública de patrocinadores.
  */
 final class PatrocinadoresController extends ControllerBase {
 
@@ -23,17 +23,15 @@ final class PatrocinadoresController extends ControllerBase {
    * Constructor.
    */
   public function __construct(
-    private readonly EntityTypeManagerInterface $entityTypeManager,
-    private readonly FileUrlGeneratorInterface $fileUrlGenerator,
-    private readonly LanguageManagerInterface $languageManager,
+    private readonly EntityTypeManagerInterface $entityTypeManagerService,
+    private readonly FileUrlGeneratorInterface $fileUrlGeneratorService,
+    private readonly LanguageManagerInterface $languageManagerService,
   ) {}
 
   /**
    * {@inheritdoc}
    */
-  public static function create(
-    ContainerInterface $container,
-  ): static {
+  public static function create(ContainerInterface $container): static {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('file_url_generator'),
@@ -45,10 +43,10 @@ final class PatrocinadoresController extends ControllerBase {
    * Renderiza la página de patrocinadores.
    */
   public function page(): array {
-    $storage = $this->entityTypeManager
+    $node_storage = $this->entityTypeManagerService
       ->getStorage('node');
 
-    $query = $storage
+    $query = $node_storage
       ->getQuery()
       ->accessCheck(TRUE)
       ->condition('type', 'convenio')
@@ -57,18 +55,18 @@ final class PatrocinadoresController extends ControllerBase {
       ->sort('field_orden_visualizacon', 'ASC')
       ->sort('title', 'ASC');
 
-    $ids = $query->execute();
+    $node_ids = $query->execute();
 
-    $nodes = $ids
-      ? $storage->loadMultiple($ids)
+    $nodes = $node_ids
+      ? $node_storage->loadMultiple($node_ids)
       : [];
+
+    $language_id = $this->languageManagerService
+      ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
+      ->getId();
 
     $patrocinadores = [];
     $cache_tags = ['node_list:convenio'];
-
-    $language_id = $this->languageManager
-      ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
-      ->getId();
 
     foreach ($nodes as $node) {
       if (
@@ -90,13 +88,17 @@ final class PatrocinadoresController extends ControllerBase {
         $logo_values = $logo_item?->getValue() ?? [];
 
         if ($logo_file instanceof FileInterface) {
-          $logo_url = $this->fileUrlGenerator
+          $logo_url = $this->fileUrlGeneratorService
             ->generateString($logo_file->getFileUri());
         }
 
-        $logo_alt = trim(
+        $configured_alt = trim(
           (string) ($logo_values['alt'] ?? '')
-        ) ?: $node->label();
+        );
+
+        if ($configured_alt !== '') {
+          $logo_alt = $configured_alt;
+        }
       }
 
       $patrocinadores[] = [
