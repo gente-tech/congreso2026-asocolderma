@@ -196,58 +196,64 @@
 		}
 	}
 
+	function applyCountryFilter(value) {
+		document
+			.querySelectorAll('.du-programs-item[data-tipo-conferencista]')
+			.forEach(function (item) {
+				const isVisible =
+					item.dataset.tipoConferencista === value;
+
+				item.style.display = isVisible ? '' : 'none';
+			});
+
+		document
+			.querySelectorAll('.du-docentes-tabs__button')
+			.forEach(function (tab) {
+				const isActive =
+					tab.dataset.tipoConferencista === value;
+
+				tab.classList.toggle('active', isActive);
+				tab.setAttribute(
+					'aria-selected',
+					isActive ? 'true' : 'false'
+				);
+			});
+	}
+
 	function initCountryTabs(context) {
-		once(
+		const buttons = once(
 			'docentesCountryTabs',
 			'.du-docentes-tabs__button',
 			context
-		).forEach(function (button) {
+		);
+
+		buttons.forEach(function (button) {
 			button.addEventListener('click', function () {
-				const value = button.getAttribute('data-tipo-conferencista');
+				const value = button.dataset.tipoConferencista;
 
-				const form = document.querySelector(
-					'form[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]'
-				);
-
-				if (!form || !value) {
+				if (!value) {
 					return;
 				}
 
-				const input = form.querySelector(
-					'input[name="tipo_conferencista"]'
-				);
-
-				if (!input || input.value === value) {
-					return;
-				}
-
-				document
-					.querySelectorAll('.du-docentes-tabs__button')
-					.forEach(function (tab) {
-						const isActive =
-							tab.getAttribute('data-tipo-conferencista') === value;
-
-						tab.classList.toggle('active', isActive);
-						tab.setAttribute(
-							'aria-selected',
-							isActive ? 'true' : 'false'
-						);
-					});
-
-				input.value = value;
-				input.dispatchEvent(new Event('change', {
-					bubbles: true
-				}));
-
-				triggerDrupalAjax(form);
+				applyCountryFilter(value);
 			});
 		});
+
+		const activeButton = document.querySelector(
+			'.du-docentes-tabs__button.active'
+		);
+
+		const initialValue = activeButton
+			? activeButton.dataset.tipoConferencista
+			: 'internacional';
+
+		applyCountryFilter(initialValue);
 	}
 
 	Drupal.behaviors.docentesFilter = {
 		attach: function (context) {
 			initCountryTabs(context);
-			
+
 			once('docentesFilter', 'form[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]', context).forEach(function (form) {
 				normalizeSelectOptions(form);
 				initSearchInput(form);
