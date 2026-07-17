@@ -92,3 +92,55 @@ span.du-btn__link{
 .tipoT:hover{
   background-color:#F07F16;
 }
+
+/**************************************************************************************/
+
+.du-congreso__card-speakers {
+  align-items: flex-start;
+}
+
+.du-congreso__speaker-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+}
+
+.du-congreso__speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #111827;
+  font: inherit;
+  cursor: pointer;
+}
+
+.du-congreso__speaker-name {
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.du-congreso__speaker:hover .du-congreso__speaker-name,
+.du-congreso__speaker:focus-visible .du-congreso__speaker-name {
+  color: #1477f8;
+  text-decoration-color: currentColor;
+}
+
+.du-congreso__speaker:focus-visible {
+  outline: 2px solid #1477f8;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.du-congreso__speaker-separator {
+  margin-right: 2px;
+}
