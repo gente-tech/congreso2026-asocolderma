@@ -841,3 +841,21 @@ body.du-patrocinador-is-open {
     gap: 15px;
   }
 }
+
+.du-sponsor-teacher__country {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  color: #11182c;
+  font-size: 13px;
+}
+
+.du-sponsor-teacher__country strong {
+  font-weight: 800;
+}
+
+.du-sponsor-teacher__country [class*="du-icon__flag-"] {
+  display: inline-block;
+  flex: 0 0 auto;
+}
