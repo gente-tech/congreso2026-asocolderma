@@ -22,6 +22,13 @@ function dermau_core_theme($existing, $type, $theme, $path)
       ],
       'template' => 'dermau-slider-block',
     ],
+     'patrocinadores_page' => [
+      'variables' => [
+        'patrocinadores' => [],
+      ],
+      'template' => 'patrocinadores-page',
+      'path' => $path . '/templates',
+    ],
     'dermau_programas_block' => [
       'variables' => [
         'programas' => NULL,
