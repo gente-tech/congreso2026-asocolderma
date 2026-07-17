@@ -5,6 +5,11 @@ dermau_core.patrocinadores_settings:
     intro_text:
       type: text
       label: 'Texto introductorio'
+
+    plano_imagen_fid:
+      type: integer
+      label: 'ID de la imagen del plano'
+
     plano_pdf_fid:
       type: integer
       label: 'ID del PDF del plano'
