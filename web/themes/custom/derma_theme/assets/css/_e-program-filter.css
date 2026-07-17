@@ -1,4 +1,4 @@
-.du-programs-container{
+.du-programs-container {
     display: flex;
     justify-content: start;
     align-items: start;
@@ -6,11 +6,12 @@
     gap: 40px;
 }
 
-.du-programs-grid__item, .du-programs-item{
-  width: 100%;
-  min-width: 250px;
-  max-width: 330px;
-  /*flex:1;*/
+.du-programs-grid__item,
+.du-programs-item {
+    width: 100%;
+    min-width: 250px;
+    max-width: 330px;
+    /*flex:1;*/
 }
 
 .du-pagination {
@@ -27,7 +28,7 @@
     list-style: none;
 }
 
-.du-pagination li.pager__item a{
+.du-pagination li.pager__item a {
     width: 28px;
     min-width: 28px;
     height: 28px;
@@ -35,9 +36,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-	text-decoration: none;
+    text-decoration: none;
     font-size: 16px;
-	border:none;
+    border: none;
     color: var(--du-color-primary);
 }
 
@@ -46,7 +47,7 @@
     color: var(--du-color-primary);
 }
 
-.du-pagination li.pager__item.is-active a{
+.du-pagination li.pager__item.is-active a {
     background: var(--du-color-primary);
     color: white;
 }
@@ -55,19 +56,19 @@
     display: block;
     padding: 0;
     margin: 0;
-	font-size:0;
+    font-size: 0;
 }
 
-.du-pagination li.pager__item--next a::before{
-  content:"›";
-  font-size:25px;
-  margin-top: -5px;
+.du-pagination li.pager__item--next a::before {
+    content: "›";
+    font-size: 25px;
+    margin-top: -5px;
 }
 
-.du-pagination li.pager__item--last  a::before{
-  content:"»";
-  font-size:25px;
-  margin-top: -5px;
+.du-pagination li.pager__item--last a::before {
+    content: "»";
+    font-size: 25px;
+    margin-top: -5px;
 }
 
 .du-programs-message {
@@ -78,10 +79,81 @@
     font-weight: 400;
 }
 
-.view-dermau-programas-catalogo {  min-height: 43vh; }
+.view-dermau-programas-catalogo {
+    min-height: 43vh;
+}
 
 @media (max-width: 768px) {
-  .du-programs-container {
-    justify-content: center;
-  }
+    .du-programs-container {
+        justify-content: center;
+    }
+}
+
+/* Pestañas de conferencistas por procedencia */
+.du-docentes-tabs {
+    width: 100%;
+    padding: 7px 20px;
+    background-color: var(--du-color-blue);
+}
+
+.du-docentes-tabs__container {
+    width: 100%;
+    max-width: var(--du-max-width);
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.du-docentes-tabs__button {
+    appearance: none;
+    flex: 1;
+    min-height: 60px;
+    padding: 12px 20px;
+    border: 0;
+    border-radius: 8px;
+    background-color: transparent;
+    color: white;
+    font-family: inherit;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.du-docentes-tabs__button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.du-docentes-tabs__button.active {
+    background-color: var(--du-color-primary);
+    color: white;
+}
+
+.du-docentes-tabs__divider {
+    flex: 0 0 1px;
+    width: 1px;
+    height: 40px;
+    margin: 0 8px;
+    background-color: rgba(255, 255, 255, 0.85);
+}
+
+@media (max-width: 768px) {
+    .du-docentes-tabs {
+        padding: 6px 10px;
+    }
+
+    .du-docentes-tabs__button {
+        min-height: 50px;
+        padding: 10px 8px;
+        font-size: 17px;
+    }
+
+    .du-docentes-tabs__divider {
+        height: 34px;
+        margin: 0 4px;
+    }
 }
