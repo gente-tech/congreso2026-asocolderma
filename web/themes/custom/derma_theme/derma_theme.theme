@@ -456,9 +456,26 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
       $row['docente_url'] = $docente->toUrl()->toString();
       $row['pais_conferencista'] = $pais_conferencista;
       $row['pais_conferencista_nombre'] = $nombres_paises[strtoupper($pais_conferencista)] ?? strtoupper($pais_conferencista);
-      $row['conferencias_relacionadas'] = array_values(
+      $conferencias_relacionadas = array_values(
         $conferencias_docentes[$docente->id()] ?? []
       );
+
+      usort(
+        $conferencias_relacionadas,
+        static function (array $a, array $b): int {
+          $fecha_a = $a['dia'] ?? '';
+          $fecha_b = $b['dia'] ?? '';
+
+          if ($fecha_a === $fecha_b) {
+            return strcmp($a['hora'] ?? '', $b['hora'] ?? '');
+          }
+
+          return strcmp($fecha_a, $fecha_b);
+        }
+      );
+
+      $row['conferencias_relacionadas'] = $conferencias_relacionadas;
+      $row['fecha_evento_inicial'] = $conferencias_relacionadas[0]['dia'] ?? '';
 
       $row['tipo_conferencista'] = $pais_conferencista === 'co'
         ? 'nacional'
