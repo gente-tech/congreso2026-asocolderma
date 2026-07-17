@@ -27,3 +27,11 @@ dermau_core.programa_interesado_export_download:
     _title: "Descargar Excel"
   requirements:
     _permission: "exportar registros programa interesado"
+
+dermau_core.patrocinadores:
+  path: '/patrocinadores'
+  defaults:
+    _controller: '\Drupal\dermau_core\Controller\PatrocinadoresController::page'
+    _title: 'Patrocinadores del Congreso'
+  requirements:
+    _permission: 'access content'
