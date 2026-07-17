@@ -223,6 +223,9 @@
 
                       <button class="du-congreso__card-trigger">
                         <div class="du-congreso__card-header">
+                          <span class="tag-outline" data-tag="{{ evento_encontrado.field_tipo_evento.entity.tid.value }}">
+                            {{ evento_encontrado.field_tipo_evento.entity.name.value }}
+                          </span>
                           <span class="tag-outline" data-tag="{{ evento_encontrado.field_tematica_evento.entity.tid.value }}">
                             {{ evento_encontrado.field_tematica_evento.entity.name.value }}
                           </span>
