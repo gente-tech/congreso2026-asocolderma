@@ -445,3 +445,26 @@ function dermau_core_update_11002(): string {
 
   return 'Campo Simposios vinculados creado en Convenio.';
 }
+
+/**
+ * Crea la configuración inicial de patrocinadores.
+ */
+function dermau_core_update_11003(): string {
+  $config = \Drupal::configFactory()
+    ->getEditable('dermau_core.patrocinadores_settings');
+
+  if ($config->get('intro_text') === NULL) {
+    $config->set(
+      'intro_text',
+      'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.',
+    );
+  }
+
+  if ($config->get('plano_pdf_fid') === NULL) {
+    $config->set('plano_pdf_fid', 0);
+  }
+
+  $config->save();
+
+  return 'Configuración inicial de patrocinadores creada.';
+}
