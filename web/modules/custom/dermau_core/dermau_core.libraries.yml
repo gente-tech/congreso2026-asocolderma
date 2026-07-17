@@ -43,3 +43,14 @@ registro_exitoso_modal:
   dependencies:
     - core/drupal
     - core/once
+
+patrocinadores:
+  version: 1.x
+  css:
+    theme:
+      css/patrocinadores.css: {}
+  js:
+    js/patrocinadores.js: {}
+  dependencies:
+    - core/drupal
+    - core/once
