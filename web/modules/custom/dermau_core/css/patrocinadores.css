@@ -645,3 +645,199 @@ body.du-patrocinador-is-open {
     margin-top: 5px;
   }
 }
+
+/* ============================================================
+   ENCABEZADO POPUP PATROCINADOR
+   ============================================================ */
+
+.du-sponsor-detail__header {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr);
+  gap: 38px;
+  align-items: center;
+  margin-bottom: 36px;
+  padding: 8px 0 34px;
+  border-bottom: 1px solid #e3e9ef;
+  text-align: left;
+}
+
+.du-sponsor-detail__logo-wrapper {
+  display: flex;
+  width: 100%;
+  min-height: 210px;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  border: 1px solid #dfe6ed;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 10px 30px rgba(21, 39, 68, 0.08);
+}
+
+.du-sponsor-detail__logo {
+  display: block;
+  width: auto !important;
+  max-width: 100% !important;
+  height: auto !important;
+  max-height: 150px !important;
+  object-fit: contain;
+}
+
+.du-sponsor-detail__logo-placeholder {
+  display: flex;
+  width: 115px;
+  height: 115px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #e8f7f8;
+  color: #0c99a4;
+  font-size: 48px;
+  font-weight: 800;
+}
+
+.du-sponsor-detail__heading {
+  min-width: 0;
+}
+
+.du-sponsor-detail__eyebrow {
+  display: inline-flex;
+  margin-bottom: 9px;
+  color: #0b929d;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.du-sponsor-detail__title {
+  margin: 0;
+  color: #ed111c;
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800;
+  line-height: 1.08;
+}
+
+.du-sponsor-detail__badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px;
+  margin-top: 17px;
+}
+
+.du-sponsor-detail__badge {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  border: 1px solid #ef3e47;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #e51d28;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.du-sponsor-detail__badge svg {
+  flex: 0 0 auto;
+}
+
+.du-sponsor-detail__metadata {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-top: 20px;
+}
+
+.du-sponsor-detail__metadata-item {
+  display: grid;
+  gap: 3px;
+}
+
+.du-sponsor-detail__metadata-label {
+  color: #7a8594;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.du-sponsor-detail__metadata-item strong {
+  color: #18243c;
+  font-size: 14px;
+}
+
+.du-sponsor-detail__description {
+  max-width: 760px;
+  margin-top: 20px;
+  color: #536071;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.du-sponsor-detail__website {
+  display: inline-flex;
+  min-height: 38px;
+  align-items: center;
+  gap: 7px;
+  margin-top: 18px;
+  padding: 8px 15px;
+  border-radius: 20px;
+  background: #0d9ca6;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.du-sponsor-detail__website:hover,
+.du-sponsor-detail__website:focus-visible {
+  background: #087d85;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+@media (max-width: 760px) {
+  .du-sponsor-detail__header {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .du-sponsor-detail__logo-wrapper {
+    min-height: 150px;
+  }
+
+  .du-sponsor-detail__logo {
+    max-height: 110px !important;
+  }
+
+  .du-sponsor-detail__badges {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 480px) {
+  .du-sponsor-detail__header {
+    padding-bottom: 26px;
+  }
+
+  .du-sponsor-detail__logo-wrapper {
+    padding: 20px;
+  }
+
+  .du-sponsor-detail__title {
+    font-size: 29px;
+  }
+
+  .du-sponsor-detail__badge {
+    white-space: normal;
+  }
+
+  .du-sponsor-detail__metadata {
+    gap: 15px;
+  }
+}
