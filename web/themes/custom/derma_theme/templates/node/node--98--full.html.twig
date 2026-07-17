@@ -268,8 +268,6 @@
                                     type="button"
                                     class="du-congreso__speaker js-conferencista-modal-open"
                                     data-conferencista-id="{{ docente.id }}"
-                                    aria-haspopup="dialog"
-                                    aria-controls="conferencista-modal-{{ docente.id }}"
                                   >
                                     <span class="du-congreso__speaker-name">
                                       {{ docente.label }}
@@ -279,13 +277,12 @@
                                       <span
                                         class="du-icon__flag-{{ pais|clean_class }}"
                                         title="{{ pais }}"
-                                        aria-label="{{ pais }}"
                                       ></span>
                                     {% endif %}
                                   </button>
                           
                                   {% if not loop.last %}
-                                    <span class="du-congreso__speaker-separator" aria-hidden="true">,</span>
+                                    <span class="du-congreso__speaker-separator">,</span>
                                   {% endif %}
                                 {% endif %}
                               {% endfor %}
