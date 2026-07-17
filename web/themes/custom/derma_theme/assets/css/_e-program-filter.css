@@ -1,161 +1,161 @@
 .du-programs-container {
-    display: flex;
-    justify-content: start;
-    align-items: start;
-    flex-wrap: wrap;
-    gap: 40px;
+  display: flex;
+  justify-content: start;
+  align-items: start;
+  flex-wrap: wrap;
+  gap: 40px;
 }
 
 .du-programs-grid__item,
 .du-programs-item {
-    width: 100%;
-    min-width: 250px;
-    max-width: 330px;
-    /*flex:1;*/
+  width: 100%;
+  min-width: 250px;
+  max-width: 330px;
+  /*flex:1;*/
 }
 
 .du-pagination {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
 .du-pagination nav ul {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  list-style: none;
 }
 
 .du-pagination li.pager__item a {
-    width: 28px;
-    min-width: 28px;
-    height: 28px;
-    border-radius: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-decoration: none;
-    font-size: 16px;
-    border: none;
-    color: var(--du-color-primary);
+  width: 28px;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-decoration: none;
+  font-size: 16px;
+  border: none;
+  color: var(--du-color-primary);
 }
 
 .du-pagination li.pager__item a:hover {
-    background: color-mix(in srgb, var(--du-color-primary) 30%, transparent);
-    color: var(--du-color-primary);
+  background: color-mix(in srgb, var(--du-color-primary) 30%, transparent);
+  color: var(--du-color-primary);
 }
 
 .du-pagination li.pager__item.is-active a {
-    background: var(--du-color-primary);
-    color: white;
+  background: var(--du-color-primary);
+  color: white;
 }
 
 .du-pagination li.pager__item a span {
-    display: block;
-    padding: 0;
-    margin: 0;
-    font-size: 0;
+  display: block;
+  padding: 0;
+  margin: 0;
+  font-size: 0;
 }
 
 .du-pagination li.pager__item--next a::before {
-    content: "›";
-    font-size: 25px;
-    margin-top: -5px;
+  content: "›";
+  font-size: 25px;
+  margin-top: -5px;
 }
 
 .du-pagination li.pager__item--last a::before {
-    content: "»";
-    font-size: 25px;
-    margin-top: -5px;
+  content: "»";
+  font-size: 25px;
+  margin-top: -5px;
 }
 
 .du-programs-message {
-    padding: 50px;
-    text-align: center;
-    font-size: 18px;
-    color: var(--du-color-text-black);
-    font-weight: 400;
+  padding: 50px;
+  text-align: center;
+  font-size: 18px;
+  color: var(--du-color-text-black);
+  font-weight: 400;
 }
 
 .view-dermau-programas-catalogo {
-    min-height: 43vh;
+  min-height: 43vh;
 }
 
 @media (max-width: 768px) {
-    .du-programs-container {
-        justify-content: center;
-    }
+  .du-programs-container {
+    justify-content: center;
+  }
 }
 
 /* Pestañas de conferencistas por procedencia */
 .du-docentes-tabs {
-    width: 100%;
-    padding: 7px 20px;
-    background-color: var(--du-color-blue);
+  width: 100%;
+  padding: 7px 20px;
+  background-color: var(--du-color-blue);
 }
 
 .du-docentes-tabs__container {
-    width: 100%;
-    max-width: var(--du-max-width);
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
+  width: 100%;
+  max-width: var(--du-max-width);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .du-docentes-tabs__button {
-    appearance: none;
-    flex: 1;
-    min-height: 60px;
-    padding: 12px 20px;
-    border: 0;
-    border-radius: 8px;
-    background-color: transparent;
-    color: white;
-    font-family: inherit;
-    font-size: 24px;
-    font-weight: 700;
-    line-height: 1.2;
-    text-align: center;
-    cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease;
+  appearance: none;
+  flex: 1;
+  min-height: 60px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 8px;
+  background-color: transparent;
+  color: white;
+  font-family: inherit;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .du-docentes-tabs__button:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .du-docentes-tabs__button.active {
-    background-color: var(--du-color-primary);
-    color: white;
+  background-color: var(--du-color-primary);
+  color: white;
 }
 
 .du-docentes-tabs__divider {
-    flex: 0 0 1px;
-    width: 1px;
-    height: 40px;
-    margin: 0 8px;
-    background-color: rgba(255, 255, 255, 0.85);
+  flex: 0 0 1px;
+  width: 1px;
+  height: 40px;
+  margin: 0 8px;
+  background-color: rgba(255, 255, 255, 0.85);
 }
 
 @media (max-width: 768px) {
-    .du-docentes-tabs {
-        padding: 6px 10px;
-    }
+  .du-docentes-tabs {
+    padding: 6px 10px;
+  }
 
-    .du-docentes-tabs__button {
-        min-height: 50px;
-        padding: 10px 8px;
-        font-size: 17px;
-    }
+  .du-docentes-tabs__button {
+    min-height: 50px;
+    padding: 10px 8px;
+    font-size: 17px;
+  }
 
-    .du-docentes-tabs__divider {
-        height: 34px;
-        margin: 0 4px;
-    }
+  .du-docentes-tabs__divider {
+    height: 34px;
+    margin: 0 4px;
+  }
 }
 
 /* Menú superior de la vista de conferencistas */
@@ -398,12 +398,102 @@
   display: none;
 }
 
-[data-docentes-active-tab="internacional"]
-.du-programs-item[data-tipo-conferencista="internacional"] {
+[data-docentes-active-tab="internacional"] .du-programs-item[data-tipo-conferencista="internacional"] {
   display: block;
 }
 
-[data-docentes-active-tab="nacional"]
-.du-programs-item[data-tipo-conferencista="nacional"] {
+[data-docentes-active-tab="nacional"] .du-programs-item[data-tipo-conferencista="nacional"] {
   display: block;
+}
+
+/* Búsqueda avanzada de conferencistas */
+.du-docentes-advanced-search {
+  padding: 18px 20px 28px;
+  background-color: white;
+}
+
+.du-docentes-advanced-search__container {
+  max-width: var(--du-max-width);
+  margin: 0 auto;
+  padding: 14px;
+  border: 1px solid var(--du-color-gray-02);
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 1px 1px 4px 2px rgba(0, 0, 0, 0.09);
+}
+
+.du-docentes-advanced-search__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 12px;
+  color: #e21b23;
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.du-docentes-advanced-search__title span {
+  color: var(--du-color-primary);
+  font-size: 18px;
+}
+
+.du-docentes-advanced-search__filters {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.du-docentes-filter {
+  display: block;
+}
+
+.du-docentes-filter select {
+  width: 100%;
+  min-height: 42px;
+  padding: 8px 38px 8px 14px;
+  border: 0;
+  border-radius: 22px;
+  outline: none;
+  background-color: #e8f4ff;
+  color: #001038;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.du-docentes-filter select:focus {
+  box-shadow: 0 0 0 2px var(--du-color-primary);
+}
+
+.du-docentes-advanced-search__empty {
+  margin: 18px 0 0;
+  padding: 15px;
+  border-radius: 8px;
+  background-color: #fff3f3;
+  color: #b00020;
+  text-align: center;
+  font-size: 14px;
+}
+
+.du-docentes-view-menu button.du-btn-opt {
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 992px) {
+  .du-docentes-advanced-search__filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .du-docentes-advanced-search {
+    padding-inline: 10px;
+  }
+
+  .du-docentes-advanced-search__filters {
+    grid-template-columns: 1fr;
+  }
 }

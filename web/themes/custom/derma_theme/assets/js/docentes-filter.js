@@ -260,9 +260,196 @@
 		applyCountryFilter(initialValue);
 	}
 
+	function sortSearchResults() {
+		const container = document.querySelector('.du-programs-container');
+
+		if (!container) {
+			return;
+		}
+
+		const cards = Array.from(
+			container.querySelectorAll('.du-programs-item')
+		);
+
+		cards.sort(function (cardA, cardB) {
+			const visibleEventA = cardA.querySelector(
+				'.du-card__expert-conference:not([hidden])'
+			);
+
+			const visibleEventB = cardB.querySelector(
+				'.du-card__expert-conference:not([hidden])'
+			);
+
+			const dateA = visibleEventA
+				? visibleEventA.dataset.eventoFecha || '9999-12-31'
+				: '9999-12-31';
+
+			const dateB = visibleEventB
+				? visibleEventB.dataset.eventoFecha || '9999-12-31'
+				: '9999-12-31';
+
+			return dateA.localeCompare(dateB);
+		});
+
+		cards.forEach(function (card) {
+			container.appendChild(card);
+		});
+	}
+
+	function applyAdvancedSearch() {
+		const panel = document.querySelector(
+			'[data-docentes-search-panel]'
+		);
+
+		if (!panel || panel.hidden) {
+			return;
+		}
+
+		const tipo = panel.querySelector(
+			'[data-docentes-filter="tipo"]'
+		)?.value || '';
+
+		const tematica = panel.querySelector(
+			'[data-docentes-filter="tematica"]'
+		)?.value || '';
+
+		const sala = panel.querySelector(
+			'[data-docentes-filter="sala"]'
+		)?.value || '';
+
+		const docente = panel.querySelector(
+			'[data-docentes-filter="docente"]'
+		)?.value || '';
+
+		const cards = document.querySelectorAll('.du-programs-item');
+		let visibleCards = 0;
+
+		cards.forEach(function (card) {
+			const docenteMatch =
+				!docente || card.dataset.docenteId === docente;
+
+			let visibleEvents = 0;
+
+			card
+				.querySelectorAll('.du-card__expert-conference')
+				.forEach(function (event) {
+					const tipoMatch =
+						!tipo || event.dataset.eventoTipo === tipo;
+
+					const tematicaMatch =
+						!tematica || event.dataset.eventoTematica === tematica;
+
+					const salaMatch =
+						!sala || event.dataset.eventoSala === sala;
+
+					const isVisible =
+						docenteMatch
+						&& tipoMatch
+						&& tematicaMatch
+						&& salaMatch;
+
+					event.hidden = !isVisible;
+
+					if (isVisible) {
+						visibleEvents++;
+					}
+				});
+
+			const cardIsVisible = docenteMatch && visibleEvents > 0;
+
+			card.style.display = cardIsVisible ? 'block' : 'none';
+
+			if (cardIsVisible) {
+				visibleCards++;
+			}
+		});
+
+		const emptyMessage = document.querySelector(
+			'[data-docentes-search-empty]'
+		);
+
+		if (emptyMessage) {
+			emptyMessage.hidden = visibleCards > 0;
+		}
+
+		sortSearchResults();
+	}
+
+	function applyDocentesView(mode) {
+		const isSearch = mode === 'search';
+
+		const searchPanel = document.querySelector(
+			'[data-docentes-search-panel]'
+		);
+
+		const countryTabs = document.querySelector('.du-docentes-tabs');
+
+		if (searchPanel) {
+			searchPanel.hidden = !isSearch;
+		}
+
+		if (countryTabs) {
+			countryTabs.hidden = isSearch;
+		}
+
+		document
+			.querySelectorAll('[data-docentes-view]')
+			.forEach(function (button) {
+				const isActive = button.dataset.docentesView === mode;
+
+				button.classList.toggle('active', isActive);
+				button.setAttribute(
+					'aria-selected',
+					isActive ? 'true' : 'false'
+				);
+			});
+
+		if (isSearch) {
+			applyAdvancedSearch();
+			return;
+		}
+
+		document
+			.querySelectorAll('.du-card__expert-conference')
+			.forEach(function (event) {
+				event.hidden = false;
+			});
+
+		const activeCountry = document.querySelector(
+			'.du-docentes-tabs__button.active'
+		);
+
+		applyCountryFilter(
+			activeCountry
+				? activeCountry.dataset.tipoConferencista
+				: 'internacional'
+		);
+	}
+
+	function initAdvancedSearch(context) {
+		once(
+			'docentesViewMode',
+			'[data-docentes-view]',
+			context
+		).forEach(function (button) {
+			button.addEventListener('click', function () {
+				applyDocentesView(button.dataset.docentesView);
+			});
+		});
+
+		once(
+			'docentesAdvancedFilter',
+			'[data-docentes-search-panel] select[data-docentes-filter]',
+			context
+		).forEach(function (select) {
+			select.addEventListener('change', applyAdvancedSearch);
+		});
+	}
+
 	Drupal.behaviors.docentesFilter = {
 		attach: function (context) {
 			initCountryTabs(context);
+			initAdvancedSearch(context);
 
 			once('docentesFilter', 'form[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]', context).forEach(function (form) {
 				normalizeSelectOptions(form);
