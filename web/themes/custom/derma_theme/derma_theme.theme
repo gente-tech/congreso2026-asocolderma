@@ -277,6 +277,89 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
     $paises_docentes = [];
     $nombres_paises = \Drupal::service('country_manager')->getList();
 
+    $conferencias_docentes = [];
+
+    $evento_ids = \Drupal::entityQuery('node')
+      ->condition('type', 'evento')
+      ->condition('status', 1)
+      ->accessCheck(TRUE)
+      ->execute();
+
+    $eventos = \Drupal\node\Entity\Node::loadMultiple($evento_ids);
+
+    $salas = [
+      'sala_1' => 'Sala 1',
+      'sala_2' => 'Sala 2',
+      'sala_3' => 'Sala 3',
+    ];
+
+    foreach ($eventos as $evento) {
+      $tipo_evento = '';
+
+      if (
+        $evento->hasField('field_tipo_evento')
+        && !$evento->get('field_tipo_evento')->isEmpty()
+        && $evento->get('field_tipo_evento')->entity
+      ) {
+        $tipo_evento = $evento
+          ->get('field_tipo_evento')
+          ->entity
+          ->label();
+      }
+
+      $tematica_evento = '';
+
+      if (
+        $evento->hasField('field_tematica_evento')
+        && !$evento->get('field_tematica_evento')->isEmpty()
+        && $evento->get('field_tematica_evento')->entity
+      ) {
+        $tematica_evento = $evento
+          ->get('field_tematica_evento')
+          ->entity
+          ->label();
+      }
+
+      $sala_value = $evento->get('field_sala_evento')->value ?? '';
+      $sala_evento = $salas[$sala_value] ?? $sala_value;
+      $dia_evento = $evento->get('field_dia_evento')->value ?? '';
+
+      $conferencias = $evento
+        ->get('field_listado_conferencias')
+        ->referencedEntities();
+
+      foreach (
+        $evento->get('field_conferencistas_del_evento')->referencedEntities()
+        as $conferencista_item
+      ) {
+        $docente = $conferencista_item
+          ->get('field_conferencista')
+          ->entity;
+
+        if (!$docente) {
+          continue;
+        }
+
+        foreach ($conferencias as $conferencia) {
+          $clave = $evento->id() . '-' . $conferencia->id();
+
+          $conferencias_docentes[$docente->id()][$clave] = [
+            'titulo' => $conferencia
+              ->get('field_titulo_conferencia')
+              ->value ?? '',
+            'hora' => $conferencia
+              ->get('field_hora_conferencia')
+              ->value ?? '',
+            'tipo' => $tipo_evento,
+            'tematica' => $tematica_evento,
+            'sala' => $sala_evento,
+            'sala_clase' => str_replace('_', '-', $sala_value),
+            'dia' => $dia_evento,
+          ];
+        }
+      }
+    }
+
     foreach ($country_query->execute() as $country_row) {
       $docente_id = (int) $country_row->docente_id;
       $pais = strtolower(trim((string) $country_row->pais));
@@ -341,9 +424,10 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
       $row['programas_relacionados'] = $programas;
       $row['docente_url'] = $docente->toUrl()->toString();
       $row['pais_conferencista'] = $pais_conferencista;
-      $row['pais_conferencista_nombre'] = $nombres_paises[
-        strtoupper($pais_conferencista)
-      ] ?? strtoupper($pais_conferencista);
+      $row['pais_conferencista_nombre'] = $nombres_paises[strtoupper($pais_conferencista)] ?? strtoupper($pais_conferencista);
+      $row['conferencias_relacionadas'] = array_values(
+        $conferencias_docentes[$docente->id()] ?? []
+      );
 
       $row['tipo_conferencista'] = $pais_conferencista === 'co'
         ? 'nacional'
