@@ -962,3 +962,24 @@ dialog.du-conferencista-modal::backdrop {
     margin-top: 3px;
   }
 }
+
+.du-congreso__event-date {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 25px;
+  padding: 4px 9px;
+
+  border: 1px solid #07101f;
+  border-radius: 14px;
+
+  background: #07101f;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
