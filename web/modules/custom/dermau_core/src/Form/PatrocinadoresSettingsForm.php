@@ -56,7 +56,11 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
   ): array {
     $config = $this->config(self::CONFIG_NAME);
 
-    $pdf_fid = (int) (
+    $plano_imagen_fid = (int) (
+      $config->get('plano_imagen_fid') ?? 0
+    );
+
+    $plano_pdf_fid = (int) (
       $config->get('plano_pdf_fid') ?? 0
     );
 
@@ -69,16 +73,31 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       ),
       '#rows' => 4,
       '#required' => TRUE,
+    ];
+
+    $form['plano_imagen'] = [
+      '#type' => 'managed_file',
+      '#title' => $this->t('Plano general en imagen'),
+      '#default_value' => $plano_imagen_fid
+        ? [$plano_imagen_fid]
+        : [],
+      '#upload_location' => 'public://patrocinadores/planos',
+      '#upload_validators' => [
+        'FileExtension' => [
+          'extensions' => 'png jpg jpeg webp',
+        ],
+      ],
+      '#multiple' => FALSE,
       '#description' => $this->t(
-        'Texto mostrado debajo del título Patrocinadores del Congreso.'
+        'Imagen mostrada debajo de la grilla de patrocinadores.'
       ),
     ];
 
     $form['plano_pdf'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Plano completo en PDF'),
-      '#default_value' => $pdf_fid
-        ? [$pdf_fid]
+      '#default_value' => $plano_pdf_fid
+        ? [$plano_pdf_fid]
         : [],
       '#upload_location' => 'public://patrocinadores/planos',
       '#upload_validators' => [
@@ -88,7 +107,7 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       ],
       '#multiple' => FALSE,
       '#description' => $this->t(
-        'PDF descargable que aparecerá debajo del mapa en todos los patrocinadores.'
+        'Archivo descargable mostrado debajo del plano.'
       ),
     ];
 
@@ -104,18 +123,68 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
   ): void {
     $config = $this->config(self::CONFIG_NAME);
 
-    $previous_fid = (int) (
+    $previous_image_fid = (int) (
+      $config->get('plano_imagen_fid') ?? 0
+    );
+
+    $previous_pdf_fid = (int) (
       $config->get('plano_pdf_fid') ?? 0
     );
 
-    $uploaded_files = (array) $form_state->getValue(
+    $image_value = (array) $form_state->getValue(
+      'plano_imagen'
+    );
+
+    $pdf_value = (array) $form_state->getValue(
       'plano_pdf'
     );
 
-    $new_fid = !empty($uploaded_files[0])
-      ? (int) $uploaded_files[0]
+    $new_image_fid = !empty($image_value[0])
+      ? (int) $image_value[0]
       : 0;
 
+    $new_pdf_fid = !empty($pdf_value[0])
+      ? (int) $pdf_value[0]
+      : 0;
+
+    $this->persistManagedFile(
+      $previous_image_fid,
+      $new_image_fid,
+      'patrocinadores_plano_imagen',
+    );
+
+    $this->persistManagedFile(
+      $previous_pdf_fid,
+      $new_pdf_fid,
+      'patrocinadores_plano_pdf',
+    );
+
+    $config
+      ->set(
+        'intro_text',
+        trim((string) $form_state->getValue('intro_text')),
+      )
+      ->set(
+        'plano_imagen_fid',
+        $new_image_fid,
+      )
+      ->set(
+        'plano_pdf_fid',
+        $new_pdf_fid,
+      )
+      ->save();
+
+    parent::submitForm(
+      $form,
+      $form_state,
+    );
+  }
+
+  private function persistManagedFile(
+    int $previous_fid,
+    int $new_fid,
+    string $usage_type,
+  ): void {
     if (
       $previous_fid > 0
       && $previous_fid !== $new_fid
@@ -126,7 +195,7 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
         $this->fileUsage->delete(
           $previous_file,
           'dermau_core',
-          'patrocinadores_plano',
+          $usage_type,
           1,
         );
       }
@@ -145,27 +214,11 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
         $this->fileUsage->add(
           $new_file,
           'dermau_core',
-          'patrocinadores_plano',
+          $usage_type,
           1,
         );
       }
     }
-
-    $config
-      ->set(
-        'intro_text',
-        trim((string) $form_state->getValue('intro_text')),
-      )
-      ->set(
-        'plano_pdf_fid',
-        $new_fid,
-      )
-      ->save();
-
-    parent::submitForm(
-      $form,
-      $form_state,
-    );
   }
 
 }
