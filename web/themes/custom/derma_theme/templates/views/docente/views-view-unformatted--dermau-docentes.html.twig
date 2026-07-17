@@ -16,6 +16,69 @@
 	{% set hay_filtros = true %}
 {% endif %}
 
+<section class="du-docentes-advanced-search" data-docentes-search-panel hidden>
+	<div class="du-docentes-advanced-search__container">
+
+		<div class="du-docentes-advanced-search__title">
+			<span aria-hidden="true">▽</span>
+			Filtrar conferencista
+		</div>
+
+		<div class="du-docentes-advanced-search__filters">
+
+			<label class="du-docentes-filter">
+				<span class="visually-hidden">Tipo de evento</span>
+				<select data-docentes-filter="tipo">
+					<option value="">Tipos</option>
+
+					{% for value, label in filtros_conferencias.tipos|default([]) %}
+						<option value="{{ value }}">{{ label }}</option>
+					{% endfor %}
+				</select>
+			</label>
+
+			<label class="du-docentes-filter">
+				<span class="visually-hidden">Temática</span>
+				<select data-docentes-filter="tematica">
+					<option value="">Temas</option>
+
+					{% for value, label in filtros_conferencias.tematicas|default([]) %}
+						<option value="{{ value }}">{{ label }}</option>
+					{% endfor %}
+				</select>
+			</label>
+
+			<label class="du-docentes-filter">
+				<span class="visually-hidden">Sala</span>
+				<select data-docentes-filter="sala">
+					<option value="">Salas</option>
+
+					{% for value, label in filtros_conferencias.salas|default([]) %}
+						<option value="{{ value }}">{{ label }}</option>
+					{% endfor %}
+				</select>
+			</label>
+
+			<label class="du-docentes-filter">
+				<span class="visually-hidden">Conferencista</span>
+				<select data-docentes-filter="docente">
+					<option value="">Conferencistas</option>
+
+					{% for value, label in filtros_conferencias.docentes|default([]) %}
+						<option value="{{ value }}">{{ label }}</option>
+					{% endfor %}
+				</select>
+			</label>
+
+		</div>
+
+		<p class="du-docentes-advanced-search__empty" data-docentes-search-empty hidden>
+			No se encontraron conferencistas con los filtros seleccionados.
+		</p>
+
+	</div>
+</section>
+
 <section class="du-generic-swiper du-swiper-program" data-inline="small">
 	<div class="du-generic-swiper__container du-swiper-program__container">
 		{% if hay_filtros %}
