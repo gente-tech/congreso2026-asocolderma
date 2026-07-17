@@ -1,5 +1,5 @@
 (function (Drupal, once) {
-	
+
 	function getSubmitButton(form) {
 		if (!form) return null;
 
@@ -83,7 +83,7 @@
 			if (!nativeSelect || !title) return;
 			const currentValue = nativeSelect.value || 'All';
 			const selectedOption = nativeSelect.querySelector('option[value="' + CSS.escape(currentValue) + '"]');
-			if (selectedOption &&selectedOption.textContent.trim() !== '' &&selectedOption.textContent.trim() !== '- Any -') {
+			if (selectedOption && selectedOption.textContent.trim() !== '' && selectedOption.textContent.trim() !== '- Any -') {
 				title.textContent = selectedOption.textContent.trim();
 				title.setAttribute('data-value', currentValue);
 			} else if (target === 'field_universidad_target_id') {
@@ -98,107 +98,156 @@
 
 
 
-function getProgramasForm(element) {
-	if (!element) return null;
-	const form = element.closest('form');
-	if (!form) return null;
-	if (form.matches('[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]') ||form.querySelector('[data-drupal-selector="edit-submit-dermau-docentes"]')) {
-		return form;
+	function getProgramasForm(element) {
+		if (!element) return null;
+		const form = element.closest('form');
+		if (!form) return null;
+		if (form.matches('[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]') || form.querySelector('[data-drupal-selector="edit-submit-dermau-docentes"]')) {
+			return form;
+		}
+		return null;
 	}
-	return null;
-}
 
-function bindDocumentEvents() {
-	if (document.body.dataset.programasFilterBound === 'true') {
-		return;
-	}
-	document.body.dataset.programasFilterBound = 'true';
-	document.addEventListener('click', function (e) {
-		const header = e.target.closest('.du-seach__content .du-filter-down[data-target] .du-filter-down__header');
-		if (header) {
-			e.preventDefault();
-			e.stopPropagation();
-			const currentFilter = header.closest('.du-filter-down');
-			if (!currentFilter) return;
-			document.querySelectorAll('.du-seach__content .du-filter-down[data-target]').forEach(function (filter) {
-				if (filter !== currentFilter) {
-					filter.classList.remove('active');
-					filter.classList.remove('open');
-				}
-			});
-			const willOpen = !currentFilter.classList.contains('active');
-			currentFilter.classList.toggle('active', willOpen);
-			currentFilter.classList.toggle('open', willOpen);
+	function bindDocumentEvents() {
+		if (document.body.dataset.programasFilterBound === 'true') {
 			return;
 		}
-		const item = e.target.closest('.du-seach__content .du-filter-down[data-target] .du-filter-down__options li');
-		if (item) {
-			e.preventDefault();
-			e.stopPropagation();
-			const filter = item.closest('.du-filter-down');
-			const form = getProgramasForm(item);
-			if (!filter || !form) return;
-			const target = filter.getAttribute('data-target');
-			const nativeSelect = form.querySelector('select[name="' + target + '"]');
-			const title = filter.querySelector('.du-filter-down__title');
-			if (!nativeSelect || !title) return;
-			const rawValue = item.getAttribute('data-value');
-			const value = rawValue === null || rawValue === '' ? 'All' : rawValue;
-			const text = item.textContent.trim();
-			if (nativeSelect.value === value && title.textContent.trim() === text) {
-				filter.classList.remove('active');
-				filter.classList.remove('open');
+		document.body.dataset.programasFilterBound = 'true';
+		document.addEventListener('click', function (e) {
+			const header = e.target.closest('.du-seach__content .du-filter-down[data-target] .du-filter-down__header');
+			if (header) {
+				e.preventDefault();
+				e.stopPropagation();
+				const currentFilter = header.closest('.du-filter-down');
+				if (!currentFilter) return;
+				document.querySelectorAll('.du-seach__content .du-filter-down[data-target]').forEach(function (filter) {
+					if (filter !== currentFilter) {
+						filter.classList.remove('active');
+						filter.classList.remove('open');
+					}
+				});
+				const willOpen = !currentFilter.classList.contains('active');
+				currentFilter.classList.toggle('active', willOpen);
+				currentFilter.classList.toggle('open', willOpen);
 				return;
 			}
-			nativeSelect.value = value;
-			nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-			title.textContent = text;
-			title.setAttribute('data-value', value);
-			filter.classList.remove('active');
-			filter.classList.remove('open');
-			triggerDrupalAjax(form);
-			return;
-		}
-		if (!e.target.closest('.du-seach__content .du-filter-down[data-target]')) {
+			const item = e.target.closest('.du-seach__content .du-filter-down[data-target] .du-filter-down__options li');
+			if (item) {
+				e.preventDefault();
+				e.stopPropagation();
+				const filter = item.closest('.du-filter-down');
+				const form = getProgramasForm(item);
+				if (!filter || !form) return;
+				const target = filter.getAttribute('data-target');
+				const nativeSelect = form.querySelector('select[name="' + target + '"]');
+				const title = filter.querySelector('.du-filter-down__title');
+				if (!nativeSelect || !title) return;
+				const rawValue = item.getAttribute('data-value');
+				const value = rawValue === null || rawValue === '' ? 'All' : rawValue;
+				const text = item.textContent.trim();
+				if (nativeSelect.value === value && title.textContent.trim() === text) {
+					filter.classList.remove('active');
+					filter.classList.remove('open');
+					return;
+				}
+				nativeSelect.value = value;
+				nativeSelect.dispatchEvent(new Event('change', { bubbles: true }));
+				title.textContent = text;
+				title.setAttribute('data-value', value);
+				filter.classList.remove('active');
+				filter.classList.remove('open');
+				triggerDrupalAjax(form);
+				return;
+			}
+			if (!e.target.closest('.du-seach__content .du-filter-down[data-target]')) {
 				closeAllProgramFilters(document);
-		}
-	});
+			}
+		});
 
-	document.addEventListener('input', function (e) {
-		const input = e.target.closest('.du-seach__content input[name="title"]');
-		if (!input) return;
-		const form = getProgramasForm(input);
-		if (!form) return;
-		clearTimeout(input._duSearchTimeout);
-		input._duSearchTimeout = setTimeout(function () { triggerDrupalAjax(form); }, 500);
-	});
-
-	document.addEventListener('keydown', function (e) {
-		const input = e.target.closest('.du-seach__content input[name="title"]');
-		if (!input) return;
-		if (e.key === 'Enter') {
-			e.preventDefault();
-			clearTimeout(input._duSearchTimeout);
+		document.addEventListener('input', function (e) {
+			const input = e.target.closest('.du-seach__content input[name="title"]');
+			if (!input) return;
 			const form = getProgramasForm(input);
 			if (!form) return;
-			triggerDrupalAjax(form);
-		}
-	});
+			clearTimeout(input._duSearchTimeout);
+			input._duSearchTimeout = setTimeout(function () { triggerDrupalAjax(form); }, 500);
+		});
 
-	if (window.jQuery) {
-		window.jQuery(document).ajaxComplete(function () {
-			normalizeSelectOptions(document);
-			initSearchInput(document);
-			syncCustomFilters(document);
-			closeAllProgramFilters(document);
-			refreshProgramSwiper();
+		document.addEventListener('keydown', function (e) {
+			const input = e.target.closest('.du-seach__content input[name="title"]');
+			if (!input) return;
+			if (e.key === 'Enter') {
+				e.preventDefault();
+				clearTimeout(input._duSearchTimeout);
+				const form = getProgramasForm(input);
+				if (!form) return;
+				triggerDrupalAjax(form);
+			}
+		});
+
+		if (window.jQuery) {
+			window.jQuery(document).ajaxComplete(function () {
+				normalizeSelectOptions(document);
+				initSearchInput(document);
+				syncCustomFilters(document);
+				closeAllProgramFilters(document);
+				refreshProgramSwiper();
+			});
+		}
+	}
+
+	function initCountryTabs(context) {
+		once(
+			'docentesCountryTabs',
+			'.du-docentes-tabs__button',
+			context
+		).forEach(function (button) {
+			button.addEventListener('click', function () {
+				const value = button.getAttribute('data-tipo-conferencista');
+
+				const form = document.querySelector(
+					'form[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]'
+				);
+
+				if (!form || !value) {
+					return;
+				}
+
+				const input = form.querySelector(
+					'input[name="tipo_conferencista"]'
+				);
+
+				if (!input || input.value === value) {
+					return;
+				}
+
+				document
+					.querySelectorAll('.du-docentes-tabs__button')
+					.forEach(function (tab) {
+						const isActive =
+							tab.getAttribute('data-tipo-conferencista') === value;
+
+						tab.classList.toggle('active', isActive);
+						tab.setAttribute(
+							'aria-selected',
+							isActive ? 'true' : 'false'
+						);
+					});
+
+				input.value = value;
+				input.dispatchEvent(new Event('change', {
+					bubbles: true
+				}));
+
+				triggerDrupalAjax(form);
+			});
 		});
 	}
-}
 
-
-Drupal.behaviors.docentesFilter = {
+	Drupal.behaviors.docentesFilter = {
 		attach: function (context) {
+			initCountryTabs(context);
+			
 			once('docentesFilter', 'form[data-drupal-selector="views-exposed-form-dermau-docentes-page-1"]', context).forEach(function (form) {
 				normalizeSelectOptions(form);
 				initSearchInput(form);
@@ -207,6 +256,6 @@ Drupal.behaviors.docentesFilter = {
 
 			bindDocumentEvents();
 		}
-};
+	};
 
 })(Drupal, once);

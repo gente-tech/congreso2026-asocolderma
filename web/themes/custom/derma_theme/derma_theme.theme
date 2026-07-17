@@ -211,6 +211,20 @@ function derma_theme_preprocess_views_view(array &$variables)
 
     unset($variables['header']);
   }
+  if ($view->id() === 'dermau_docentes' && $view->current_display === 'page_1') {
+    $tipo_conferencista = strtolower(trim(
+      (string) \Drupal::request()->query->get(
+        'tipo_conferencista',
+        'internacional'
+      )
+    ));
+
+    if (!in_array($tipo_conferencista, ['internacional', 'nacional'], TRUE)) {
+      $tipo_conferencista = 'internacional';
+    }
+
+    $variables['tipo_conferencista'] = $tipo_conferencista;
+  }
 }
 
 function derma_theme_preprocess_views_view_unformatted(array &$variables)

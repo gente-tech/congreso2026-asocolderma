@@ -3,50 +3,69 @@
     dom_id ? 'js-view-dom-id-' ~ dom_id,
   ]
 %}
-<div{{ attributes.addClass(classes) }}>
-  {{ title_prefix }}
-  {% if title %}
-    {{ title }}
-  {% endif %}
-  {{ title_suffix }}
 
-  {% if header %}
-    {{ header }}
-  {% endif %}
+<div{{attributes.addClass(classes)}}>
+	{{ title_prefix }}
 
-  {% if exposed %}
-    {{ exposed }}
-  {% endif %}
+	{% if title %}
+		{{ title }}
+	{% endif %}
 
-  {% if attachment_before %}
-    {{ attachment_before }}
-  {% endif %}
+	{{ title_suffix }}
 
-  {% if rows %}
-    {{ rows }}
-  {% elseif empty %}
-    {{ empty }}
-  {% endif %}
+	{% if header %}
+		{{ header }}
+	{% endif %}
 
-  {% if pager %}
-    <div class="du-pagination">
-      {{ pager }}
-    </div>
-  {% endif %}
+	<nav class="du-docentes-tabs" aria-label="Tipo de conferencista">
+		<div class="du-docentes-tabs__container" role="tablist">
 
-  {% if attachment_after %}
-    {{ attachment_after }}
-  {% endif %}
+			<button type="button" class="du-docentes-tabs__button{{ tipo_conferencista == 'internacional' ? ' active' : '' }}" data-tipo-conferencista="internacional" role="tab" aria-selected="{{ tipo_conferencista == 'internacional' ? 'true' : 'false' }}">
+				Internacionales
+			</button>
 
-  {% if more %}
-    {{ more }}
-  {% endif %}
+			<span class="du-docentes-tabs__divider" aria-hidden="true"></span>
 
-  {% if footer %}
-    {{ footer }}
-  {% endif %}
+			<button type="button" class="du-docentes-tabs__button{{ tipo_conferencista == 'nacional' ? ' active' : '' }}" data-tipo-conferencista="nacional" role="tab" aria-selected="{{ tipo_conferencista == 'nacional' ? 'true' : 'false' }}">
+				Nacionales
+			</button>
 
-  {% if feed_icons %}
-    {{ feed_icons }}
-  {% endif %}
+		</div>
+	</nav>
+
+	{% if exposed %}
+		{{ exposed }}
+	{% endif %}
+
+	{% if attachment_before %}
+		{{ attachment_before }}
+	{% endif %}
+
+	{% if rows %}
+		{{ rows }}
+	{% elseif empty %}
+		{{ empty }}
+	{% endif %}
+
+	{% if pager %}
+		<div class="du-pagination">
+			{{ pager }}
+		</div>
+	{% endif %}
+
+	{% if attachment_after %}
+		{{ attachment_after }}
+	{% endif %}
+
+	{% if more %}
+		{{ more }}
+	{% endif %}
+
+	{% if footer %}
+		{{ footer }}
+	{% endif %}
+
+	{% if feed_icons %}
+		{{ feed_icons }}
+	{% endif %}
 </div>

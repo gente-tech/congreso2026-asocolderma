@@ -12,20 +12,20 @@
 
 			<div class="du-seach__filters">
 				<div class="du-filter-native" style="display:none;">
-         {% if form.field_universidad_target_id is defined %}
-            {{ form.field_universidad_target_id }}
-         {% endif %}
+					{% if form.field_universidad_target_id is defined %}
+						{{ form.field_universidad_target_id }}
+					{% endif %}
 
-           {% if form.tipo_programa_docente is defined %}
-            {{ form.tipo_programa_docente }}
-          {% elseif form.field_tipo_de_programa_target_id is defined %}
-            {{ form.field_tipo_de_programa_target_id }}
-          {% endif %}
+					{% if form.tipo_programa_docente is defined %}
+						{{ form.tipo_programa_docente }}
+					{% elseif form.field_tipo_de_programa_target_id is defined %}
+						{{ form.field_tipo_de_programa_target_id }}
+					{% endif %}
 
-	
+
 				</div>
 
-					{% if form.field_universidad_target_id is defined %}
+				{% if form.field_universidad_target_id is defined %}
 					{% set universidad_options = form.field_universidad_target_id['#options']|default([]) %}
 					{% set universidad_selected = form.field_universidad_target_id['#value']|default('All') %}
 					{% set universidad_label = 'Todas las universidades' %}
@@ -97,6 +97,10 @@
 			</div>
 
 			<div style="display:none;">
+				{% if form.tipo_conferencista is defined %}
+					{{ form.tipo_conferencista }}
+				{% endif %}
+
 				{{ form.actions }}
 				{{ form.form_build_id }}
 				{{ form.form_token }}
