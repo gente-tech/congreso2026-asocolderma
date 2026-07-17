@@ -468,3 +468,19 @@ function dermau_core_update_11003(): string {
 
   return 'Configuración inicial de patrocinadores creada.';
 }
+
+/**
+ * Agrega la imagen global del plano.
+ */
+function dermau_core_update_11004(): string {
+  $config = \Drupal::configFactory()
+    ->getEditable('dermau_core.patrocinadores_settings');
+
+  if ($config->get('plano_imagen_fid') === NULL) {
+    $config->set('plano_imagen_fid', 0);
+  }
+
+  $config->save();
+
+  return 'Configuración de imagen global del plano creada.';
+}
