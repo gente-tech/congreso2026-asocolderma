@@ -1,0 +1,171 @@
+<section class="du-patrocinadores">
+  <div class="du-patrocinadores__container">
+
+    <header class="du-patrocinadores__header">
+      <span class="du-patrocinadores__eyebrow">
+        Congreso 2026
+      </span>
+
+      <h1 class="du-patrocinadores__title">
+        Patrocinadores del Congreso
+      </h1>
+
+      <p class="du-patrocinadores__description">
+        Conoce las organizaciones que apoyan el desarrollo académico,
+        científico y profesional del Congreso.
+      </p>
+    </header>
+
+    {% if patrocinadores %}
+
+      <div class="du-patrocinadores__toolbar">
+        <label
+          for="du-patrocinadores-search"
+          class="visually-hidden"
+        >
+          Buscar patrocinador
+        </label>
+
+        <div class="du-patrocinadores__search">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle
+              cx="11"
+              cy="11"
+              r="7"
+              stroke="currentColor"
+              stroke-width="1.8"
+            />
+            <path
+              d="M16.5 16.5L21 21"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+            />
+          </svg>
+
+          <input
+            id="du-patrocinadores-search"
+            type="search"
+            class="du-patrocinadores__search-input"
+            placeholder="Buscar patrocinador..."
+            autocomplete="off"
+          >
+        </div>
+
+        <span class="du-patrocinadores__counter">
+          {{ patrocinadores|length }}
+          patrocinadores
+        </span>
+      </div>
+
+      <div
+        class="du-patrocinadores__grid"
+        data-patrocinadores-grid
+      >
+        {% for patrocinador in patrocinadores %}
+          <article
+            class="du-patrocinadores__card"
+            data-patrocinador-card
+            data-patrocinador-name="{{ patrocinador.nombre|lower|escape('html_attr') }}"
+          >
+            <button
+              type="button"
+              class="du-patrocinadores__card-button js-patrocinador-open"
+              data-patrocinador-id="{{ patrocinador.id }}"
+              aria-label="Ver información de {{ patrocinador.nombre }}"
+            >
+              <div class="du-patrocinadores__logo-wrapper">
+                {% if patrocinador.logo_url %}
+                  <img
+                    class="du-patrocinadores__logo"
+                    src="{{ patrocinador.logo_url }}"
+                    alt="{{ patrocinador.logo_alt }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="du-patrocinadores__logo-placeholder">
+                    {{ patrocinador.nombre|slice(0, 1)|upper }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <h2 class="du-patrocinadores__name">
+                {{ patrocinador.nombre }}
+              </h2>
+
+              <span class="du-patrocinadores__action">
+                Ver detalle
+
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M5 12H19"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M13 6L19 12L13 18"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+            </button>
+          </article>
+        {% endfor %}
+      </div>
+
+      <div
+        class="du-patrocinadores__empty"
+        data-patrocinadores-empty
+        hidden
+      >
+        No se encontraron patrocinadores.
+      </div>
+
+    {% else %}
+
+      <div class="du-patrocinadores__empty">
+        No hay patrocinadores disponibles.
+      </div>
+
+    {% endif %}
+
+    <dialog
+      id="du-patrocinador-modal"
+      class="du-patrocinador-modal"
+      aria-label="Información del patrocinador"
+    >
+      <div class="du-patrocinador-modal__surface">
+        <button
+          type="button"
+          class="du-patrocinador-modal__close"
+          data-patrocinador-close
+          aria-label="Cerrar"
+        >
+          ×
+        </button>
+
+        <div
+          class="du-patrocinador-modal__content"
+          data-patrocinador-modal-content
+        ></div>
+      </div>
+    </dialog>
+
+  </div>
+</section>
