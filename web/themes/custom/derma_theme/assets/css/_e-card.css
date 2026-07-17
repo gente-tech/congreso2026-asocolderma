@@ -382,3 +382,25 @@
   }
 
 }
+
+.du-card__expert-country {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 5px;
+  color: var(--du-color-text-black);
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.du-card__expert-country [class*="du-icon__flag-"] {
+  flex: 0 0 20px;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+}
+
+.du-card__expert-country [class*="du-icon__flag-"] img {
+  width: 20px !important;
+  height: 20px !important;
+}
