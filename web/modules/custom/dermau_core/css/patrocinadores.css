@@ -234,13 +234,132 @@
 
 /* Modal base. Se completa en el siguiente átomo. */
 
-.du-patrocinador-modal {
-  width: min(1050px, calc(100vw - 24px));
-  max-width: 1050px;
-  max-height: calc(100vh - 24px);
+/* ============================================================
+   MODAL CENTRADO EN TODA LA PANTALLA
+   ============================================================ */
+
+dialog.du-patrocinador-modal {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999;
+
+  width: 100vw !important;
+  max-width: none !important;
+  height: 100vh !important;
+  max-height: none !important;
+
+  margin: 0 !important;
+  padding: 20px !important;
+
+  border: 0 !important;
+  background: transparent !important;
+
+  box-sizing: border-box;
+  overflow: hidden !important;
+}
+
+dialog.du-patrocinador-modal:not([open]) {
+  display: none !important;
+}
+
+dialog.du-patrocinador-modal[open] {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+dialog.du-patrocinador-modal::backdrop {
+  background: rgba(5, 15, 39, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+/* Caja blanca interna */
+.du-patrocinador-modal__surface {
+  position: relative;
+
+  width: min(1120px, 100%);
+  max-width: 1120px;
+
+  max-height: calc(100vh - 40px);
+
+  padding: 48px 32px 32px;
+
+  border: 6px solid #17213f;
+  border-radius: 12px;
+
+  background: #ffffff;
+  box-shadow: 0 24px 70px rgba(5, 15, 39, 0.35);
+
+  box-sizing: border-box;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* Botón cerrar */
+.du-patrocinador-modal__close {
+  position: sticky;
+  top: 0;
+  float: right;
+  z-index: 10;
+
+  display: flex;
+  width: 34px;
+  height: 34px;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-top: -32px;
+  margin-right: -16px;
+
   padding: 0;
-  border: 0;
-  background: transparent;
+
+  border: 1px solid #149ba6;
+  border-radius: 50%;
+
+  background: #ffffff;
+  color: #149ba6;
+
+  font-size: 24px;
+  line-height: 1;
+
+  cursor: pointer;
+}
+
+html.du-patrocinador-is-open,
+body.du-patrocinador-is-open {
+  overflow: hidden !important;
+}
+
+@media (max-width: 760px) {
+  dialog.du-patrocinador-modal {
+    padding: 10px !important;
+  }
+
+  .du-patrocinador-modal__surface {
+    width: 100%;
+    max-height: calc(100vh - 20px);
+
+    padding: 48px 20px 24px;
+
+    border-width: 4px;
+  }
+
+  .du-patrocinador-modal__close {
+    margin-right: -6px;
+  }
+}
+
+@media (max-width: 480px) {
+  dialog.du-patrocinador-modal {
+    padding: 5px !important;
+  }
+
+  .du-patrocinador-modal__surface {
+    max-height: calc(100vh - 10px);
+    padding: 46px 14px 20px;
+  }
 }
 
 .du-patrocinador-modal::backdrop {
@@ -248,16 +367,7 @@
   backdrop-filter: blur(3px);
 }
 
-.du-patrocinador-modal__surface {
-  position: relative;
-  min-height: 300px;
-  max-height: calc(100vh - 24px);
-  padding: 48px 32px 32px;
-  border: 6px solid #17213f;
-  border-radius: 10px;
-  background: #fff;
-  overflow-y: auto;
-}
+
 
 .du-patrocinador-modal__close {
   position: absolute;
