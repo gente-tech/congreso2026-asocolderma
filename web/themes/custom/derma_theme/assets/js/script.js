@@ -433,6 +433,136 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function initConferencistaModals() {
+  const triggers = document.querySelectorAll(
+    '.js-conferencista-modal-open'
+  );
+
+  const modals = document.querySelectorAll(
+    '.du-conferencista-modal'
+  );
+
+  if (!triggers.length || !modals.length) {
+    return;
+  }
+
+  let activeTrigger = null;
+
+  function blockPageScroll() {
+    document.documentElement.classList.add('du-modal-is-open');
+    document.body.classList.add('du-modal-is-open');
+  }
+
+  function restorePageScroll() {
+    document.documentElement.classList.remove('du-modal-is-open');
+    document.body.classList.remove('du-modal-is-open');
+
+    // Evita conflicto con las cards de agenda.
+    document.body.style.overflow = 'auto';
+  }
+
+  function openModal(trigger) {
+    const modalId = trigger.dataset.modalTarget;
+    const modal = document.getElementById(modalId);
+
+    if (!modal) {
+      console.warn(
+        'No se encontró el modal del conferencista:',
+        modalId
+      );
+
+      return;
+    }
+
+    activeTrigger = trigger;
+
+    if (typeof modal.showModal === 'function') {
+      modal.showModal();
+    }
+    else {
+      modal.setAttribute('open', 'open');
+    }
+
+    blockPageScroll();
+
+    const closeButton = modal.querySelector(
+      '[data-modal-close]'
+    );
+
+    if (closeButton) {
+      window.requestAnimationFrame(() => {
+        closeButton.focus();
+      });
+    }
+  }
+
+  function closeModal(modal, restoreFocus = true) {
+    if (!modal) {
+      return;
+    }
+
+    if (typeof modal.close === 'function' && modal.open) {
+      modal.close();
+    }
+    else {
+      modal.removeAttribute('open');
+    }
+
+    restorePageScroll();
+
+    if (restoreFocus && activeTrigger) {
+      activeTrigger.focus();
+    }
+
+    activeTrigger = null;
+  }
+
+  triggers.forEach((trigger) => {
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      openModal(trigger);
+    });
+  });
+
+  modals.forEach((modal) => {
+    const closeButtons = modal.querySelectorAll(
+      '[data-modal-close]'
+    );
+
+    closeButtons.forEach((closeButton) => {
+      closeButton.addEventListener('click', () => {
+        closeModal(modal);
+      });
+    });
+
+    // Cerrar al hacer clic en el fondo oscuro.
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
+        closeModal(modal);
+      }
+    });
+
+    // El evento cancel se dispara al presionar Escape.
+    modal.addEventListener('cancel', (event) => {
+      event.preventDefault();
+      closeModal(modal);
+    });
+
+    modal.addEventListener('close', () => {
+      restorePageScroll();
+    });
+
+    modal
+      .querySelectorAll('.js-conferencista-event-link')
+      .forEach((eventLink) => {
+        eventLink.addEventListener('click', () => {
+          closeModal(modal, false);
+        });
+      });
+  });
+}
 
   document.addEventListener('DOMContentLoaded', function () {
     deduplicarSelect('simposio');
@@ -444,5 +574,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initFiltrosBusqueda();
     initFiltrosAgenda();
     initCalendarTabs();
+    initConferencistaModals();
   });
 })();
