@@ -5,17 +5,22 @@ declare(strict_types=1);
 namespace Drupal\dermau_core\Controller;
 
 use Drupal\Core\Cache\Cache;
+use Drupal\Core\Cache\CacheableResponse;
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\File\FileUrlGeneratorInterface;
 use Drupal\Core\Language\LanguageInterface;
 use Drupal\Core\Language\LanguageManagerInterface;
+use Drupal\Core\Render\RendererInterface;
 use Drupal\file\FileInterface;
 use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
- * Controlador de la página pública de patrocinadores.
+ * Controlador público de patrocinadores.
  */
 final class PatrocinadoresController extends ControllerBase {
 
@@ -26,6 +31,7 @@ final class PatrocinadoresController extends ControllerBase {
     private readonly EntityTypeManagerInterface $entityTypeManagerService,
     private readonly FileUrlGeneratorInterface $fileUrlGeneratorService,
     private readonly LanguageManagerInterface $languageManagerService,
+    private readonly RendererInterface $rendererService,
   ) {}
 
   /**
@@ -36,76 +42,45 @@ final class PatrocinadoresController extends ControllerBase {
       $container->get('entity_type.manager'),
       $container->get('file_url_generator'),
       $container->get('language_manager'),
+      $container->get('renderer'),
     );
   }
 
   /**
-   * Renderiza la página de patrocinadores.
+   * Página principal.
    */
   public function page(): array {
     $node_storage = $this->entityTypeManagerService
       ->getStorage('node');
 
-    $query = $node_storage
+    $node_ids = $node_storage
       ->getQuery()
       ->accessCheck(TRUE)
       ->condition('type', 'convenio')
       ->condition('status', NodeInterface::PUBLISHED)
       ->condition('field_activo', 1)
       ->sort('field_orden_visualizacon', 'ASC')
-      ->sort('title', 'ASC');
-
-    $node_ids = $query->execute();
+      ->sort('title', 'ASC')
+      ->execute();
 
     $nodes = $node_ids
       ? $node_storage->loadMultiple($node_ids)
       : [];
 
-    $language_id = $this->languageManagerService
-      ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
-      ->getId();
-
     $patrocinadores = [];
     $cache_tags = ['node_list:convenio'];
 
     foreach ($nodes as $node) {
-      if (
-        $node->hasTranslation($language_id)
-        && $node->getTranslation($language_id)->isPublished()
-      ) {
-        $node = $node->getTranslation($language_id);
+      if (!$node instanceof NodeInterface) {
+        continue;
       }
 
-      $logo_url = '';
-      $logo_alt = $node->label();
-
-      if (
-        $node->hasField('field_logo')
-        && !$node->get('field_logo')->isEmpty()
-      ) {
-        $logo_item = $node->get('field_logo')->first();
-        $logo_file = $logo_item?->entity;
-        $logo_values = $logo_item?->getValue() ?? [];
-
-        if ($logo_file instanceof FileInterface) {
-          $logo_url = $this->fileUrlGeneratorService
-            ->generateString($logo_file->getFileUri());
-        }
-
-        $configured_alt = trim(
-          (string) ($logo_values['alt'] ?? '')
-        );
-
-        if ($configured_alt !== '') {
-          $logo_alt = $configured_alt;
-        }
-      }
+      $node = $this->getCurrentTranslation($node);
 
       $patrocinadores[] = [
         'id' => (int) $node->id(),
         'nombre' => $node->label(),
-        'logo_url' => $logo_url,
-        'logo_alt' => $logo_alt,
+        'logo' => $this->getImageData($node, 'field_logo'),
       ];
 
       $cache_tags = Cache::mergeTags(
@@ -130,6 +105,317 @@ final class PatrocinadoresController extends ControllerBase {
         ],
       ],
     ];
+  }
+
+  /**
+   * Contenido HTML del popup.
+   */
+  public function detail(NodeInterface $convenio): Response {
+    if (
+      $convenio->bundle() !== 'convenio'
+      || !$convenio->isPublished()
+      || !$convenio->access('view')
+      || (
+        $convenio->hasField('field_activo')
+        && !$convenio->get('field_activo')->value
+      )
+    ) {
+      throw new NotFoundHttpException();
+    }
+
+    $convenio = $this->getCurrentTranslation($convenio);
+
+    $cache_dependencies = [$convenio];
+
+    $programas = $this->getProgramas(
+      $convenio,
+      $cache_dependencies,
+    );
+
+    $docentes = $this->getDocentes(
+      $convenio,
+      $cache_dependencies,
+    );
+
+    $patrocinador = [
+      'id' => (int) $convenio->id(),
+      'nombre' => $convenio->label(),
+      'logo' => $this->getImageData(
+        $convenio,
+        'field_logo',
+        $cache_dependencies,
+      ),
+      'descripcion' => $this->getFieldValue(
+        $convenio,
+        'field_descripcion_corta_convenio',
+      ),
+      'ano_fundacion' => $this->getFieldValue(
+        $convenio,
+        'field_ano_de_funcacion',
+      ),
+      'ciudad' => $this->getFieldValue(
+        $convenio,
+        'field_ciudad_convenio',
+      ),
+      'stand' => $this->getFieldValue(
+        $convenio,
+        'field_numero_stand',
+      ),
+      'piso' => $this->getFieldValue(
+        $convenio,
+        'field_piso_stand',
+      ),
+      'ubicacion' => $this->getImageData(
+        $convenio,
+        'field_ubicacion_stand',
+        $cache_dependencies,
+      ),
+      'link' => $this->getLinkData($convenio),
+      'programas' => $programas,
+      'programas_count' => count($programas),
+      'docentes' => $docentes,
+      'docentes_count' => count($docentes),
+    ];
+
+    $build = [
+      '#theme' => 'patrocinador_modal',
+      '#patrocinador' => $patrocinador,
+    ];
+
+    $html = (string) $this->rendererService->renderRoot($build);
+
+    $response = new CacheableResponse($html);
+
+    foreach ($cache_dependencies as $dependency) {
+      if ($dependency instanceof EntityInterface) {
+        $response->addCacheableDependency($dependency);
+      }
+    }
+
+    $response->headers->set(
+      'Content-Type',
+      'text/html; charset=UTF-8',
+    );
+
+    return $response;
+  }
+
+  /**
+   * Traducción actual.
+   */
+  private function getCurrentTranslation(
+    NodeInterface $node,
+  ): NodeInterface {
+    $language_id = $this->languageManagerService
+      ->getCurrentLanguage(LanguageInterface::TYPE_CONTENT)
+      ->getId();
+
+    if ($node->hasTranslation($language_id)) {
+      return $node->getTranslation($language_id);
+    }
+
+    return $node;
+  }
+
+  /**
+   * Valor simple.
+   */
+  private function getFieldValue(
+    NodeInterface $node,
+    string $field_name,
+  ): string {
+    if (
+      !$node->hasField($field_name)
+      || $node->get($field_name)->isEmpty()
+    ) {
+      return '';
+    }
+
+    return trim((string) $node->get($field_name)->value);
+  }
+
+  /**
+   * Imagen.
+   */
+  private function getImageData(
+    NodeInterface $node,
+    string $field_name,
+    array &$cache_dependencies = [],
+  ): array {
+    if (
+      !$node->hasField($field_name)
+      || $node->get($field_name)->isEmpty()
+    ) {
+      return [];
+    }
+
+    $item = $node->get($field_name)->first();
+    $file = $item?->entity;
+
+    if (!$file instanceof FileInterface) {
+      return [];
+    }
+
+    $cache_dependencies[] = $file;
+
+    $values = $item->getValue();
+
+    return [
+      'url' => $this->fileUrlGeneratorService
+        ->generateString($file->getFileUri()),
+      'alt' => trim((string) ($values['alt'] ?? ''))
+        ?: $node->label(),
+      'title' => trim((string) ($values['title'] ?? '')),
+      'width' => (int) ($values['width'] ?? 0),
+      'height' => (int) ($values['height'] ?? 0),
+    ];
+  }
+
+  /**
+   * Link externo.
+   */
+  private function getLinkData(NodeInterface $node): array {
+    if (
+      !$node->hasField('field_link')
+      || $node->get('field_link')->isEmpty()
+    ) {
+      return [];
+    }
+
+    $item = $node->get('field_link')->first();
+
+    try {
+      return [
+        'url' => $item->getUrl()->toString(),
+        'title' => trim((string) $item->title)
+          ?: 'Visitar sitio web',
+      ];
+    }
+    catch (\Throwable) {
+      return [];
+    }
+  }
+
+  /**
+   * Programas vinculados.
+   */
+  private function getProgramas(
+    NodeInterface $convenio,
+    array &$cache_dependencies,
+  ): array {
+    if (
+      !$convenio->hasField('field_programas_vinculados_conve')
+      || $convenio
+        ->get('field_programas_vinculados_conve')
+        ->isEmpty()
+    ) {
+      return [];
+    }
+
+    $programas = [];
+
+    foreach (
+      $convenio
+        ->get('field_programas_vinculados_conve')
+        ->referencedEntities() as $programa
+    ) {
+      if (
+        !$programa instanceof NodeInterface
+        || !$programa->isPublished()
+        || !$programa->access('view')
+      ) {
+        continue;
+      }
+
+      $programa = $this->getCurrentTranslation($programa);
+      $cache_dependencies[] = $programa;
+
+      $programas[] = [
+        'id' => (int) $programa->id(),
+        'nombre' => $programa->label(),
+        'url' => $programa->toUrl()->toString(),
+      ];
+    }
+
+    return $programas;
+  }
+
+  /**
+   * Docentes vinculados.
+   */
+  private function getDocentes(
+    NodeInterface $convenio,
+    array &$cache_dependencies,
+  ): array {
+    if (
+      !$convenio->hasField('field_docentes_vinculados')
+      || $convenio
+        ->get('field_docentes_vinculados')
+        ->isEmpty()
+    ) {
+      return [];
+    }
+
+    $docentes = [];
+
+    foreach (
+      $convenio
+        ->get('field_docentes_vinculados')
+        ->referencedEntities() as $docente
+    ) {
+      if (
+        !$docente instanceof NodeInterface
+        || !$docente->isPublished()
+        || !$docente->access('view')
+      ) {
+        continue;
+      }
+
+      $docente = $this->getCurrentTranslation($docente);
+      $cache_dependencies[] = $docente;
+
+      $especialidad = '';
+
+      if (
+        $docente->hasField('field_especialidad')
+        && !$docente->get('field_especialidad')->isEmpty()
+        && $docente->get('field_especialidad')->entity
+      ) {
+        $especialidad_entity = $docente
+          ->get('field_especialidad')
+          ->entity;
+
+        $especialidad = $especialidad_entity->label();
+        $cache_dependencies[] = $especialidad_entity;
+      }
+
+      $perfil = $this->getFieldValue(
+        $docente,
+        'field_perfil_profesional',
+      );
+
+      $docentes[] = [
+        'id' => (int) $docente->id(),
+        'nombre' => $docente->label(),
+        'foto' => $this->getImageData(
+          $docente,
+          'field_foto_docente',
+          $cache_dependencies,
+        ),
+        'especialidad' => $especialidad,
+        'perfil' => $perfil,
+        'perfil_resumen' => mb_strimwidth(
+          $perfil,
+          0,
+          220,
+          '…',
+          'UTF-8',
+        ),
+        'url' => $docente->toUrl()->toString(),
+      ];
+    }
+
+    return $docentes;
   }
 
 }
