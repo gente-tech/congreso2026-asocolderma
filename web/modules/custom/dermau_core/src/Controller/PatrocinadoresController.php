@@ -18,6 +18,8 @@ use Drupal\node\NodeInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Drupal\Component\Utility\Html;
+use Drupal\Core\Locale\CountryManagerInterface;
 
 /**
  * Controlador público de patrocinadores.
@@ -32,6 +34,7 @@ final class PatrocinadoresController extends ControllerBase {
     private readonly FileUrlGeneratorInterface $fileUrlGeneratorService,
     private readonly LanguageManagerInterface $languageManagerService,
     private readonly RendererInterface $rendererService,
+    private readonly CountryManagerInterface $countryManagerService,
   ) {}
 
   /**
@@ -43,6 +46,7 @@ final class PatrocinadoresController extends ControllerBase {
       $container->get('file_url_generator'),
       $container->get('language_manager'),
       $container->get('renderer'),
+      $container->get('country_manager'),
     );
   }
 
@@ -127,12 +131,7 @@ final class PatrocinadoresController extends ControllerBase {
 
     $cache_dependencies = [$convenio];
 
-    $simposios = $this->getSimposios(
-      $convenio,
-      $cache_dependencies,
-    );
-
-    $docentes = $this->getDocentes(
+    $relaciones = $this->getEventosYConferencistas(
       $convenio,
       $cache_dependencies,
     );
@@ -171,10 +170,10 @@ final class PatrocinadoresController extends ControllerBase {
         $cache_dependencies,
       ),
       'link' => $this->getLinkData($convenio),
-      'simposios' => $simposios,
-      'simposios_count' => count($simposios),
-      'docentes' => $docentes,
-      'docentes_count' => count($docentes),
+      'eventos' => $relaciones['eventos'],
+      'eventos_count' => count($relaciones['eventos']),
+      'docentes' => $relaciones['docentes'],
+      'docentes_count' => count($relaciones['docentes']),
     ];
 
     $build = [
@@ -605,6 +604,251 @@ private function getEventTime(NodeInterface $evento): string {
     gmdate('g:i', $from),
     gmdate('g:i A', $to),
   );
+}
+
+  /**
+ * Obtiene eventos y conferencistas desde field_programas_vinculados_conve.
+ */
+private function getEventosYConferencistas(
+  NodeInterface $convenio,
+  array &$cache_dependencies,
+): array {
+  if (
+    !$convenio->hasField('field_programas_vinculados_conve')
+    || $convenio
+      ->get('field_programas_vinculados_conve')
+      ->isEmpty()
+  ) {
+    return [
+      'eventos' => [],
+      'docentes' => [],
+    ];
+  }
+
+  $salas = [
+    'sala_1' => 'Sala 1',
+    'sala_2' => 'Sala 2',
+    'sala_3' => 'Sala 3',
+  ];
+
+  $eventos = [];
+  $docentes = [];
+
+  foreach (
+    $convenio
+      ->get('field_programas_vinculados_conve')
+      ->referencedEntities() as $evento
+  ) {
+    if (
+      !$evento instanceof NodeInterface
+      || $evento->bundle() !== 'evento'
+      || !$evento->isPublished()
+      || !$evento->access('view')
+    ) {
+      continue;
+    }
+
+    $evento = $this->getCurrentTranslation($evento);
+    $cache_dependencies[] = $evento;
+
+    $tipo = $this->getReferenceLabel(
+      $evento,
+      'field_tipo_evento',
+      $cache_dependencies,
+    );
+
+    $tematica = $this->getReferenceLabel(
+      $evento,
+      'field_tematica_evento',
+      $cache_dependencies,
+    );
+
+    $sala_key = $this->getFieldValue(
+      $evento,
+      'field_sala_evento',
+    );
+
+    $fecha_value = $this->getFieldValue(
+      $evento,
+      'field_dia_evento',
+    );
+
+    $eventos[] = [
+      'id' => (int) $evento->id(),
+      'nombre' => $evento->label(),
+      'descripcion' => $this->getFieldValue(
+        $evento,
+        'field_descripcion_evento',
+      ),
+      'tipo' => $tipo,
+      'tematica' => $tematica,
+      'sala' => $salas[$sala_key] ?? $sala_key,
+      'sala_class' => Html::getClass($sala_key),
+      'fecha' => $this->formatEventDate($fecha_value),
+      'hora' => $this->getEventTime($evento),
+      'url' => $evento->toUrl()->toString(),
+    ];
+
+    if (
+      !$evento->hasField('field_conferencistas_del_evento')
+      || $evento
+        ->get('field_conferencistas_del_evento')
+        ->isEmpty()
+    ) {
+      continue;
+    }
+
+    foreach (
+      $evento
+        ->get('field_conferencistas_del_evento')
+        ->referencedEntities() as $relacion
+    ) {
+      $cache_dependencies[] = $relacion;
+
+      if (
+        !$relacion->hasField('field_conferencista')
+        || $relacion->get('field_conferencista')->isEmpty()
+      ) {
+        continue;
+      }
+
+      $docente = $relacion
+        ->get('field_conferencista')
+        ->entity;
+
+      if (
+        !$docente instanceof NodeInterface
+        || $docente->bundle() !== 'docente'
+        || !$docente->isPublished()
+        || !$docente->access('view')
+      ) {
+        continue;
+      }
+
+      $docente = $this->getCurrentTranslation($docente);
+      $cache_dependencies[] = $docente;
+
+      $docente_id = (int) $docente->id();
+
+      $pais_value = '';
+
+      if (
+        $relacion->hasField('field_pais_conferencista')
+        && !$relacion
+          ->get('field_pais_conferencista')
+          ->isEmpty()
+      ) {
+        $pais_value = trim(
+          (string) $relacion
+            ->get('field_pais_conferencista')
+            ->value
+        );
+      }
+
+      $pais = $this->getCountryData($pais_value);
+
+      if (isset($docentes[$docente_id])) {
+        if (
+          empty($docentes[$docente_id]['pais'])
+          && !empty($pais['label'])
+        ) {
+          $docentes[$docente_id]['pais'] = $pais['label'];
+          $docentes[$docente_id]['pais_class'] = $pais['class'];
+        }
+
+        continue;
+      }
+
+      $especialidad = '';
+
+      if (
+        $docente->hasField('field_especialidad')
+        && !$docente->get('field_especialidad')->isEmpty()
+      ) {
+        $especialidad_entity = $docente
+          ->get('field_especialidad')
+          ->entity;
+
+        if ($especialidad_entity instanceof EntityInterface) {
+          $especialidad = $especialidad_entity->label();
+          $cache_dependencies[] = $especialidad_entity;
+        }
+      }
+
+      $perfil = $this->getFieldValue(
+        $docente,
+        'field_perfil_profesional',
+      );
+
+      $docentes[$docente_id] = [
+        'id' => $docente_id,
+        'nombre' => $docente->label(),
+        'foto' => $this->getImageData(
+          $docente,
+          'field_foto_docente',
+          $cache_dependencies,
+        ),
+        'especialidad' => $especialidad,
+        'pais' => $pais['label'],
+        'pais_class' => $pais['class'],
+        'perfil' => $perfil,
+        'perfil_resumen' => mb_strimwidth(
+          $perfil,
+          0,
+          235,
+          '…',
+          'UTF-8',
+        ),
+        'url' => $docente->toUrl()->toString(),
+      ];
+    }
+  }
+
+  return [
+    'eventos' => $eventos,
+    'docentes' => array_values($docentes),
+  ];
+}
+
+/**
+ * Obtiene nombre y clase CSS del país.
+ */
+private function getCountryData(string $value): array {
+  $value = trim($value);
+
+  if ($value === '') {
+    return [
+      'label' => '',
+      'class' => '',
+    ];
+  }
+
+  $countries = $this->countryManagerService->getList();
+  $candidate_code = strtoupper($value);
+
+  if (isset($countries[$candidate_code])) {
+    return [
+      'label' => (string) $countries[$candidate_code],
+      'class' => strtolower($candidate_code),
+    ];
+  }
+
+  foreach ($countries as $code => $country_label) {
+    if (
+      mb_strtolower((string) $country_label, 'UTF-8')
+      === mb_strtolower($value, 'UTF-8')
+    ) {
+      return [
+        'label' => (string) $country_label,
+        'class' => strtolower((string) $code),
+      ];
+    }
+  }
+
+  return [
+    'label' => $value,
+    'class' => Html::getClass($value),
+  ];
 }
 
 }
