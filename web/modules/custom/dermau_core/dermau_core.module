@@ -32,6 +32,7 @@ function dermau_core_theme($existing, $type, $theme, $path)
      'patrocinadores_page' => [
       'variables' => [
         'patrocinadores' => [],
+        'intro_text' => '',
       ],
       'template' => 'patrocinadores-page',
       'path' => $path . '/templates',
