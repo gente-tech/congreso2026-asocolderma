@@ -259,14 +259,6 @@ function dermau_core_views_query_alter(
   $request = \Drupal::request();
   $connection = \Drupal::database();
 
-  $grupo = strtolower(trim(
-    (string) $request->query->get('tipo_conferencista', 'internacional')
-  ));
-
-  if (!in_array($grupo, ['internacional', 'nacional'], TRUE)) {
-    $grupo = 'internacional';
-  }
-
   /*
    * Obtener docentes asociados a eventos publicados.
    */
@@ -303,22 +295,10 @@ function dermau_core_views_query_alter(
   $docentes_eventos->condition('evento.type', 'evento');
   $docentes_eventos->condition('evento.status', 1);
 
-  if ($grupo === 'nacional') {
-    $docentes_eventos->where(
-      'LOWER(TRIM(paragraph_pais.field_pais_conferencista_value)) = :pais',
-      [':pais' => 'co']
-    );
-  } else {
-    $docentes_eventos->where(
-      'LOWER(TRIM(paragraph_pais.field_pais_conferencista_value)) <> :pais',
-      [':pais' => 'co']
-    );
-
-    $docentes_eventos->where(
-      'TRIM(paragraph_pais.field_pais_conferencista_value) <> :pais_vacio',
-      [':pais_vacio' => '']
-    );
-  }
+  $docentes_eventos->where(
+    'TRIM(paragraph_pais.field_pais_conferencista_value) <> :pais_vacio',
+    [':pais_vacio' => '']
+  );
 
   $docentes_eventos->distinct();
 
