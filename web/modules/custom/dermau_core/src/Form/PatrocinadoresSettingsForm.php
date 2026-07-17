@@ -4,13 +4,9 @@ declare(strict_types=1);
 
 namespace Drupal\dermau_core\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Config\TypedConfigManagerInterface;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\file\Entity\File;
-use Drupal\file\FileUsage\FileUsageInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Configuración de la página de patrocinadores.
@@ -18,40 +14,6 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 final class PatrocinadoresSettingsForm extends ConfigFormBase {
 
   private const CONFIG_NAME = 'dermau_core.patrocinadores_settings';
-
-  /**
-   * Servicio para registrar el uso de archivos.
-   */
-  private FileUsageInterface $fileUsage;
-
-  /**
-   * Constructor.
-   */
-  public function __construct(
-    ConfigFactoryInterface $config_factory,
-    TypedConfigManagerInterface $typed_config_manager,
-    FileUsageInterface $file_usage,
-  ) {
-    parent::__construct(
-      $config_factory,
-      $typed_config_manager,
-    );
-
-    $this->fileUsage = $file_usage;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public static function create(
-    ContainerInterface $container,
-  ): static {
-    return new static(
-      $container->get('config.factory'),
-      $container->get('config.typed'),
-      $container->get('file.usage'),
-    );
-  }
 
   /**
    * {@inheritdoc}
@@ -78,13 +40,8 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
   ): array {
     $config = $this->config(self::CONFIG_NAME);
 
-    $plano_imagen_fid = (int) (
-      $config->get('plano_imagen_fid') ?? 0
-    );
-
-    $plano_pdf_fid = (int) (
-      $config->get('plano_pdf_fid') ?? 0
-    );
+    $plano_imagen_fid = (int) ($config->get('plano_imagen_fid') ?? 0);
+    $plano_pdf_fid = (int) ($config->get('plano_pdf_fid') ?? 0);
 
     $form['intro_text'] = [
       '#type' => 'textarea',
@@ -95,17 +52,13 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       ),
       '#rows' => 4,
       '#required' => TRUE,
-      '#description' => $this->t(
-        'Texto mostrado debajo del título de la página.'
-      ),
+      '#description' => $this->t('Texto mostrado debajo del título de la página.'),
     ];
 
     $form['plano_imagen'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Plano general en imagen'),
-      '#default_value' => $plano_imagen_fid > 0
-        ? [$plano_imagen_fid]
-        : [],
+      '#default_value' => $plano_imagen_fid > 0 ? [$plano_imagen_fid] : [],
       '#upload_location' => 'public://patrocinadores/planos',
       '#upload_validators' => [
         'FileExtension' => [
@@ -113,17 +66,13 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
         ],
       ],
       '#multiple' => FALSE,
-      '#description' => $this->t(
-        'Imagen mostrada después de la grilla de patrocinadores.'
-      ),
+      '#description' => $this->t('Imagen mostrada después de la grilla de patrocinadores.'),
     ];
 
     $form['plano_pdf'] = [
       '#type' => 'managed_file',
       '#title' => $this->t('Plano completo en PDF'),
-      '#default_value' => $plano_pdf_fid > 0
-        ? [$plano_pdf_fid]
-        : [],
+      '#default_value' => $plano_pdf_fid > 0 ? [$plano_pdf_fid] : [],
       '#upload_location' => 'public://patrocinadores/planos',
       '#upload_validators' => [
         'FileExtension' => [
@@ -131,15 +80,10 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
         ],
       ],
       '#multiple' => FALSE,
-      '#description' => $this->t(
-        'Archivo PDF descargable mostrado debajo del plano.'
-      ),
+      '#description' => $this->t('Archivo PDF descargable mostrado debajo del plano.'),
     ];
 
-    return parent::buildForm(
-      $form,
-      $form_state,
-    );
+    return parent::buildForm($form, $form_state);
   }
 
   /**
@@ -151,33 +95,14 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
   ): void {
     $config = $this->config(self::CONFIG_NAME);
 
-    $previous_image_fid = (int) (
-      $config->get('plano_imagen_fid') ?? 0
-    );
+    $previous_image_fid = (int) ($config->get('plano_imagen_fid') ?? 0);
+    $previous_pdf_fid = (int) ($config->get('plano_pdf_fid') ?? 0);
 
-    $previous_pdf_fid = (int) (
-      $config->get('plano_pdf_fid') ?? 0
-    );
+    $image_value = array_values(array_filter((array) $form_state->getValue('plano_imagen')));
+    $pdf_value = array_values(array_filter((array) $form_state->getValue('plano_pdf')));
 
-    $image_value = array_values(
-      array_filter(
-        (array) $form_state->getValue('plano_imagen')
-      )
-    );
-
-    $pdf_value = array_values(
-      array_filter(
-        (array) $form_state->getValue('plano_pdf')
-      )
-    );
-
-    $new_image_fid = isset($image_value[0])
-      ? (int) $image_value[0]
-      : 0;
-
-    $new_pdf_fid = isset($pdf_value[0])
-      ? (int) $pdf_value[0]
-      : 0;
+    $new_image_fid = isset($image_value[0]) ? (int) $image_value[0] : 0;
+    $new_pdf_fid = isset($pdf_value[0]) ? (int) $pdf_value[0] : 0;
 
     $this->persistManagedFile(
       $previous_image_fid,
@@ -194,24 +119,13 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
     $config
       ->set(
         'intro_text',
-        trim(
-          (string) $form_state->getValue('intro_text')
-        ),
+        trim((string) $form_state->getValue('intro_text')),
       )
-      ->set(
-        'plano_imagen_fid',
-        $new_image_fid,
-      )
-      ->set(
-        'plano_pdf_fid',
-        $new_pdf_fid,
-      )
+      ->set('plano_imagen_fid', $new_image_fid)
+      ->set('plano_pdf_fid', $new_pdf_fid)
       ->save();
 
-    parent::submitForm(
-      $form,
-      $form_state,
-    );
+    parent::submitForm($form, $form_state);
   }
 
   /**
@@ -222,14 +136,13 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
     int $new_fid,
     string $usage_type,
   ): void {
-    if (
-      $previous_fid > 0
-      && $previous_fid !== $new_fid
-    ) {
+    $file_usage = \Drupal::service('file.usage');
+
+    if ($previous_fid > 0 && $previous_fid !== $new_fid) {
       $previous_file = File::load($previous_fid);
 
       if ($previous_file !== NULL) {
-        $this->fileUsage->delete(
+        $file_usage->delete(
           $previous_file,
           'dermau_core',
           $usage_type,
@@ -238,22 +151,17 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       }
     }
 
-    if (
-      $new_fid <= 0
-      || $new_fid === $previous_fid
-    ) {
+    if ($new_fid <= 0 || $new_fid === $previous_fid) {
       return;
     }
 
     $new_file = File::load($new_fid);
 
     if ($new_file === NULL) {
-      throw new \RuntimeException(
-        sprintf(
-          'No fue posible cargar el archivo con FID %d.',
-          $new_fid,
-        )
-      );
+      throw new \RuntimeException(sprintf(
+        'No fue posible cargar el archivo con FID %d.',
+        $new_fid,
+      ));
     }
 
     if ($new_file->isTemporary()) {
@@ -261,7 +169,7 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       $new_file->save();
     }
 
-    $this->fileUsage->add(
+    $file_usage->add(
       $new_file,
       'dermau_core',
       $usage_type,
