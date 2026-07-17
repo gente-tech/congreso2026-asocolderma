@@ -127,7 +127,7 @@ final class PatrocinadoresController extends ControllerBase {
 
     $cache_dependencies = [$convenio];
 
-    $programas = $this->getProgramas(
+    $simposios = $this->getSimposios(
       $convenio,
       $cache_dependencies,
     );
@@ -171,8 +171,8 @@ final class PatrocinadoresController extends ControllerBase {
         $cache_dependencies,
       ),
       'link' => $this->getLinkData($convenio),
-      'programas' => $programas,
-      'programas_count' => count($programas),
+      'simposios' => $simposios,
+      'simposios_count' => count($simposios),
       'docentes' => $docentes,
       'docentes_count' => count($docentes),
     ];
@@ -417,5 +417,194 @@ final class PatrocinadoresController extends ControllerBase {
 
     return $docentes;
   }
+
+  /**
+ * Obtiene los simposios vinculados al patrocinador.
+ */
+private function getSimposios(
+  NodeInterface $convenio,
+  array &$cache_dependencies,
+): array {
+  if (
+    !$convenio->hasField('field_simposios_vinculados')
+    || $convenio->get('field_simposios_vinculados')->isEmpty()
+  ) {
+    return [];
+  }
+
+  $salas = [
+    'sala_1' => 'Sala 1',
+    'sala_2' => 'Sala 2',
+    'sala_3' => 'Sala 3',
+  ];
+
+  $simposios = [];
+
+  foreach (
+    $convenio
+      ->get('field_simposios_vinculados')
+      ->referencedEntities() as $evento
+  ) {
+    if (
+      !$evento instanceof NodeInterface
+      || !$evento->isPublished()
+      || !$evento->access('view')
+    ) {
+      continue;
+    }
+
+    $evento = $this->getCurrentTranslation($evento);
+    $cache_dependencies[] = $evento;
+
+    $tipo = $this->getReferenceLabel(
+      $evento,
+      'field_tipo_evento',
+      $cache_dependencies,
+    );
+
+    $tematica = $this->getReferenceLabel(
+      $evento,
+      'field_tematica_evento',
+      $cache_dependencies,
+    );
+
+    $sala_key = $this->getFieldValue(
+      $evento,
+      'field_sala_evento',
+    );
+
+    $fecha_value = $this->getFieldValue(
+      $evento,
+      'field_dia_evento',
+    );
+
+    $hora = $this->getEventTime($evento);
+
+    $simposios[] = [
+      'id' => (int) $evento->id(),
+      'nombre' => $evento->label(),
+      'tipo' => $tipo,
+      'tematica' => $tematica,
+      'sala' => $salas[$sala_key] ?? $sala_key,
+      'sala_class' => str_replace('_', '-', $sala_key),
+      'fecha' => $this->formatEventDate($fecha_value),
+      'hora' => $hora,
+      'url' => $evento->toUrl()->toString(),
+    ];
+  }
+
+  return $simposios;
+}
+
+/**
+ * Obtiene la etiqueta de una referencia.
+ */
+private function getReferenceLabel(
+  NodeInterface $node,
+  string $field_name,
+  array &$cache_dependencies,
+): string {
+  if (
+    !$node->hasField($field_name)
+    || $node->get($field_name)->isEmpty()
+  ) {
+    return '';
+  }
+
+  $entity = $node->get($field_name)->entity;
+
+  if (!$entity instanceof EntityInterface) {
+    return '';
+  }
+
+  $cache_dependencies[] = $entity;
+
+  return $entity->label();
+}
+
+/**
+ * Formatea la fecha del evento.
+ */
+private function formatEventDate(string $value): string {
+  if ($value === '') {
+    return '';
+  }
+
+  try {
+    $date = new \DateTimeImmutable(
+      $value,
+      new \DateTimeZone('UTC'),
+    );
+  }
+  catch (\Throwable) {
+    return '';
+  }
+
+  $dias = [
+    1 => 'LUN',
+    2 => 'MAR',
+    3 => 'MIÉ',
+    4 => 'JUE',
+    5 => 'VIE',
+    6 => 'SÁB',
+    7 => 'DOM',
+  ];
+
+  $meses = [
+    1 => 'ENE',
+    2 => 'FEB',
+    3 => 'MAR',
+    4 => 'ABR',
+    5 => 'MAY',
+    6 => 'JUN',
+    7 => 'JUL',
+    8 => 'AGO',
+    9 => 'SEP',
+    10 => 'OCT',
+    11 => 'NOV',
+    12 => 'DIC',
+  ];
+
+  $dia_semana = (int) $date->format('N');
+  $mes = (int) $date->format('n');
+
+  return sprintf(
+    '%s %d %s',
+    $dias[$dia_semana],
+    (int) $date->format('j'),
+    $meses[$mes],
+  );
+}
+
+/**
+ * Formatea la hora del evento.
+ */
+private function getEventTime(NodeInterface $evento): string {
+  if (
+    !$evento->hasField('field_hora_evento')
+    || $evento->get('field_hora_evento')->isEmpty()
+  ) {
+    return '';
+  }
+
+  $item = $evento
+    ->get('field_hora_evento')
+    ->first();
+
+  $values = $item?->getValue() ?? [];
+
+  $from = (int) ($values['from'] ?? 0);
+  $to = (int) ($values['to'] ?? 0);
+
+  if (!$from || !$to) {
+    return '';
+  }
+
+  return sprintf(
+    '%s - %s',
+    gmdate('g:i', $from),
+    gmdate('g:i A', $to),
+  );
+}
 
 }
