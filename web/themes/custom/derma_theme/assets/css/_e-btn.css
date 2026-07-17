@@ -85,3 +85,10 @@ span.du-btn__link{
   align-items: center;
   justify-content: center;
 }
+.tipoS:hover{
+  background-color:#50A7D8;
+}
+
+.tipoT:hover{
+  background-color:#F07F16;
+}
