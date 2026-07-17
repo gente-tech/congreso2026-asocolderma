@@ -44,6 +44,31 @@
   'September': 'septiembre', 'October': 'octubre', 'November': 'noviembre', 'December': 'diciembre'
 } %}
 
+{% set dias_cortos = {
+  'Monday': 'LUN',
+  'Tuesday': 'MAR',
+  'Wednesday': 'MIÉ',
+  'Thursday': 'JUE',
+  'Friday': 'VIE',
+  'Saturday': 'SÁB',
+  'Sunday': 'DOM'
+} %}
+
+{% set meses_cortos = {
+  'January': 'ENE',
+  'February': 'FEB',
+  'March': 'MAR',
+  'April': 'ABR',
+  'May': 'MAY',
+  'June': 'JUN',
+  'July': 'JUL',
+  'August': 'AGO',
+  'September': 'SEP',
+  'October': 'OCT',
+  'November': 'NOV',
+  'December': 'DIC'
+} %}
+
 <section class="du-congreso-section-hero">
   <div class="du-congreso__container container">
     <div class="du-congreso-section-hero__left">
@@ -232,6 +257,20 @@
                           <span class="tag-solid {{ sala_key|replace({'_': '-'}) }} sala">
                             {{ salas[sala_key] }}
                           </span>
+
+                          {% set fecha_evento = evento_encontrado.field_dia_evento.value %}
+
+                          {% if fecha_evento %}
+                            <span
+                              class="tag-solid du-congreso__event-date"
+                              title="{{ dias_es[fecha_evento|date('l', 'UTC')] }} {{ fecha_evento|date('j', 'UTC') }} de {{ meses_es[fecha_evento|date('F', 'UTC')] }}"
+                            >
+                              {{ dias_cortos[fecha_evento|date('l', 'UTC')] }}
+                              {{ fecha_evento|date('j', 'UTC') }}
+                              {{ meses_cortos[fecha_evento|date('F', 'UTC')] }}
+                            </span>
+                          {% endif %}
+
                           <div class="tag-flex">
                             <span class="du-icon__clock"></span>
                             {{ evento_encontrado.field_hora_evento.from|date('g:i', 'UTC') }} -
