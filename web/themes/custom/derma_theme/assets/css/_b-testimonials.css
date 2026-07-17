@@ -39,6 +39,7 @@
     position: absolute;
     bottom: -10px;
     left: calc(50% - 120px);
+    z-index: 10;
 }
 
 .du-btn-secondary {
