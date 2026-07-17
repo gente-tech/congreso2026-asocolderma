@@ -969,3 +969,70 @@ body.du-patrocinador-is-open {
   display: inline-block;
   flex: 0 0 auto;
 }
+
+/* ============================================================
+   DESCARGAR PLANO
+   ============================================================ */
+
+.du-sponsor-detail__plan-download {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+}
+
+.du-sponsor-detail__plan-button {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+
+  padding: 11px 24px;
+
+  border: 2px solid #1115ef;
+  border-radius: 24px;
+
+  background: #1115ef;
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+
+  text-decoration: none;
+
+  box-shadow: 0 8px 20px rgba(17, 21, 239, 0.22);
+
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.du-sponsor-detail__plan-button svg {
+  flex: 0 0 auto;
+}
+
+.du-sponsor-detail__plan-button:hover,
+.du-sponsor-detail__plan-button:focus-visible {
+  background: #ffffff;
+  color: #1115ef;
+
+  box-shadow: 0 11px 28px rgba(17, 21, 239, 0.3);
+  transform: translateY(-2px);
+
+  text-decoration: none;
+}
+
+.du-sponsor-detail__plan-button:focus-visible {
+  outline: 3px solid rgba(17, 21, 239, 0.2);
+  outline-offset: 3px;
+}
+
+@media (max-width: 480px) {
+  .du-sponsor-detail__plan-button {
+    width: 100%;
+    max-width: 300px;
+  }
+}
