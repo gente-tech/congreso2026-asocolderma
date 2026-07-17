@@ -371,7 +371,7 @@ body.du-patrocinador-is-open {
 
 .du-patrocinador-modal__close {
   position: absolute;
-  top: 16px;
+  top: 40px;
   right: 16px;
   display: flex;
   width: 34px;
