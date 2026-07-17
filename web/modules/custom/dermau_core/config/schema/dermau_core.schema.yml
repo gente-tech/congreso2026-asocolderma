@@ -1,0 +1,10 @@
+dermau_core.patrocinadores_settings:
+  type: config_object
+  label: 'Configuración de patrocinadores'
+  mapping:
+    intro_text:
+      type: text
+      label: 'Texto introductorio'
+    plano_pdf_fid:
+      type: integer
+      label: 'ID del PDF del plano'
