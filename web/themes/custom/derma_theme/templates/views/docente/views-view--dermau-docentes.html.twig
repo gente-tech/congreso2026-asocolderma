@@ -5,7 +5,10 @@
   ]
 %}
 
-<div{{attributes.addClass(classes)}}>
+<div{{ attributes
+  .addClass(classes)
+  .setAttribute('data-docentes-active-tab', tipo_conferencista)
+}}>
 	{{ title_prefix }}
 
 	{% if title %}

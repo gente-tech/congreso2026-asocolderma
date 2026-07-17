@@ -393,3 +393,17 @@
     font-size: 18px;
   }
 }
+
+[data-docentes-active-tab] .du-programs-item[data-tipo-conferencista] {
+  display: none;
+}
+
+[data-docentes-active-tab="internacional"]
+.du-programs-item[data-tipo-conferencista="internacional"] {
+  display: block;
+}
+
+[data-docentes-active-tab="nacional"]
+.du-programs-item[data-tipo-conferencista="nacional"] {
+  display: block;
+}

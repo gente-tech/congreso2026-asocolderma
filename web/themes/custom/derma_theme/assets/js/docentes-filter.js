@@ -197,6 +197,16 @@
 	}
 
 	function applyCountryFilter(value) {
+		const view = document.querySelector(
+			'[data-docentes-active-tab]'
+		);
+
+		if (view) {
+			view.setAttribute(
+				'data-docentes-active-tab',
+				value
+			);
+		}
 		document
 			.querySelectorAll('.du-programs-item[data-tipo-conferencista]')
 			.forEach(function (item) {
