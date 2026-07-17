@@ -232,6 +232,58 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
   $view = $variables['view'];
 
   if ($view->id() === 'dermau_docentes' && $view->current_display === 'page_1') {
+    $connection = \Drupal::database();
+
+    $country_query = $connection->select('node_field_data', 'evento');
+
+    $country_query->innerJoin(
+      'node__field_conferencistas_del_evento',
+      'evento_conferencistas',
+      'evento_conferencistas.entity_id = evento.nid
+        AND evento_conferencistas.deleted = 0'
+    );
+
+    $country_query->innerJoin(
+      'paragraph__field_conferencista',
+      'paragraph_conferencista',
+      'paragraph_conferencista.entity_id =
+        evento_conferencistas.field_conferencistas_del_evento_target_id
+        AND paragraph_conferencista.deleted = 0'
+    );
+
+    $country_query->innerJoin(
+      'paragraph__field_pais_conferencista',
+      'paragraph_pais',
+      'paragraph_pais.entity_id =
+        evento_conferencistas.field_conferencistas_del_evento_target_id
+        AND paragraph_pais.deleted = 0'
+    );
+
+    $country_query->addField(
+      'paragraph_conferencista',
+      'field_conferencista_target_id',
+      'docente_id'
+    );
+
+    $country_query->addField(
+      'paragraph_pais',
+      'field_pais_conferencista_value',
+      'pais'
+    );
+
+    $country_query->condition('evento.type', 'evento');
+    $country_query->condition('evento.status', 1);
+
+    $paises_docentes = [];
+
+    foreach ($country_query->execute() as $country_row) {
+      $docente_id = (int) $country_row->docente_id;
+      $pais = strtolower(trim((string) $country_row->pais));
+
+      if ($docente_id && $pais !== '') {
+        $paises_docentes[$docente_id] = $pais;
+      }
+    }
     foreach ($variables['rows'] as $index => &$row) {
       $result_row = $row['content']['#row'] ?? NULL;
 
@@ -282,9 +334,15 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
         }
       }
 
+      $pais_conferencista = $paises_docentes[$docente->id()] ?? '';
+
       $row['docente_entity'] = $docente;
       $row['programas_relacionados'] = $programas;
       $row['docente_url'] = $docente->toUrl()->toString();
+      $row['pais_conferencista'] = $pais_conferencista;
+      $row['tipo_conferencista'] = $pais_conferencista === 'co'
+        ? 'nacional'
+        : 'internacional';
     }
   }
 }
