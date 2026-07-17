@@ -157,3 +157,194 @@
         margin: 0 4px;
     }
 }
+
+/* Menú superior de la vista de conferencistas */
+.du-docentes-view-menu {
+  display: flex;
+  justify-content: center;
+  padding: 0 20px 15px;
+  background-color: white;
+}
+
+/* Tarjetas de conferencistas */
+.du-swiper-program .du-programs-item {
+  max-width: 500px;
+}
+
+.du-swiper-program .du-card__expert {
+  min-height: 0;
+  padding: 28px;
+  gap: 20px;
+}
+
+.du-swiper-program .du-card__expert-main {
+  align-items: flex-start;
+  gap: 22px;
+}
+
+.du-swiper-program .du-card__expert-img {
+  width: 120px;
+  height: 120px;
+}
+
+.du-swiper-program .du-card__expert-title {
+  font-size: 24px;
+  line-height: 1.15;
+}
+
+.du-swiper-program .du-card__expert-role {
+  margin-top: 8px;
+  font-size: 16px;
+}
+
+.du-swiper-program .du-card__expert-detail {
+  min-height: 0;
+  padding-top: 10px;
+}
+
+.du-swiper-program .du-card__expert-detail p {
+  height: auto;
+  min-height: 120px;
+  font-size: 16px;
+  line-height: 1.55;
+}
+
+.du-swiper-program .du-card__expert-footer {
+  position: static;
+  justify-content: flex-end;
+  padding: 0 5px 15px;
+  border-bottom: 1px solid var(--du-color-gray);
+}
+
+/* Conferencias vinculadas */
+.du-card__expert-conferences {
+  padding-top: 5px;
+}
+
+.du-card__expert-conferences-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  color: #e21b23;
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.du-card__expert-conferences-icon {
+  color: #007be3;
+  font-size: 20px;
+}
+
+.du-card__expert-conferences-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.du-card__expert-conference {
+  padding: 14px;
+  border-radius: 14px;
+  background-color: #dceeff;
+}
+
+.du-card__expert-conference-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.du-conference-tag {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 5px 9px;
+  border: 1px solid #001038;
+  border-radius: 20px;
+  color: #001038;
+  font-size: 10px;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.du-conference-tag--type {
+  background-color: white;
+}
+
+.du-conference-tag--topic {
+  border-color: var(--du-color-primary);
+  background-color: var(--du-color-primary);
+  color: white;
+}
+
+.du-conference-tag--room {
+  border-color: #16a59c;
+  background-color: #16a59c;
+  color: white;
+}
+
+.du-conference-tag--date {
+  border-color: #001038;
+  background-color: #001038;
+  color: white;
+}
+
+.du-conference-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #001038;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.du-card__expert-conference-name {
+  margin: 12px 0 0;
+  color: #001038;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.du-card__expert-conference-name strong {
+  color: #007be3;
+}
+
+@media (max-width: 768px) {
+  .du-docentes-view-menu {
+    padding-inline: 10px;
+  }
+
+  .du-docentes-view-menu .du-congreso-section-info__menu {
+    width: 100%;
+    gap: 4px;
+  }
+
+  .du-docentes-view-menu .du-btn-opt {
+    flex: 1;
+    padding: 9px 6px;
+    font-size: 13px;
+  }
+
+  .du-swiper-program .du-card__expert {
+    padding: 20px;
+  }
+
+  .du-swiper-program .du-card__expert-img {
+    width: 95px;
+    height: 95px;
+  }
+
+  .du-swiper-program .du-card__expert-title {
+    font-size: 20px;
+  }
+
+  .du-swiper-program .du-card__expert-role {
+    font-size: 14px;
+  }
+
+  .du-swiper-program .du-card__expert-detail p {
+    min-height: 0;
+    font-size: 14px;
+  }
+}
