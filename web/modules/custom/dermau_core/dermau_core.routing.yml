@@ -35,3 +35,15 @@ dermau_core.patrocinadores:
     _title: 'Patrocinadores del Congreso'
   requirements:
     _permission: 'access content'
+
+dermau_core.patrocinadores_detail:
+  path: '/patrocinadores/{convenio}/detalle'
+  defaults:
+    _controller: '\Drupal\dermau_core\Controller\PatrocinadoresController::detail'
+  requirements:
+    _permission: 'access content'
+    convenio: '\d+'
+  options:
+    parameters:
+      convenio:
+        type: entity:node
