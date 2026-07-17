@@ -36,6 +36,7 @@
 				{% for row in rows %}
 					{% set docente = row.docente_entity %}
 					{% set programas = row.programas_relacionados|default([]) %}
+					{% set conferencias_relacionadas = row.conferencias_relacionadas|default([]) %}
 					{% set pais_conferencista = row.pais_conferencista|default('') %}
 					{% set pais_conferencista_nombre = row.pais_conferencista_nombre|default('') %}
 					{% set tipo_conferencista = row.tipo_conferencista|default('internacional') %}
@@ -87,6 +88,7 @@
 									<span>{{ universidad_label }}</span>
 								</div>
 							{% endif %}
+
 							{% if perfil != '' %}
 								<div class="du-card__expert-detail">
 									<p>{{ perfil|striptags|trim }}
@@ -97,6 +99,89 @@
 							<div class="du-card__expert-footer">
 								<a href="#" class="du-link-more du-open-modal" data-target="modal-docente-{{ loop.index }}">Ver detalle</a>
 							</div>
+							{% set dias_cortos = {
+  'Mon': 'LUN',
+  'Tue': 'MAR',
+  'Wed': 'MIÉ',
+  'Thu': 'JUE',
+  'Fri': 'VIE',
+  'Sat': 'SÁB',
+  'Sun': 'DOM'
+} %}
+
+							{% set meses_cortos = {
+  'Jan': 'ENE',
+  'Feb': 'FEB',
+  'Mar': 'MAR',
+  'Apr': 'ABR',
+  'May': 'MAY',
+  'Jun': 'JUN',
+  'Jul': 'JUL',
+  'Aug': 'AGO',
+  'Sep': 'SEP',
+  'Oct': 'OCT',
+  'Nov': 'NOV',
+  'Dec': 'DIC'
+} %}
+
+							{% if conferencias_relacionadas %}
+								<div class="du-card__expert-conferences">
+									<h4 class="du-card__expert-conferences-title">
+										<span class="du-card__expert-conferences-icon">▣</span>
+										Conferencias vinculadas
+									</h4>
+
+									<div class="du-card__expert-conferences-list">
+										{% for conferencia in conferencias_relacionadas %}
+											<article class="du-card__expert-conference">
+												<div class="du-card__expert-conference-meta">
+
+													{% if conferencia.tipo %}
+														<span class="du-conference-tag du-conference-tag--type">
+															{{ conferencia.tipo }}
+														</span>
+													{% endif %}
+
+													{% if conferencia.tematica %}
+														<span class="du-conference-tag du-conference-tag--topic">
+															{{ conferencia.tematica }}
+														</span>
+													{% endif %}
+
+													{% if conferencia.sala %}
+														<span class="du-conference-tag du-conference-tag--room {{ conferencia.sala_clase }}">
+															{{ conferencia.sala }}
+														</span>
+													{% endif %}
+
+													{% if conferencia.dia %}
+														<span class="du-conference-tag du-conference-tag--date">
+															{{ dias_cortos[conferencia.dia|date('D', 'UTC')] }}
+															{{ conferencia.dia|date('d', 'UTC') }}
+															{{ meses_cortos[conferencia.dia|date('M', 'UTC')] }}
+														</span>
+													{% endif %}
+
+													{% if conferencia.hora %}
+														<span class="du-conference-time">
+															<span class="du-icon__clock"></span>
+															{{ conferencia.hora }}
+														</span>
+													{% endif %}
+
+												</div>
+
+												{% if conferencia.titulo %}
+													<p class="du-card__expert-conference-name">
+														<strong>Conferencia:</strong>
+														{{ conferencia.titulo|replace({'Conferencia: ': ''}) }}
+													</p>
+												{% endif %}
+											</article>
+										{% endfor %}
+									</div>
+								</div>
+							{% endif %}
 						</article>
 
 					</div>
@@ -237,6 +322,7 @@
 const link = e.target.closest('.du-open-modal');
 if (! link) 
 return;
+
 
 
 e.preventDefault();
