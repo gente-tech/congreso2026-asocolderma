@@ -363,3 +363,85 @@ function _dermau_core_hide_convenio_sponsor_fields_from_default_view(): void {
     ->removeComponent('field_ubicacion_stand')
     ->save();
 }
+
+/**
+ * Agrega los simposios vinculados al tipo de contenido Convenio.
+ */
+function dermau_core_update_11002(): string {
+  $field_name = 'field_simposios_vinculados';
+
+  $storage = FieldStorageConfig::loadByName('node', $field_name);
+
+  if (!$storage) {
+    $storage = FieldStorageConfig::create([
+      'field_name' => $field_name,
+      'entity_type' => 'node',
+      'type' => 'entity_reference',
+      'cardinality' => -1,
+      'settings' => [
+        'target_type' => 'node',
+      ],
+    ]);
+
+    $storage->save();
+  }
+
+  $field = FieldConfig::loadByName(
+    'node',
+    'convenio',
+    $field_name,
+  );
+
+  if (!$field) {
+    FieldConfig::create([
+      'field_storage' => $storage,
+      'bundle' => 'convenio',
+      'label' => 'Simposios vinculados',
+      'required' => FALSE,
+      'translatable' => TRUE,
+      'settings' => [
+        'handler' => 'default:node',
+        'handler_settings' => [
+          'target_bundles' => [
+            'evento' => 'evento',
+          ],
+          'sort' => [
+            'field' => 'title',
+            'direction' => 'ASC',
+          ],
+          'auto_create' => FALSE,
+          'auto_create_bundle' => '',
+        ],
+      ],
+    ])->save();
+  }
+
+  $form_display = EntityFormDisplay::load('node.convenio.default');
+
+  if ($form_display) {
+    $form_display
+      ->setComponent($field_name, [
+        'type' => 'entity_reference_autocomplete_tags',
+        'weight' => 93,
+        'region' => 'content',
+        'settings' => [
+          'match_operator' => 'CONTAINS',
+          'match_limit' => 20,
+          'size' => 60,
+          'placeholder' => 'Buscar simposios...',
+        ],
+        'third_party_settings' => [],
+      ])
+      ->save();
+  }
+
+  $view_display = EntityViewDisplay::load('node.convenio.default');
+
+  if ($view_display) {
+    $view_display
+      ->removeComponent($field_name)
+      ->save();
+  }
+
+  return 'Campo Simposios vinculados creado en Convenio.';
+}
