@@ -4,3 +4,10 @@ dermau_core.programa_interesado_export_form:
   route_name: dermau_core.programa_interesado_export_form
   parent: system.admin_reports
   weight: 100
+
+dermau_core.patrocinadores_settings:
+  title: 'Patrocinadores'
+  description: 'Configurar texto introductorio y plano descargable.'
+  route_name: dermau_core.patrocinadores_settings
+  parent: system.admin_config_content
+  weight: 30
