@@ -275,6 +275,7 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
     $country_query->condition('evento.status', 1);
 
     $paises_docentes = [];
+    $nombres_paises = \Drupal::service('country_manager')->getList();
 
     foreach ($country_query->execute() as $country_row) {
       $docente_id = (int) $country_row->docente_id;
@@ -340,6 +341,10 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
       $row['programas_relacionados'] = $programas;
       $row['docente_url'] = $docente->toUrl()->toString();
       $row['pais_conferencista'] = $pais_conferencista;
+      $row['pais_conferencista_nombre'] = $nombres_paises[
+        strtoupper($pais_conferencista)
+      ] ?? strtoupper($pais_conferencista);
+
       $row['tipo_conferencista'] = $pais_conferencista === 'co'
         ? 'nacional'
         : 'internacional';
