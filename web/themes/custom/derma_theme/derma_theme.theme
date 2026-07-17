@@ -279,6 +279,13 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
 
     $conferencias_docentes = [];
 
+    $filtros_conferencias = [
+      'tipos' => [],
+      'tematicas' => [],
+      'salas' => [],
+      'docentes' => [],
+    ];
+
     $evento_ids = \Drupal::entityQuery('node')
       ->condition('type', 'evento')
       ->condition('status', 1)
@@ -324,6 +331,18 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
       $sala_evento = $salas[$sala_value] ?? $sala_value;
       $dia_evento = $evento->get('field_dia_evento')->value ?? '';
 
+      if ($tipo_evento !== '') {
+        $filtros_conferencias['tipos'][$tipo_evento] = $tipo_evento;
+      }
+
+      if ($tematica_evento !== '') {
+        $filtros_conferencias['tematicas'][$tematica_evento] = $tematica_evento;
+      }
+
+      if ($sala_value !== '') {
+        $filtros_conferencias['salas'][$sala_value] = $sala_evento;
+      }
+
       foreach (
         $evento->get('field_conferencistas_del_evento')->referencedEntities()
         as $conferencista_item
@@ -335,6 +354,7 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
         if (!$docente) {
           continue;
         }
+        $filtros_conferencias['docentes'][$docente->id()] = $docente->label();
 
         $hora_evento = '';
         $hora_item = $evento->get('field_hora_evento')->first();
@@ -363,6 +383,13 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
         ];
       }
     }
+
+    foreach ($filtros_conferencias as &$opciones) {
+      natcasesort($opciones);
+    }
+    unset($opciones);
+
+    $variables['filtros_conferencias'] = $filtros_conferencias;
 
     foreach ($country_query->execute() as $country_row) {
       $docente_id = (int) $country_row->docente_id;

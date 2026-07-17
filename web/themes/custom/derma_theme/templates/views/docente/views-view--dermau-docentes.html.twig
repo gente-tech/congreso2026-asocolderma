@@ -5,10 +5,7 @@
   ]
 %}
 
-<div{{ attributes
-  .addClass(classes)
-  .setAttribute('data-docentes-active-tab', tipo_conferencista)
-}}>
+<div{{attributes.addClass(classes).setAttribute('data-docentes-active-tab',tipo_conferencista)}}>
 	{{ title_prefix }}
 
 	{% if title %}
@@ -24,17 +21,17 @@
 	<div class="du-docentes-view-menu">
 		<div class="du-congreso-section-info__menu">
 
-			<a href="{{ path('entity.node.canonical', {'node': 97}) }}" class="du-btn-opt">
+			<button type="button" class="du-btn-opt" data-docentes-view="search" aria-selected="false">
 				<span class="du-icon__search"></span>
 				Búsqueda avanzada
-			</a>
+			</button>
 
-			<a href="{{ path('view.dermau_docentes.page_1') }}" class="du-btn-opt active" aria-current="page">
+			<button type="button" class="du-btn-opt active" data-docentes-view="speakers" aria-selected="true">
 				<svg width="20" height="20" viewbox="0 0 24 24" fill="none" aria-hidden="true">
 					<path d="M9 18h6M10 22h4M8.5 14.5C7.56 13.65 7 12.42 7 11a5 5 0 0 1 10 0c0 1.42-.56 2.65-1.5 3.5-.78.71-1.5 1.52-1.5 2.5h-4c0-.98-.72-1.79-1.5-2.5Z" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
 				</svg>
 				Conferencistas
-			</a>
+			</button>
 
 		</div>
 	</div>
