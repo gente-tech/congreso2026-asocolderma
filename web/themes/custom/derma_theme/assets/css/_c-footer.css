@@ -1,6 +1,6 @@
 /* --- ESTILOS FOOTER --- */
 .du-footer {
-    background-color: var(--du-color-secondary-dark);
+    background-color: var(--du-color-blue);
     color: white;
     padding-block: 60px;
     font-family: var(--du-font-main);
