@@ -252,11 +252,44 @@
                             <strong>Coordinación:</strong>
                             <span>{{ evento_encontrado.field_coordinador_evento.value }}</span>
                           </div>
-                          <div class="du-congreso__card-detail-item">
-                            <span class="du-icon__micro"></span>
+                          <div class="du-congreso__card-detail-item du-congreso__card-speakers">
+                            <span class="du-icon__micro" aria-hidden="true"></span>
+                          
                             <strong>Conferencistas:</strong>
-                            <span>{{ evento_encontrado.field_conferencista_evento.value }}</span>
-                            <span class="du-icon__flag-{{ evento_encontrado.field_pais_conf_evento.value }}" title="País"></span>
+                          
+                            <div class="du-congreso__speaker-list">
+                              {% for conferencista_item in evento_encontrado.field_conferencistas_del_evento %}
+                                {% set conferencista_paragraph = conferencista_item.entity %}
+                                {% set docente = conferencista_paragraph.field_conferencista.entity %}
+                                {% set pais = conferencista_paragraph.field_pais_conferencista.value|default('') %}
+                          
+                                {% if docente %}
+                                  <button
+                                    type="button"
+                                    class="du-congreso__speaker js-conferencista-modal-open"
+                                    data-conferencista-id="{{ docente.id }}"
+                                    aria-haspopup="dialog"
+                                    aria-controls="conferencista-modal-{{ docente.id }}"
+                                  >
+                                    <span class="du-congreso__speaker-name">
+                                      {{ docente.label }}
+                                    </span>
+                          
+                                    {% if pais %}
+                                      <span
+                                        class="du-icon__flag-{{ pais|clean_class }}"
+                                        title="{{ pais }}"
+                                        aria-label="{{ pais }}"
+                                      ></span>
+                                    {% endif %}
+                                  </button>
+                          
+                                  {% if not loop.last %}
+                                    <span class="du-congreso__speaker-separator" aria-hidden="true">,</span>
+                                  {% endif %}
+                                {% endif %}
+                              {% endfor %}
+                            </div>
                           </div>
                         </div>
                       </div>
