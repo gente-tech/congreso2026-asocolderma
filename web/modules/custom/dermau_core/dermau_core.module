@@ -213,7 +213,7 @@ function dermau_core_preprocess_node(&$variables)
 //   // }
 
 //   // $query->addWhere(0, 'node_field_data.nid', $docente_ids, 'IN');
-  
+
 
 //   // dump_1
 //   // if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
@@ -248,35 +248,140 @@ function dermau_core_preprocess_node(&$variables)
 //   ]);
 // }
 
-function dermau_core_views_query_alter(\Drupal\views\ViewExecutable $view, \Drupal\views\Plugin\views\query\QueryPluginBase $query) {
-
+function dermau_core_views_query_alter(
+  \Drupal\views\ViewExecutable $view,
+  \Drupal\views\Plugin\views\query\QueryPluginBase $query
+) {
   if ($view->id() !== 'dermau_docentes' || $view->current_display !== 'page_1') {
     return;
   }
 
-  $tipo_programa = \Drupal::request()->query->get('tipo_programa_docente');
-
-  if (empty($tipo_programa) || $tipo_programa === 'All') {
-    return;
-  }
-
+  $request = \Drupal::request();
   $connection = \Drupal::database();
 
-  $subquery = $connection->select('node_field_data', 'p');
-  $subquery->innerJoin('node__field_docentes', 'fd', 'fd.entity_id = p.nid');
-  $subquery->innerJoin('node__field_tipo_de_programa', 'ftp', 'ftp.entity_id = p.nid');
+  $grupo = strtolower(trim(
+    (string) $request->query->get('tipo_conferencista', 'internacional')
+  ));
 
-  $subquery->addField('fd', 'field_docentes_target_id');
-  $subquery->condition('p.type', 'programa');
-  $subquery->condition('p.status', 1);
-  $subquery->condition('ftp.field_tipo_de_programa_target_id', (int) $tipo_programa, '=');
-  $subquery->distinct();
+  if (!in_array($grupo, ['internacional', 'nacional'], TRUE)) {
+    $grupo = 'internacional';
+  }
 
-  $docente_ids = $subquery->execute()->fetchCol();
+  /*
+   * Obtener docentes asociados a eventos publicados.
+   */
+  $docentes_eventos = $connection->select('node_field_data', 'evento');
+
+  $docentes_eventos->innerJoin(
+    'node__field_conferencistas_del_evento',
+    'evento_conferencistas',
+    'evento_conferencistas.entity_id = evento.nid
+      AND evento_conferencistas.deleted = 0'
+  );
+
+  $docentes_eventos->innerJoin(
+    'paragraph__field_conferencista',
+    'paragraph_conferencista',
+    'paragraph_conferencista.entity_id =
+      evento_conferencistas.field_conferencistas_del_evento_target_id
+      AND paragraph_conferencista.deleted = 0'
+  );
+
+  $docentes_eventos->innerJoin(
+    'paragraph__field_pais_conferencista',
+    'paragraph_pais',
+    'paragraph_pais.entity_id =
+      evento_conferencistas.field_conferencistas_del_evento_target_id
+      AND paragraph_pais.deleted = 0'
+  );
+
+  $docentes_eventos->addField(
+    'paragraph_conferencista',
+    'field_conferencista_target_id'
+  );
+
+  $docentes_eventos->condition('evento.type', 'evento');
+  $docentes_eventos->condition('evento.status', 1);
+
+  if ($grupo === 'nacional') {
+    $docentes_eventos->where(
+      'LOWER(TRIM(paragraph_pais.field_pais_conferencista_value)) = :pais',
+      [':pais' => 'co']
+    );
+  } else {
+    $docentes_eventos->where(
+      'LOWER(TRIM(paragraph_pais.field_pais_conferencista_value)) <> :pais',
+      [':pais' => 'co']
+    );
+
+    $docentes_eventos->where(
+      'TRIM(paragraph_pais.field_pais_conferencista_value) <> :pais_vacio',
+      [':pais_vacio' => '']
+    );
+  }
+
+  $docentes_eventos->distinct();
+
+  $docente_ids = $docentes_eventos->execute()->fetchCol();
 
   if (empty($docente_ids)) {
     $docente_ids = [0];
   }
 
-  $query->addWhere(0, 'node_field_data.nid', $docente_ids, 'IN');
+  $query->addWhere(
+    0,
+    'node_field_data.nid',
+    array_map('intval', $docente_ids),
+    'IN'
+  );
+
+  /*
+   * Mantener el filtro existente por tipo de programa.
+   */
+  $tipo_programa = $request->query->get('tipo_programa_docente');
+
+  if (empty($tipo_programa) || $tipo_programa === 'All') {
+    return;
+  }
+
+  $programas_query = $connection->select('node_field_data', 'programa');
+
+  $programas_query->innerJoin(
+    'node__field_docentes',
+    'programa_docentes',
+    'programa_docentes.entity_id = programa.nid'
+  );
+
+  $programas_query->innerJoin(
+    'node__field_tipo_de_programa',
+    'programa_tipo',
+    'programa_tipo.entity_id = programa.nid'
+  );
+
+  $programas_query->addField(
+    'programa_docentes',
+    'field_docentes_target_id'
+  );
+
+  $programas_query->condition('programa.type', 'programa');
+  $programas_query->condition('programa.status', 1);
+  $programas_query->condition(
+    'programa_tipo.field_tipo_de_programa_target_id',
+    (int) $tipo_programa
+  );
+
+  $programas_query->distinct();
+
+  $docentes_programas = $programas_query->execute()->fetchCol();
+
+  if (empty($docentes_programas)) {
+    $docentes_programas = [0];
+  }
+
+  $query->addWhere(
+    0,
+    'node_field_data.nid',
+    array_map('intval', $docentes_programas),
+    'IN'
+  );
 }
