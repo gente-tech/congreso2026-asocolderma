@@ -22,6 +22,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Config\ImmutableConfig;
 
 /**
  * Controlador público de patrocinadores.
@@ -114,23 +115,54 @@ final class PatrocinadoresController extends ControllerBase {
       $settings->getCacheTags(),
     );
 
+    $settings = $this->configFactoryService->get(
+  'dermau_core.patrocinadores_settings'
+);
+
+$intro_text = trim(
+  (string) $settings->get('intro_text')
+);
+
+if ($intro_text === '') {
+  $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
+}
+
+$plano_imagen = $this->getConfiguredFileData(
+  $settings,
+  'plano_imagen_fid',
+  $cache_tags,
+);
+
+$plano_pdf = $this->getConfiguredFileData(
+  $settings,
+  'plano_pdf_fid',
+  $cache_tags,
+);
+
+$cache_tags = Cache::mergeTags(
+  $cache_tags,
+  $settings->getCacheTags(),
+);
+
     return [
-      '#theme' => 'patrocinadores_page',
-      '#intro_text' => $intro_text,
-      '#patrocinadores' => $patrocinadores,
-      '#attached' => [
-        'library' => [
-          'dermau_core/patrocinadores',
-        ],
-      ],
-      '#cache' => [
-        'tags' => $cache_tags,
-        'contexts' => [
-          'languages:language_content',
-          'user.permissions',
-        ],
-      ],
-    ];
+  '#theme' => 'patrocinadores_page',
+  '#patrocinadores' => $patrocinadores,
+  '#intro_text' => $intro_text,
+  '#plano_imagen' => $plano_imagen,
+  '#plano_pdf' => $plano_pdf,
+  '#attached' => [
+    'library' => [
+      'dermau_core/patrocinadores',
+    ],
+  ],
+  '#cache' => [
+    'tags' => $cache_tags,
+    'contexts' => [
+      'languages:language_content',
+      'user.permissions',
+    ],
+  ],
+];
   }
 
   /**
@@ -153,14 +185,7 @@ final class PatrocinadoresController extends ControllerBase {
 
     $cache_dependencies = [$convenio];
 
-    $settings = $this->configFactoryService->get(
-      'dermau_core.patrocinadores_settings'
-    );
-    
-    $plano_pdf = $this->getPlanoPdfData(
-      $settings,
-      $cache_dependencies,
-    );
+   
 
     $relaciones = $this->getEventosYConferencistas(
       $convenio,
@@ -169,7 +194,7 @@ final class PatrocinadoresController extends ControllerBase {
 
     $patrocinador = [
       'id' => (int) $convenio->id(),
-      'plano_pdf' => $plano_pdf,
+      
       'nombre' => $convenio->label(),
       'logo' => $this->getImageData(
         $convenio,
@@ -196,11 +221,7 @@ final class PatrocinadoresController extends ControllerBase {
         $convenio,
         'field_piso_stand',
       ),
-      'ubicacion' => $this->getImageData(
-        $convenio,
-        'field_ubicacion_stand',
-        $cache_dependencies,
-      ),
+      
       'link' => $this->getLinkData($convenio),
       'eventos' => $relaciones['eventos'],
       'eventos_count' => count($relaciones['eventos']),
@@ -912,6 +933,43 @@ private function getPlanoPdfData(
     'url' => $this->fileUrlGeneratorService
       ->generateString($file->getFileUri()),
     'filename' => $file->getFilename(),
+  ];
+}
+
+  /**
+ * Obtiene un archivo configurado globalmente.
+ */
+private function getConfiguredFileData(
+  ImmutableConfig $settings,
+  string $config_key,
+  array &$cache_tags,
+): array {
+  $fid = (int) (
+    $settings->get($config_key) ?? 0
+  );
+
+  if ($fid <= 0) {
+    return [];
+  }
+
+  $file = $this->entityTypeManagerService
+    ->getStorage('file')
+    ->load($fid);
+
+  if (!$file instanceof FileInterface) {
+    return [];
+  }
+
+  $cache_tags = Cache::mergeTags(
+    $cache_tags,
+    $file->getCacheTags(),
+  );
+
+  return [
+    'url' => $this->fileUrlGeneratorService
+      ->generateString($file->getFileUri()),
+    'filename' => $file->getFilename(),
+    'mime_type' => $file->getMimeType(),
   ];
 }
 
