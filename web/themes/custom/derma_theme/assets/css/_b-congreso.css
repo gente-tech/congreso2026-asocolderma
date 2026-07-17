@@ -1062,3 +1062,113 @@ dialog.du-conferencista-modal::backdrop {
     font-size: 13px;
   }
 }
+/***************************************************************/
+
+/* ============================================================
+   ETIQUETAS DE RESULTADOS DE BÚSQUEDA
+   ============================================================ */
+
+.du-panel-block__content {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.du-panel-block__date {
+  display: inline-flex;
+  min-height: 25px;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 4px 9px;
+
+  border: 1px solid #07101f;
+  border-radius: 14px;
+
+  background: #07101f;
+  color: #ffffff;
+
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+
+/* ============================================================
+   CONFERENCISTAS EN RESULTADOS
+   ============================================================ */
+
+.du-panel-block__resumen-speakers,
+.du-panel-block__detail-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+}
+
+.du-panel-block__resumen-speakers {
+  margin-top: 8px;
+}
+
+.du-panel-block__resumen-speakers > .du-icon__micro,
+.du-panel-block__detail-item > .du-icon__micro {
+  flex: 0 0 auto;
+}
+
+.du-panel-block__speaker-list {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+}
+
+.du-panel-block__speaker {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  margin: 0;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+  color: #17213f;
+
+  font: inherit;
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+.du-panel-block__speaker:hover,
+.du-panel-block__speaker:focus-visible {
+  color: #1588e5;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.du-panel-block__speaker:focus-visible {
+  outline: 2px solid #1588e5;
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+/* Al expandir, se muestra la fila completa del body */
+.du-panel-block__item.is-open
+.du-panel-block__resumen-speakers {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .du-panel-block__content {
+    align-items: flex-start;
+  }
+
+  .du-panel-block__resumen-speakers,
+  .du-panel-block__detail-item {
+    align-items: flex-start;
+  }
+}
