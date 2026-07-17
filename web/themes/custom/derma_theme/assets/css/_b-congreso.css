@@ -963,8 +963,15 @@ dialog.du-conferencista-modal::backdrop {
   }
 }
 
-.du-congreso__event-date {
-  display: inline-flex;
+/***********************************************************/
+/* Oculta la fecha en la vista resumida */
+.du-calendar__item-card .du-congreso__event-date {
+  display: none !important;
+}
+
+/* Muestra la fecha únicamente al abrir la card */
+.du-calendar__item-card.is-open .du-congreso__event-date {
+  display: inline-flex !important;
   align-items: center;
   justify-content: center;
 
