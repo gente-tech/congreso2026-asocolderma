@@ -47,3 +47,11 @@ dermau_core.patrocinadores_detail:
     parameters:
       convenio:
         type: entity:node
+
+dermau_core.patrocinadores_settings:
+  path: '/admin/config/content/patrocinadores'
+  defaults:
+    _form: '\Drupal\dermau_core\Form\PatrocinadoresSettingsForm'
+    _title: 'Configuración de patrocinadores'
+  requirements:
+    _permission: 'administer site configuration'
