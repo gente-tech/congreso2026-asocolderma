@@ -1036,3 +1036,110 @@ body.du-patrocinador-is-open {
     max-width: 300px;
   }
 }
+
+/* ============================================================
+   PLANO GLOBAL DESPUÉS DE LA GRILLA
+   ============================================================ */
+
+.du-patrocinadores-plan {
+  margin-top: 80px;
+  padding: 40px;
+  border: 1px solid #e1e7ed;
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 12px 38px rgba(20, 39, 68, 0.08);
+}
+
+.du-patrocinadores-plan__header {
+  max-width: 720px;
+  margin-bottom: 30px;
+}
+
+.du-patrocinadores-plan__eyebrow {
+  display: inline-flex;
+  margin-bottom: 8px;
+  color: #1098a4;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.du-patrocinadores-plan__title {
+  margin: 0;
+  color: #ed111c;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.du-patrocinadores-plan__description {
+  margin: 12px 0 0;
+  color: #5e6979;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.du-patrocinadores-plan__image-wrapper {
+  overflow: hidden;
+  border: 1px solid #dce4eb;
+  border-radius: 14px;
+  background: #f8fafb;
+}
+
+.du-patrocinadores-plan__image {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.du-patrocinadores-plan__download {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.du-patrocinadores-plan__button {
+  display: inline-flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 11px 25px;
+  border: 2px solid #1115ef;
+  border-radius: 25px;
+  background: #1115ef;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1;
+  text-decoration: none;
+  box-shadow: 0 9px 22px rgba(17, 21, 239, 0.23);
+  transition:
+    background-color 180ms ease,
+    color 180ms ease,
+    transform 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.du-patrocinadores-plan__button:hover,
+.du-patrocinadores-plan__button:focus-visible {
+  background: #ffffff;
+  color: #1115ef;
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(17, 21, 239, 0.3);
+}
+
+@media (max-width: 600px) {
+  .du-patrocinadores-plan {
+    margin-top: 55px;
+    padding: 24px 16px;
+  }
+
+  .du-patrocinadores-plan__button {
+    width: 100%;
+    max-width: 310px;
+  }
+}
