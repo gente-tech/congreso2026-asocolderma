@@ -324,10 +324,6 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
       $sala_evento = $salas[$sala_value] ?? $sala_value;
       $dia_evento = $evento->get('field_dia_evento')->value ?? '';
 
-      $conferencias = $evento
-        ->get('field_listado_conferencias')
-        ->referencedEntities();
-
       foreach (
         $evento->get('field_conferencistas_del_evento')->referencedEntities()
         as $conferencista_item
@@ -340,23 +336,31 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
           continue;
         }
 
-        foreach ($conferencias as $conferencia) {
-          $clave = $evento->id() . '-' . $conferencia->id();
+        $hora_evento = '';
+        $hora_item = $evento->get('field_hora_evento')->first();
 
-          $conferencias_docentes[$docente->id()][$clave] = [
-            'titulo' => $conferencia
-              ->get('field_titulo_conferencia')
-              ->value ?? '',
-            'hora' => $conferencia
-              ->get('field_hora_conferencia')
-              ->value ?? '',
-            'tipo' => $tipo_evento,
-            'tematica' => $tematica_evento,
-            'sala' => $sala_evento,
-            'sala_clase' => str_replace('_', '-', $sala_value),
-            'dia' => $dia_evento,
-          ];
+        if ($hora_item) {
+          $hora_desde = (int) $hora_item->get('from')->getValue();
+          $hora_hasta = (int) $hora_item->get('to')->getValue();
+
+          if ($hora_desde && $hora_hasta) {
+            $hora_evento = gmdate('g:i A', $hora_desde)
+              . ' - '
+              . gmdate('g:i A', $hora_hasta);
+          }
         }
+
+        $clave = (string) $evento->id();
+
+        $conferencias_docentes[$docente->id()][$clave] = [
+          'titulo' => $evento->label(),
+          'hora' => $hora_evento,
+          'tipo' => $tipo_evento,
+          'tematica' => $tematica_evento,
+          'sala' => $sala_evento,
+          'sala_clase' => str_replace('_', '-', $sala_value),
+          'dia' => $dia_evento,
+        ];
       }
     }
 
