@@ -2,326 +2,326 @@
 
   <header class="du-sponsor-detail__header">
 
-  <div class="du-sponsor-detail__logo-wrapper">
-    {% if patrocinador.logo.url %}
-      <img
-        class="du-sponsor-detail__logo"
-        src="{{ patrocinador.logo.url }}"
-        alt="{{ patrocinador.logo.alt|default(patrocinador.nombre) }}"
-      >
-    {% else %}
-      <div class="du-sponsor-detail__logo-placeholder">
-        {{ patrocinador.nombre|slice(0, 1)|upper }}
-      </div>
-    {% endif %}
-  </div>
+    <div class="du-sponsor-detail__logo-wrapper">
+      {% if patrocinador.logo.url %}
+        <img
+          class="du-sponsor-detail__logo"
+          src="{{ patrocinador.logo.url }}"
+          alt="{{ patrocinador.logo.alt|default(patrocinador.nombre) }}"
+        >
+      {% else %}
+        <div class="du-sponsor-detail__logo-placeholder">
+          {{ patrocinador.nombre|slice(0, 1)|upper }}
+        </div>
+      {% endif %}
+    </div>
 
-  <div class="du-sponsor-detail__heading">
+    <div class="du-sponsor-detail__heading">
 
-    <span class="du-sponsor-detail__eyebrow">
-      Patrocinador del Congreso
-    </span>
+      <span class="du-sponsor-detail__eyebrow">
+        Patrocinador del Congreso
+      </span>
 
-    <h2 class="du-sponsor-detail__title">
-      {{ patrocinador.nombre }}
-    </h2>
+      <h2 class="du-sponsor-detail__title">
+        {{ patrocinador.nombre }}
+      </h2>
 
-    <div class="du-sponsor-detail__badges">
+      <div class="du-sponsor-detail__badges">
 
-      {% if patrocinador.stand %}
+        {% if patrocinador.stand %}
+          <span class="du-sponsor-detail__badge">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 21C12 21 19 14.5 19 9A7 7 0 1 0 5 9C5 14.5 12 21 12 21Z"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+              <circle
+                cx="12"
+                cy="9"
+                r="2.5"
+                stroke="currentColor"
+                stroke-width="1.8"
+              />
+            </svg>
+
+            Stand No. {{ patrocinador.stand }}
+          </span>
+        {% endif %}
+
+        {% if patrocinador.piso %}
+          <span class="du-sponsor-detail__badge">
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M4 21V6L12 3V21"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M12 9H20V21H12"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M7 8H9M7 12H9M7 16H9M15 12H17M15 16H17"
+                stroke="currentColor"
+                stroke-width="1.8"
+                stroke-linecap="round"
+              />
+            </svg>
+
+            {{ patrocinador.piso }}
+          </span>
+        {% endif %}
+
         <span class="du-sponsor-detail__badge">
           <svg
-            width="15"
-            height="15"
+            width="16"
+            height="16"
             viewBox="0 0 24 24"
             fill="none"
             aria-hidden="true"
           >
-            <path
-              d="M12 21C12 21 19 14.5 19 9A7 7 0 1 0 5 9C5 14.5 12 21 12 21Z"
+            <circle
+              cx="8"
+              cy="8"
+              r="3"
               stroke="currentColor"
-              stroke-width="1.8"
+              stroke-width="1.7"
             />
             <circle
-              cx="12"
+              cx="17"
               cy="9"
               r="2.5"
               stroke="currentColor"
-              stroke-width="1.8"
-            />
-          </svg>
-
-          Stand No. {{ patrocinador.stand }}
-        </span>
-      {% endif %}
-
-      {% if patrocinador.piso %}
-        <span class="du-sponsor-detail__badge">
-          <svg
-            width="15"
-            height="15"
-            viewBox="0 0 24 24"
-            fill="none"
-            aria-hidden="true"
-          >
-            <path
-              d="M4 21V6L12 3V21"
-              stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linejoin="round"
+              stroke-width="1.7"
             />
             <path
-              d="M12 9H20V21H12"
+              d="M3 20C3 16.7 5.2 14 8 14C10.8 14 13 16.7 13 20"
               stroke="currentColor"
-              stroke-width="1.8"
-              stroke-linejoin="round"
+              stroke-width="1.7"
+              stroke-linecap="round"
             />
             <path
-              d="M7 8H9M7 12H9M7 16H9M15 12H17M15 16H17"
+              d="M14 15C17.5 14 21 16.2 21 20"
               stroke="currentColor"
-              stroke-width="1.8"
+              stroke-width="1.7"
               stroke-linecap="round"
             />
           </svg>
 
-          {{ patrocinador.piso }}
+          Simposios vinculados:
+          {{ patrocinador.eventos_count|default(0) }}    
         </span>
-      {% endif %}
-
-      <span class="du-sponsor-detail__badge">
-        <svg
-          width="16"
-          height="16"
-          viewBox="0 0 24 24"
-          fill="none"
-          aria-hidden="true"
-        >
-          <circle
-            cx="8"
-            cy="8"
-            r="3"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-          <circle
-            cx="17"
-            cy="9"
-            r="2.5"
-            stroke="currentColor"
-            stroke-width="1.7"
-          />
-          <path
-            d="M3 20C3 16.7 5.2 14 8 14C10.8 14 13 16.7 13 20"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-          <path
-            d="M14 15C17.5 14 21 16.2 21 20"
-            stroke="currentColor"
-            stroke-width="1.7"
-            stroke-linecap="round"
-          />
-        </svg>
-
-        Simposios vinculados:
-        {{ patrocinador.eventos_count|default(0) }}    
-      </span>
-
-    </div>
-
-    {% if patrocinador.ano_fundacion or patrocinador.ciudad %}
-      <div class="du-sponsor-detail__metadata">
-
-        {% if patrocinador.ano_fundacion %}
-          <div class="du-sponsor-detail__metadata-item">
-            <span class="du-sponsor-detail__metadata-label">
-              Año de fundación
-            </span>
-
-            <strong>
-              {{ patrocinador.ano_fundacion }}
-            </strong>
-          </div>
-        {% endif %}
-
-        {% if patrocinador.ciudad %}
-          <div class="du-sponsor-detail__metadata-item">
-            <span class="du-sponsor-detail__metadata-label">
-              Ciudad
-            </span>
-
-            <strong>
-              {{ patrocinador.ciudad }}
-            </strong>
-          </div>
-        {% endif %}
 
       </div>
-    {% endif %}
 
-    {% if patrocinador.link.url %}
-      <a
-        class="du-sponsor-detail__website"
-        href="{{ patrocinador.link.url }}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {{ patrocinador.link.title|default('Visitar sitio web') }}
+      {% if patrocinador.ano_fundacion or patrocinador.ciudad %}
+        <div class="du-sponsor-detail__metadata">
 
-        <span aria-hidden="true">↗</span>
-      </a>
-    {% endif %}
-
-  </div>
-
-</header>
-
-  <section class="du-sponsor-detail__section">
-  <h3 class="du-sponsor-detail__section-title">
-    Simposios Vinculados
-  </h3>
-
-  {% if patrocinador.eventos %}
-    <div class="du-sponsor-detail__symposiums">
-
-      {% for evento in patrocinador.eventos %}
-        <a
-          href="{{ evento.url }}"
-          class="du-sponsor-symposium"
-        >
-          <div class="du-sponsor-symposium__tags">
-
-            {% if evento.tipo %}
-              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--sponsored">
-                {{ evento.tipo }}
+          {% if patrocinador.ano_fundacion %}
+            <div class="du-sponsor-detail__metadata-item">
+              <span class="du-sponsor-detail__metadata-label">
+                Año de fundación
               </span>
-            {% endif %}
 
-            {% if evento.tematica %}
-              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--topic">
-                {{ evento.tematica }}
-              </span>
-            {% endif %}
-
-            {% if evento.sala %}
-              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--room {{ evento.sala_class }}">
-                {{ evento.sala }}
-              </span>
-            {% endif %}
-
-            {% if evento.fecha %}
-              <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--date">
-                {{ evento.fecha }}
-              </span>
-            {% endif %}
-
-            {% if evento.hora %}
-              <span class="du-sponsor-symposium__time">
-                <span
-                  class="du-icon__clock"
-                  aria-hidden="true"
-                ></span>
-
-                {{ evento.hora }}
-              </span>
-            {% endif %}
-
-          </div>
-
-          <div class="du-sponsor-symposium__title">
-            <strong>Conferencia:</strong>
-            {{ evento.nombre }}
-          </div>
-        </a>
-      {% endfor %}
-
-    </div>
-  {% else %}
-    <p class="du-sponsor-detail__empty">
-      No tiene simposios vinculados.
-    </p>
-  {% endif %}
-</section>
-
- <section class="du-sponsor-detail__section">
-  <h3 class="du-sponsor-detail__section-title">
-    Conferencistas Vinculados
-  </h3>
-
-  {% if patrocinador.docentes %}
-    <div class="du-sponsor-detail__teachers">
-
-      {% for docente in patrocinador.docentes %}
-        <article class="du-sponsor-teacher">
-
-          <div class="du-sponsor-teacher__header">
-
-            <div class="du-sponsor-teacher__photo">
-              {% if docente.foto.url %}
-                <img
-                  src="{{ docente.foto.url }}"
-                  alt="{{ docente.foto.alt|default(docente.nombre) }}"
-                  loading="lazy"
-                >
-              {% else %}
-                <div class="du-sponsor-teacher__placeholder">
-                  {{ docente.nombre|slice(0, 1)|upper }}
-                </div>
-              {% endif %}
+              <strong>
+                {{ patrocinador.ano_fundacion }}
+              </strong>
             </div>
-
-            <div class="du-sponsor-teacher__identity">
-              <h4 class="du-sponsor-teacher__name">
-                {{ docente.nombre }}
-              </h4>
-
-              {% if docente.especialidad %}
-                <div class="du-sponsor-teacher__specialty">
-                  {{ docente.especialidad }}
-                </div>
-              {% endif %}
-
-              {% if docente.pais %}
-                <div class="du-sponsor-teacher__country">
-                  <strong>{{ docente.pais }}</strong>
-
-                  {% if docente.pais_class %}
-                    <span
-                      class="du-icon__flag-{{ docente.pais_class }}"
-                      title="{{ docente.pais }}"
-                      aria-label="{{ docente.pais }}"
-                    ></span>
-                  {% endif %}
-                </div>
-              {% endif %}
-            </div>
-
-          </div>
-
-          {% if docente.perfil_resumen %}
-            <p class="du-sponsor-teacher__profile">
-              {{ docente.perfil_resumen }}
-            </p>
           {% endif %}
 
-          <a
-            href="/dermau-docentes"
-            class="du-sponsor-teacher__link"
-          >
-            Ver detalle
-          </a>
+          {% if patrocinador.ciudad %}
+            <div class="du-sponsor-detail__metadata-item">
+              <span class="du-sponsor-detail__metadata-label">
+                Ciudad
+              </span>
 
-        </article>
-      {% endfor %}
+              <strong>
+                {{ patrocinador.ciudad }}
+              </strong>
+            </div>
+          {% endif %}
+
+        </div>
+      {% endif %}
+
+      {% if patrocinador.link.url %}
+        <a
+          class="du-sponsor-detail__website"
+          href="{{ patrocinador.link.url }}"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ patrocinador.link.title|default('Visitar sitio web') }}
+
+          <span aria-hidden="true">↗</span>
+        </a>
+      {% endif %}
 
     </div>
-  {% else %}
-    <p class="du-sponsor-detail__empty">
-      No tiene conferencistas vinculados.
-    </p>
-  {% endif %}
-</section> 
+
+  </header>
+
+  <section class="du-sponsor-detail__section">
+    <h3 class="du-sponsor-detail__section-title">
+      Simposios Vinculados
+    </h3>
+
+    {% if patrocinador.eventos %}
+      <div class="du-sponsor-detail__symposiums">
+
+        {% for evento in patrocinador.eventos %}
+          <a
+            href="{{ evento.url }}"
+            class="du-sponsor-symposium"
+          >
+            <div class="du-sponsor-symposium__tags">
+
+              {% if evento.tipo %}
+                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--sponsored">
+                  {{ evento.tipo }}
+                </span>
+              {% endif %}
+
+              {% if evento.tematica %}
+                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--topic">
+                  {{ evento.tematica }}
+                </span>
+              {% endif %}
+
+              {% if evento.sala %}
+                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--room {{ evento.sala_class }}">
+                  {{ evento.sala }}
+                </span>
+              {% endif %}
+
+              {% if evento.fecha %}
+                <span class="du-sponsor-symposium__tag du-sponsor-symposium__tag--date">
+                  {{ evento.fecha }}
+                </span>
+              {% endif %}
+
+              {% if evento.hora %}
+                <span class="du-sponsor-symposium__time">
+                  <span
+                    class="du-icon__clock"
+                    aria-hidden="true"
+                  ></span>
+
+                  {{ evento.hora }}
+                </span>
+              {% endif %}
+
+            </div>
+
+            <div class="du-sponsor-symposium__title">
+              <strong>Conferencia:</strong>
+              {{ evento.nombre }}
+            </div>
+          </a>
+        {% endfor %}
+
+      </div>
+    {% else %}
+      <p class="du-sponsor-detail__empty">
+        No tiene simposios vinculados.
+      </p>
+    {% endif %}
+  </section>
+
+  <section class="du-sponsor-detail__section">
+    <h3 class="du-sponsor-detail__section-title">
+      Conferencistas Vinculados
+    </h3>
+
+    {% if patrocinador.docentes %}
+      <div class="du-sponsor-detail__teachers">
+
+        {% for docente in patrocinador.docentes %}
+          <article class="du-sponsor-teacher">
+
+            <div class="du-sponsor-teacher__header">
+
+              <div class="du-sponsor-teacher__photo">
+                {% if docente.foto.url %}
+                  <img
+                    src="{{ docente.foto.url }}"
+                    alt="{{ docente.foto.alt|default(docente.nombre) }}"
+                    loading="lazy"
+                  >
+                {% else %}
+                  <div class="du-sponsor-teacher__placeholder">
+                    {{ docente.nombre|slice(0, 1)|upper }}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="du-sponsor-teacher__identity">
+                <h4 class="du-sponsor-teacher__name">
+                  {{ docente.nombre }}
+                </h4>
+
+                {% if docente.especialidad %}
+                  <div class="du-sponsor-teacher__specialty">
+                    {{ docente.especialidad }}
+                  </div>
+                {% endif %}
+
+                {% if docente.pais %}
+                  <div class="du-sponsor-teacher__country">
+                    <strong>{{ docente.pais }}</strong>
+
+                    {% if docente.pais_class %}
+                      <span
+                        class="du-icon__flag-{{ docente.pais_class }}"
+                        title="{{ docente.pais }}"
+                        aria-label="{{ docente.pais }}"
+                      ></span>
+                    {% endif %}
+                  </div>
+                {% endif %}
+              </div>
+
+            </div>
+
+            {% if docente.perfil_resumen %}
+              <p class="du-sponsor-teacher__profile">
+                {{ docente.perfil_resumen }}
+              </p>
+            {% endif %}
+
+            <a
+              href="/dermau-docentes"
+              class="du-sponsor-teacher__link"
+            >
+              Ver detalle
+            </a>
+
+          </article>
+        {% endfor %}
+
+      </div>
+    {% else %}
+      <p class="du-sponsor-detail__empty">
+        No tiene conferencistas vinculados.
+      </p>
+    {% endif %}
+  </section> 
 
   {% if patrocinador.ubicacion.url %}
     <section class="du-sponsor-detail__section">
