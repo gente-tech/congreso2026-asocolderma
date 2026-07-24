@@ -222,7 +222,7 @@ $cache_tags = Cache::mergeTags(
       ),
       'ubicacion' => $this->getImageData(
         $convenio,
-        'field_ubicacion_mapa',
+        'field_ubicacion_stand',
         $cache_dependencies,
       ),
       'link' => $this->getLinkData($convenio),
