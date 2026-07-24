@@ -655,9 +655,7 @@ dialog.du-conferencista-modal::backdrop {
 .du-conferencista-modal__specialty {
   margin-top: 10px;
   padding: 3px 4px;
-
-  color: #ef1313;
-
+  color: #f27d0d;
   font-size: 17px;
   font-weight: 700;
   line-height: 1.25;
@@ -711,7 +709,7 @@ dialog.du-conferencista-modal::backdrop {
 
 .du-conferencista-modal__section-title--conferences {
   margin-bottom: 9px;
-  color: #ef1616;
+  color: #f27d0d;
 }
 
 /* Perfil */
