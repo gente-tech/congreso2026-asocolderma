@@ -177,12 +177,12 @@
 
   </header>
 
-  <section class="du-sponsor-detail__section">
-    <h3 class="du-sponsor-detail__section-title">
-      Simposios Vinculados
-    </h3>
-
-    {% if patrocinador.eventos %}
+  {% if patrocinador.eventos %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Simposios Vinculados
+      </h3>
+    
       <div class="du-sponsor-detail__symposiums">
 
         {% for evento in patrocinador.eventos %}
@@ -236,20 +236,16 @@
           </a>
         {% endfor %}
 
-      </div>
-    {% else %}
-      <p class="du-sponsor-detail__empty">
-        No tiene simposios vinculados.
-      </p>
-    {% endif %}
-  </section>
+      </div> 
+    </section>
+  {% endif %}
 
-  <section class="du-sponsor-detail__section">
-    <h3 class="du-sponsor-detail__section-title">
-      Conferencistas Vinculados
-    </h3>
-
-    {% if patrocinador.docentes %}
+  {% if patrocinador.docentes %}
+    <section class="du-sponsor-detail__section">
+      <h3 class="du-sponsor-detail__section-title">
+        Conferencistas Vinculados
+      </h3>
+    
       <div class="du-sponsor-detail__teachers">
 
         {% for docente in patrocinador.docentes %}
@@ -315,13 +311,9 @@
           </article>
         {% endfor %}
 
-      </div>
-    {% else %}
-      <p class="du-sponsor-detail__empty">
-        No tiene conferencistas vinculados.
-      </p>
-    {% endif %}
-  </section> 
+      </div>    
+    </section> 
+  {% endif %}
 
   {% if patrocinador.ubicacion.url %}
     <section class="du-sponsor-detail__section">
