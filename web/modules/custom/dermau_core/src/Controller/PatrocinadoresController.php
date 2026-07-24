@@ -220,7 +220,11 @@ $cache_tags = Cache::mergeTags(
         $convenio,
         'field_piso_stand',
       ),
-      
+      'ubicacion' => $this->getImageData(
+        $convenio,
+        'field_ubicacion_mapa',
+        $cache_dependencies,
+      ),
       'link' => $this->getLinkData($convenio),
       'eventos' => $relaciones['eventos'],
       'eventos_count' => count($relaciones['eventos']),
