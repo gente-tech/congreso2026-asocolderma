@@ -363,9 +363,9 @@
                       <button
                         type="button"
                         class="du-panel-block__speaker js-conferencista-modal-open"
-                        data-modal-target="conferencista-modal-{{ docente.id }}"
+                        data-modal-target="conferencista-modal-{{ docente.id() }}"
                         aria-haspopup="dialog"
-                        aria-controls="conferencista-modal-{{ docente.id }}"
+                        aria-controls="conferencista-modal-{{ docente.id() }}"
                       >
                         <span>
                           {{ docente.label }}
@@ -446,9 +446,9 @@
                         <button
                           type="button"
                           class="du-panel-block__speaker js-conferencista-modal-open"
-                          data-modal-target="conferencista-modal-{{ docente.id }}"
+                          data-modal-target="conferencista-modal-{{ docente.id() }}"
                           aria-haspopup="dialog"
-                          aria-controls="conferencista-modal-{{ docente.id }}"
+                          aria-controls="conferencista-modal-{{ docente.id() }}"
                         >
                           <span>
                             {{ docente.label }}
@@ -564,7 +564,7 @@
     {% set docente = relacion.field_conferencista.entity %}
 
     {% if docente %}
-      {% set docente_key = 'docente_' ~ docente.id %}
+      {% set docente_key = 'docente_' ~ docente.id() %}
 
       {% if docentes_popup[docente_key] is not defined %}
         {% set docentes_popup = docentes_popup|merge({
@@ -590,9 +590,9 @@
   {% set especialidad = docente.field_especialidad.entity %}
 
   <dialog
-    id="conferencista-modal-{{ docente.id }}"
+    id="conferencista-modal-{{ docente.id() }}"
     class="du-conferencista-modal"
-    aria-labelledby="conferencista-modal-title-{{ docente.id }}"
+    aria-labelledby="conferencista-modal-title-{{ docente.id() }}"
   >
     <div class="du-conferencista-modal__surface">
 
@@ -626,7 +626,7 @@
           </div>
 
           <h2
-            id="conferencista-modal-title-{{ docente.id }}"
+            id="conferencista-modal-title-{{ docente.id() }}"
             class="du-conferencista-modal__name"
           >
             {{ docente.label }}
@@ -724,7 +724,7 @@
                 {% for relacion_item in evento_vinculado.field_conferencistas_del_evento %}
                   {% set relacion = relacion_item.entity %}
 
-                  {% if relacion.field_conferencista.target_id == docente.id %}
+                  {% if relacion.field_conferencista.target_id == docente.id() %}
                     {% set docente_vinculado = true %}
                   {% endif %}
                 {% endfor %}

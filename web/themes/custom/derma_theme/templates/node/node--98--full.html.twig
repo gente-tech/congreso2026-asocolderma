@@ -16,15 +16,18 @@
   - 'break': si es true, renderiza la fila de descanso en lugar de celdas
 #}
 {% set franjas = [
+  { label: '7 AM',  hora_from: 25200,  break: false },
   { label: '8 AM',  hora_from: 28800,  break: false },
   { label: '9 AM',  hora_from: 32400,  break: false },
   { label: '10 AM', hora_from: 36000,  break: false },
   { label: '11 AM', hora_from: 39600,  break: false },
-  { label: '12 M',  hora_from: 43200,  break: true  },
+  { label: '12 M',  hora_from: 43200,  break: false  },
+  { label: '1 PM',  hora_from: 46800,  break: false },
   { label: '2 PM',  hora_from: 50400,  break: false },
   { label: '3 PM',  hora_from: 54000,  break: false },
   { label: '4 PM',  hora_from: 57600,  break: false },
-  { label: '5 PM',  hora_from: 61200,  break: false }
+  { label: '5 PM',  hora_from: 61200,  break: false },
+  { label: '6 PM',  hora_from: 64800,  break: false }
 ] %}
 
 {# Lista de keys de sala en el orden que aparecen las columnas #}
@@ -366,9 +369,9 @@
                                   <button
                                     type="button"
                                     class="du-congreso__speaker js-conferencista-modal-open"
-                                    data-modal-target="conferencista-modal-{{ docente.id }}"
+                                    data-modal-target="conferencista-modal-{{ docente.id() }}"
                                     aria-haspopup="dialog"
-                                    aria-controls="conferencista-modal-{{ docente.id }}"
+                                    aria-controls="conferencista-modal-{{ docente.id() }}"
                                   >
                                     <span class="du-congreso__speaker-name">
                                       {{ docente.label }}
@@ -459,7 +462,7 @@
     {% set docente = conferencista_paragraph.field_conferencista.entity %}
 
     {% if docente %}
-      {% set docente_key = 'docente_' ~ docente.id %}
+      {% set docente_key = 'docente_' ~ docente.id() %}
 
       {% if docentes_popup[docente_key] is not defined %}
         {% set docentes_popup = docentes_popup|merge({
@@ -501,9 +504,9 @@
   {% endif %}
 
   <dialog
-    id="conferencista-modal-{{ docente.id }}"
+    id="conferencista-modal-{{ docente.id() }}"
     class="du-conferencista-modal"
-    aria-labelledby="conferencista-modal-title-{{ docente.id }}"
+    aria-labelledby="conferencista-modal-title-{{ docente.id() }}"
   >
     <div class="du-conferencista-modal__surface">
 
@@ -538,7 +541,7 @@
           </div>
 
           <h2
-            id="conferencista-modal-title-{{ docente.id }}"
+            id="conferencista-modal-title-{{ docente.id() }}"
             class="du-conferencista-modal__name"
           >
             {{ docente.label }}
@@ -723,7 +726,7 @@
                 {% for relacion_item in evento_vinculado.field_conferencistas_del_evento %}
                   {% set relacion = relacion_item.entity %}
 
-                  {% if relacion.field_conferencista.target_id == docente.id %}
+                  {% if relacion.field_conferencista.target_id == docente.id() %}
                     {% set docente_vinculado = true %}
                   {% endif %}
                 {% endfor %}
