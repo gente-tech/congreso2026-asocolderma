@@ -16,28 +16,25 @@
   - 'break': si es true, renderiza la fila de descanso en lugar de celdas
 
   Las franjas se generan dinámicamente a partir de las horas reales de
-  los eventos (field_hora_evento.from) del nodo, para soportar cualquier
-  horario intermedio (ej. 8:30, 9:15) sin tener que editar este archivo
-  cada vez que se programe un evento en una hora nueva.
+  los eventos (field_hora_evento.from), agrupadas por día, para soportar
+  cualquier horario intermedio (ej. 8:30, 9:15) sin tener que editar este
+  archivo cada vez que se programe un evento en una hora nueva, y para
+  que cada día solo muestre las franjas que realmente tiene (sin filas
+  vacías heredadas de otros días).
 #}
-{% set horas_eventos = [] %}
+{% set horas_por_dia = {} %}
 {% for evento_item in node.field_listado_eventos_congreso %}
   {% set evento = evento_item.entity %}
+  {% set dia_ev = evento.field_dia_evento.value %}
   {% set hf = evento.field_hora_evento.from %}
-  {% if hf and hf not in horas_eventos %}
-    {% set horas_eventos = horas_eventos|merge([hf]) %}
+  {% if dia_ev and hf %}
+    {% set horas_dia_actual = horas_por_dia[dia_ev] ?? [] %}
+    {% if hf not in horas_dia_actual %}
+      {% set horas_por_dia = horas_por_dia|merge({
+        (dia_ev): horas_dia_actual|merge([hf])
+      }) %}
+    {% endif %}
   {% endif %}
-{% endfor %}
-{% set horas_eventos = horas_eventos|sort %}
-
-{% set franjas = [] %}
-{% for hf in horas_eventos %}
-  {% set minutos = hf|date('i', 'UTC') %}
-  {% set franjas = franjas|merge([{
-    label: minutos == '00' ? hf|date('g A', 'UTC') : hf|date('g:i A', 'UTC'),
-    hora_from: hf,
-    break: false
-  }]) %}
 {% endfor %}
 
 {# Lista de keys de sala en el orden que aparecen las columnas #}
@@ -269,6 +266,18 @@
 {% endfor %}
 
 {% for dia in dias_procesados %}
+
+  {# Franjas propias de este día, ordenadas y formateadas #}
+  {% set horas_eventos = (horas_por_dia[dia] ?? [])|sort %}
+  {% set franjas = [] %}
+  {% for hf in horas_eventos %}
+    {% set minutos = hf|date('i', 'UTC') %}
+    {% set franjas = franjas|merge([{
+      label: minutos == '00' ? hf|date('g A', 'UTC') : hf|date('g:i A', 'UTC'),
+      hora_from: hf,
+      break: false
+    }]) %}
+  {% endfor %}
 
   <section class="du-congreso-section-calendar" id="dia-{{ dia|replace({'-': ''}) }}">
     <div class="du-congreso__container container">
