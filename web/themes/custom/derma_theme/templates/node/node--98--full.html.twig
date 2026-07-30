@@ -321,12 +321,16 @@
 
                       <button class="du-congreso__card-trigger">
                         <div class="du-congreso__card-header">
-                          <span class="tag-outline tipoS" data-tag="{{ evento_encontrado.field_tipo_evento.entity.tid.value }}">
-                            {{ evento_encontrado.field_tipo_evento.entity.name.value }}
-                          </span>
-                          <span class="tag-outline tipoT" data-tag="{{ evento_encontrado.field_tematica_evento.entity.tid.value }}">
-                            {{ evento_encontrado.field_tematica_evento.entity.name.value }}
-                          </span>
+                          {% if evento_encontrado.field_tipo_evento.entity.name.value %}
+                            <span class="tag-outline tipoS" data-tag="{{ evento_encontrado.field_tipo_evento.entity.tid.value }}">
+                              {{ evento_encontrado.field_tipo_evento.entity.name.value }}
+                            </span>
+                          {% endif %}
+                          {% if evento_encontrado.field_tematica_evento.entity.name.value %}
+                            <span class="tag-outline tipoT" data-tag="{{ evento_encontrado.field_tematica_evento.entity.tid.value }}">
+                              {{ evento_encontrado.field_tematica_evento.entity.name.value }}
+                            </span>
+                          {% endif %}
                           <span class="tag-solid {{ sala_key|replace({'_': '-'}) }} sala">
                             {{ salas[sala_key] }}
                           </span>
