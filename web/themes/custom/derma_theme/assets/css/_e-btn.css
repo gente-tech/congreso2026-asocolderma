@@ -154,8 +154,8 @@ span.du-btn__link{
 .du-congreso__card-speakers > .du-icon__micro {
   display: inline-block;
   flex: 0 0 auto;
-  min-width: 16px;
-  min-height: 20px;
+  min-width: 12px;
+  min-height: 16px;
 }
 
 .du-congreso__card-speakers > strong {
