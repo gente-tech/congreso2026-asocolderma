@@ -268,7 +268,7 @@
           >
             <div class="du-panel-block__content">
 
-              {% if tipo %}
+              {% if tipo.tid.value %}
                 <span
                   class="tag-outline tipoS"
                   data-tag="{{ tipo.tid.value }}"
@@ -277,7 +277,7 @@
                 </span>
               {% endif %}
 
-              {% if tematica %}
+              {% if tematica.tid.value %}
                 <span
                   class="tag-outline tipoT"
                   data-tag="{{ tematica.tid.value }}"
