@@ -422,20 +422,34 @@
                       <div class="du-congreso__card-desglose">
                         {% for conf_item in evento_encontrado.field_listado_conferencias %}
                           {% set conferencia = conf_item.entity %}
+                          {% set docente_conferencia = conferencia.field_conferencista_conferencia.entity %}
+
                           <div class="du-congreso__card-desglose-item">
                             <div class="tag-flex">
                               <span class="du-icon__clock"></span>
                               {{ conferencia.field_hora_conferencia.value }}
                             </div>
+
                             <h3>
                               <span class="blink">Conferencia:</span>
                               {{ conferencia.field_titulo_conferencia.value }}
                             </h3>
+
                             <p>{{ conferencia.field_descripcion_conferencia.value }}</p>
+
                             <div class="du-congreso__card-detail-item">
                               <span class="blink">Conferencista:</span>
-                              <span>{{ conferencia.field_nombre_conferencista.value }}</span>
-                              <span class="du-icon__flag-{{ conferencia.field_pais_conferencista.value }}" title="País"></span>
+
+                              <span>
+                                {% if docente_conferencia %}
+                                  {{ docente_conferencia.label }}
+                                {% endif %}
+                              </span>
+
+                              <span
+                                class="du-icon__flag-{{ conferencia.field_pais_conferencista.value|clean_class }}"
+                                title="País"
+                              ></span>
                             </div>
                           </div>
                         {% endfor %}
