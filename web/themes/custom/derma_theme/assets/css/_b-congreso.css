@@ -466,6 +466,11 @@
   }
   .du-calendar__item{ flex-direction: column; }
 
+  .du-congreso__card-header .sala {
+    display: inline-flex;
+    align-items: center;
+  }
+
   .du-calendar__item-card.is-open .du-congreso__card-top{ display: flex; }
   .du-filter-calendar { display: block; }
 }
