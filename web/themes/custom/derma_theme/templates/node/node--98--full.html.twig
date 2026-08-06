@@ -386,7 +386,10 @@
                               {% set docente_evento = conferencista_paragraph.field_conferencista.entity %}
                               {% set pais_evento = conferencista_paragraph.field_pais_conferencista.value|default('') %}
 
-                              {% if docente_evento %}
+                              {% if docente_evento
+                                and docente_evento.getEntityTypeId() == 'node'
+                                and docente_evento.bundle() == 'docente'
+                              %}
                                 {% set conferencistas_validos = conferencistas_validos|merge([{
                                   'id': docente_evento.id(),
                                   'nombre': docente_evento.label,

@@ -204,7 +204,10 @@
               {% set relacion = relacion_item.entity %}
               {% set docente = relacion.field_conferencista.entity %}
 
-              {% if docente %}
+              {% if docente
+                and docente.getEntityTypeId() == 'node'
+                and docente.bundle() == 'docente'
+              %}
                 <option value="{{ docente.label }}">
                   {{ docente.label }}
                 </option>
@@ -234,14 +237,29 @@
         {% set sala_key = evento.field_sala_evento.value %}
         {% set fecha_evento = evento.field_dia_evento.value %}
 
-        {# Nombres para el filtro JavaScript #}
+        {# Conferencistas válidos del evento #}
+        {% set conferencistas_validos = [] %}
         {% set nombres_conferencistas = [] %}
 
         {% for relacion_item in evento.field_conferencistas_del_evento %}
           {% set relacion = relacion_item.entity %}
-          {% set docente = relacion.field_conferencista.entity %}
+          {% set docente = relacion
+            ? relacion.field_conferencista.entity
+            : null
+          %}
 
-          {% if docente %}
+          {% if docente
+            and docente.getEntityTypeId() == 'node'
+            and docente.bundle() == 'docente'
+          %}
+            {% set pais = relacion.field_pais_conferencista.value|default('') %}
+
+            {% set conferencistas_validos = conferencistas_validos|merge([{
+              'id': docente.id(),
+              'nombre': docente.label,
+              'pais': pais
+            }]) %}
+
             {% set nombres_conferencistas = nombres_conferencistas|merge([
               docente.label
             ]) %}
@@ -339,7 +357,7 @@
               </p>
             {% endif %}
 
-            {% if evento.field_conferencistas_del_evento|length %}
+            {% if conferencistas_validos|length > 0 %}
               <div class="du-panel-block__resumen-speakers">
                 <span
                   class="du-icon__micro"
@@ -347,47 +365,41 @@
                 ></span>
 
                 <strong>
-                  {{ evento.field_conferencistas_del_evento|length > 1
+                  {{ conferencistas_validos|length > 1
                     ? 'Conferencistas:'
                     : 'Conferencista:'
                   }}
                 </strong>
 
                 <div class="du-panel-block__speaker-list">
-                  {% for relacion_item in evento.field_conferencistas_del_evento %}
-                    {% set relacion = relacion_item.entity %}
-                    {% set docente = relacion.field_conferencista.entity %}
-                    {% set pais = relacion.field_pais_conferencista.value|default('') %}
+                  {% for conferencista in conferencistas_validos %}
+                    <button
+                      type="button"
+                      class="du-panel-block__speaker js-conferencista-modal-open"
+                      data-modal-target="conferencista-modal-{{ conferencista.id }}"
+                      aria-haspopup="dialog"
+                      aria-controls="conferencista-modal-{{ conferencista.id }}"
+                    >
+                      <span>
+                        {{ conferencista.nombre }}
+                      </span>
 
-                    {% if docente %}
-                      <button
-                        type="button"
-                        class="du-panel-block__speaker js-conferencista-modal-open"
-                        data-modal-target="conferencista-modal-{{ docente.id() }}"
-                        aria-haspopup="dialog"
-                        aria-controls="conferencista-modal-{{ docente.id() }}"
-                      >
-                        <span>
-                          {{ docente.label }}
-                        </span>
-
-                        {% if pais %}
-                          <span
-                            class="du-icon__flag-{{ pais|clean_class }}"
-                            title="{{ pais }}"
-                            aria-label="{{ pais }}"
-                          ></span>
-                        {% endif %}
-                      </button>
-
-                      {% if not loop.last %}
+                      {% if conferencista.pais %}
                         <span
-                          class="du-panel-block__speaker-separator"
-                          aria-hidden="true"
-                        >
-                          ,
-                        </span>
+                          class="du-icon__flag-{{ conferencista.pais|lower|clean_class }}"
+                          title="{{ conferencista.pais }}"
+                          aria-label="{{ conferencista.pais }}"
+                        ></span>
                       {% endif %}
+                    </button>
+
+                    {% if not loop.last %}
+                      <span
+                        class="du-panel-block__speaker-separator"
+                        aria-hidden="true"
+                      >
+                        ,
+                      </span>
                     {% endif %}
                   {% endfor %}
                 </div>
@@ -407,18 +419,52 @@
 
             <div class="du-panel-block__detail">
 
-              {% if evento.field_coordinador_evento.value %}
+              {% if conferencistas_validos|length > 0 %}
                 <div class="du-panel-block__detail-item">
                   <span
-                    class="du-icon__user"
+                    class="du-icon__micro"
                     aria-hidden="true"
                   ></span>
 
-                  <strong>Coordinación:</strong>
+                  <strong>
+                    {{ conferencistas_validos|length > 1
+                      ? 'Conferencistas:'
+                      : 'Conferencista:'
+                    }}
+                  </strong>
 
-                  <span>
-                    {{ evento.field_coordinador_evento.value }}
-                  </span>
+                  <div class="du-panel-block__speaker-list">
+                    {% for conferencista in conferencistas_validos %}
+                      <button
+                        type="button"
+                        class="du-panel-block__speaker js-conferencista-modal-open"
+                        data-modal-target="conferencista-modal-{{ conferencista.id }}"
+                        aria-haspopup="dialog"
+                        aria-controls="conferencista-modal-{{ conferencista.id }}"
+                      >
+                        <span>
+                          {{ conferencista.nombre }}
+                        </span>
+
+                        {% if conferencista.pais %}
+                          <span
+                            class="du-icon__flag-{{ conferencista.pais|lower|clean_class }}"
+                            title="{{ conferencista.pais }}"
+                            aria-label="{{ conferencista.pais }}"
+                          ></span>
+                        {% endif %}
+                      </button>
+
+                      {% if not loop.last %}
+                        <span
+                          class="du-panel-block__speaker-separator"
+                          aria-hidden="true"
+                        >
+                          ,
+                        </span>
+                      {% endif %}
+                    {% endfor %}
+                  </div>
                 </div>
               {% endif %}
 
@@ -565,7 +611,10 @@
     {% set relacion = relacion_item.entity %}
     {% set docente = relacion.field_conferencista.entity %}
 
-    {% if docente %}
+    {% if docente
+      and docente.getEntityTypeId() == 'node'
+      and docente.bundle() == 'docente'
+    %}
       {% set docente_key = 'docente_' ~ docente.id() %}
 
       {% if docentes_popup[docente_key] is not defined %}
