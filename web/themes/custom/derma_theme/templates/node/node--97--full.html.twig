@@ -485,6 +485,21 @@
 
             <div class="du-panel-block__detail">
 
+              {% if coordinacion_evento %}
+                <div class="du-panel-block__detail-item">
+                  <span
+                    class="du-icon__user"
+                    aria-hidden="true"
+                  ></span>
+
+                  <strong>Coordinación:</strong>
+
+                  <span>
+                    {{ coordinacion_evento }}
+                  </span>
+                </div>
+              {% endif %}
+
               {% if conferencistas_validos|length > 0 %}
                 <div class="du-panel-block__detail-item">
                   <span
@@ -540,58 +555,108 @@
                CONFERENCIAS INTERNAS DEL EVENTO
                ================================================== #}
 
-            <div class="du-panel-block__desglose">
-              {% for conf_item in evento.field_listado_conferencias %}
-                {% set conferencia = conf_item.entity %}
-                {% set docente_conferencia = conferencia.field_conferencista_conferencia.0.entity %}
+            {% if tiene_conferencias_validas %}
+              <div class="du-panel-block__desglose">
 
-                <div class="du-panel-block__desglose-item">
+                {% for conf_item in evento.field_listado_conferencias %}
+                  {% set conferencia = conf_item.entity %}
 
-                  {% if conferencia.field_hora_conferencia.value %}
-                    <div class="tag-flex">
-                      <span
-                        class="du-icon__clock"
-                        aria-hidden="true"
-                      ></span>
+                  {% if conferencia %}
+                    {% set docente_conferencia =
+                      conferencia.field_conferencista_conferencia.0.entity
+                    %}
 
-                      {{ conferencia.field_hora_conferencia.value }}
-                    </div>
+                    {% set docente_conferencia_valido =
+                      docente_conferencia
+                      and docente_conferencia.getEntityTypeId() == 'node'
+                      and docente_conferencia.bundle() == 'docente'
+                    %}
+
+                    {% set titulo_conferencia =
+                      conferencia.field_titulo_conferencia.value
+                      |default('')
+                      |trim
+                    %}
+
+                    {% set hora_conferencia =
+                      conferencia.field_hora_conferencia.value
+                      |default('')
+                      |trim
+                    %}
+
+                    {% set descripcion_conferencia =
+                      conferencia.field_descripcion_conferencia.value
+                      |default('')
+                      |trim
+                    %}
+
+                    {% set pais_conferencia =
+                      conferencia.field_pais_conferencista.value
+                      |default('')
+                      |trim
+                    %}
+
+                    {% set conferencia_tiene_contenido =
+                      titulo_conferencia
+                      or hora_conferencia
+                      or descripcion_conferencia
+                      or docente_conferencia_valido
+                    %}
+
+                    {% if conferencia_tiene_contenido %}
+                      <div class="du-panel-block__desglose-item">
+
+                        {% if hora_conferencia %}
+                          <div class="tag-flex">
+                            <span
+                              class="du-icon__clock"
+                              aria-hidden="true"
+                            ></span>
+
+                            {{ hora_conferencia }}
+                          </div>
+                        {% endif %}
+
+                        {% if titulo_conferencia %}
+                          <h3>
+                            <span class="blink">Conferencia:</span>
+                            {{ titulo_conferencia }}
+                          </h3>
+                        {% endif %}
+
+                        {% if descripcion_conferencia %}
+                          <p>
+                            {{ descripcion_conferencia }}
+                          </p>
+                        {% endif %}
+
+                        {% if docente_conferencia_valido %}
+                          <div class="du-panel-block__detail-item">
+                            <span class="blink">
+                              Conferencista:
+                            </span>
+
+                            <span>
+                              {{ docente_conferencia.title.value }}
+                            </span>
+
+                            {% if pais_conferencia %}
+                              <span
+                                class="du-icon__flag-{{ pais_conferencia|lower|clean_class }}"
+                                title="{{ pais_conferencia }}"
+                                aria-label="{{ pais_conferencia }}"
+                              ></span>
+                            {% endif %}
+                          </div>
+                        {% endif %}
+
+                      </div>
+                    {% endif %}
                   {% endif %}
+                {% endfor %}
 
-                  <h3>
-                    <span class="blink">Conferencia:</span>
-                    {{ conferencia.field_titulo_conferencia.value }}
-                  </h3>
-
-                  {% if conferencia.field_descripcion_conferencia.value %}
-                    <p>
-                      {{ conferencia.field_descripcion_conferencia.value }}
-                    </p>
-                  {% endif %}
-
-                  {% if docente_conferencia %}
-                    <div class="du-panel-block__detail-item">
-                      <span class="blink">
-                        Conferencista:
-                      </span>
-
-                      <span>
-                        {{ docente_conferencia.title.value }}
-                      </span>
-
-                      {% if conferencia.field_pais_conferencista.value %}
-                        <span
-                          class="du-icon__flag-{{ conferencia.field_pais_conferencista.value|lower|clean_class }}"
-                          title="{{ conferencia.field_pais_conferencista.value }}"
-                          aria-label="{{ conferencia.field_pais_conferencista.value }}"
-                        ></span>
-                      {% endif %}
-                    </div>
-                  {% endif %}
-
-                </div>
-              {% endfor %}
-            </div>
+              </div>
+            {% endif %}
 
             <div class="du-panel-block__top">
               <a
