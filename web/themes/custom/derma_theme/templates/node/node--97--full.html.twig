@@ -266,6 +266,65 @@
           {% endif %}
         {% endfor %}
 
+        {# Coordinación válida del evento. #}
+        {% set coordinacion_evento =
+          evento.field_coordinador_evento.value
+          |default('')
+          |trim
+        %}
+
+        {# Validar que exista al menos una conferencia con contenido real. #}
+        {% set tiene_conferencias_validas = false %}
+
+        {% for conf_item_validacion in evento.field_listado_conferencias %}
+          {% set conferencia_validacion = conf_item_validacion.entity %}
+
+          {% if conferencia_validacion %}
+            {% set docente_conferencia_validacion =
+              conferencia_validacion.field_conferencista_conferencia.0.entity
+            %}
+
+            {% set docente_conferencia_es_valido =
+              docente_conferencia_validacion
+              and docente_conferencia_validacion.getEntityTypeId() == 'node'
+              and docente_conferencia_validacion.bundle() == 'docente'
+            %}
+
+            {% set titulo_conferencia_validacion =
+              conferencia_validacion.field_titulo_conferencia.value
+              |default('')
+              |trim
+            %}
+
+            {% set hora_conferencia_validacion =
+              conferencia_validacion.field_hora_conferencia.value
+              |default('')
+              |trim
+            %}
+
+            {% set descripcion_conferencia_validacion =
+              conferencia_validacion.field_descripcion_conferencia.value
+              |default('')
+              |trim
+            %}
+
+            {% if titulo_conferencia_validacion
+              or hora_conferencia_validacion
+              or descripcion_conferencia_validacion
+              or docente_conferencia_es_valido
+            %}
+              {% set tiene_conferencias_validas = true %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {# La card solo se abre cuando existe información para mostrar. #}
+        {% set tiene_detalle_evento =
+          coordinacion_evento
+          or (conferencistas_validos|length > 0)
+          or tiene_conferencias_validas
+        %}
+
         <article
           class="du-panel-block__item"
           id="simposio-{{ evento.id() }}"
@@ -283,6 +342,10 @@
             type="button"
             class="du-panel-block__trigger"
             aria-expanded="false"
+            {% if not tiene_detalle_evento %}
+              disabled
+              aria-disabled="true"
+            {% endif %}
           >
             <div class="du-panel-block__content">
 
@@ -335,10 +398,12 @@
 
             </div>
 
-            <div
-              class="du-icon-trigger__plus"
-              aria-hidden="true"
-            ></div>
+            {% if tiene_detalle_evento %}
+              <div
+                class="du-icon-trigger__plus"
+                aria-hidden="true"
+              ></div>
+            {% endif %}
           </button>
 
           {# ====================================================
@@ -412,6 +477,7 @@
              CONTENIDO DE LA CARD ABIERTA
              ==================================================== #}
 
+          {% if tiene_detalle_evento %}
           <div
             class="du-panel-block__body"
             data-variation="resumen"
@@ -462,61 +528,6 @@
                         >
                           ,
                         </span>
-                      {% endif %}
-                    {% endfor %}
-                  </div>
-                </div>
-              {% endif %}
-
-              {% if evento.field_conferencistas_del_evento|length %}
-                <div class="du-panel-block__detail-item">
-                  <span
-                    class="du-icon__micro"
-                    aria-hidden="true"
-                  ></span>
-
-                  <strong>
-                    {{ evento.field_conferencistas_del_evento|length > 1
-                      ? 'Conferencistas:'
-                      : 'Conferencista:'
-                    }}
-                  </strong>
-
-                  <div class="du-panel-block__speaker-list">
-                    {% for relacion_item in evento.field_conferencistas_del_evento %}
-                      {% set relacion = relacion_item.entity %}
-                      {% set docente = relacion.field_conferencista.entity %}
-                      {% set pais = relacion.field_pais_conferencista.value|default('') %}
-
-                      {% if docente %}
-                        <button
-                          type="button"
-                          class="du-panel-block__speaker js-conferencista-modal-open"
-                          data-modal-target="conferencista-modal-{{ docente.id() }}"
-                          aria-haspopup="dialog"
-                          aria-controls="conferencista-modal-{{ docente.id() }}"
-                        >
-                          <span>
-                            {{ docente.label }}
-                          </span>
-
-                          {% if pais %}
-                            <span
-                              class="du-icon__flag-{{ pais|clean_class }}"
-                              title="{{ pais }}"
-                              aria-label="{{ pais }}"
-                            ></span>
-                          {% endif %}
-                        </button>
-
-                        {% if not loop.last %}
-                          <span
-                            class="du-panel-block__speaker-separator"
-                            aria-hidden="true"
-                          >
-                            ,
-                          </span>
-                        {% endif %}
                       {% endif %}
                     {% endfor %}
                   </div>
@@ -591,6 +602,7 @@
             </div>
 
           </div>
+          {% endif %}
         </article>
       {% endfor %}
 
