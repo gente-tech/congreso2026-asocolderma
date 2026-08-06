@@ -486,6 +486,7 @@
             <div class="du-panel-block__desglose">
               {% for conf_item in evento.field_listado_conferencias %}
                 {% set conferencia = conf_item.entity %}
+                {% set docente_conferencia = conferencia.field_conferencista_conferencia.0.entity %}
 
                 <div class="du-panel-block__desglose-item">
 
@@ -511,20 +512,21 @@
                     </p>
                   {% endif %}
 
-                  {% if conferencia.field_nombre_conferencista.value %}
+                  {% if docente_conferencia %}
                     <div class="du-panel-block__detail-item">
                       <span class="blink">
                         Conferencista:
                       </span>
 
                       <span>
-                        {{ conferencia.field_nombre_conferencista.value }}
+                        {{ docente_conferencia.title.value }}
                       </span>
 
                       {% if conferencia.field_pais_conferencista.value %}
                         <span
-                          class="du-icon__flag-{{ conferencia.field_pais_conferencista.value|clean_class }}"
+                          class="du-icon__flag-{{ conferencia.field_pais_conferencista.value|lower|clean_class }}"
                           title="{{ conferencia.field_pais_conferencista.value }}"
+                          aria-label="{{ conferencia.field_pais_conferencista.value }}"
                         ></span>
                       {% endif %}
                     </div>
