@@ -532,7 +532,10 @@
     {% set conferencista_paragraph = conferencista_item.entity %}
     {% set docente = conferencista_paragraph.field_conferencista.entity %}
 
-    {% if docente %}
+    {% if docente
+      and docente.getEntityTypeId() == 'node'
+      and docente.bundle() == 'docente'
+    %}
       {% set docente_key = 'docente_' ~ docente.id() %}
 
       {% if docentes_popup[docente_key] is not defined %}
