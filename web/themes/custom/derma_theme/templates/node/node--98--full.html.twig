@@ -377,64 +377,63 @@
                             <strong>Coordinación:</strong>
                             <span>{{ evento_encontrado.field_coordinador_evento.value }}</span>
                           </div>
-                          <div class="du-congreso__card-detail-item du-congreso__card-speakers">
-                            <span class="du-icon__micro" aria-hidden="true"></span>
+                          {% set conferencistas_validos = [] %}
 
-                            <strong>Conferencistas:</strong>
+                          {% for conferencista_item in evento_encontrado.field_conferencistas_del_evento %}
+                            {% set conferencista_paragraph = conferencista_item.entity %}
 
-                            {% set conferencistas_evento = [] %}
-                            {% set conferencistas_ids = [] %}
+                            {% if conferencista_paragraph %}
+                              {% set docente_evento = conferencista_paragraph.field_conferencista.entity %}
+                              {% set pais_evento = conferencista_paragraph.field_pais_conferencista.value|default('') %}
 
-                            {% for conferencia_item in evento_encontrado.field_listado_conferencias %}
-                              {% set conferencia_evento = conferencia_item.entity %}
-
-                              {% if conferencia_evento %}
-                                {% set docente_evento = conferencia_evento.field_conferencista_conferencia.entity %}
-
-                                {% if docente_evento %}
-                                  {% set docente_id = docente_evento.id() %}
-
-                                  {% if docente_id not in conferencistas_ids %}
-                                    {% set conferencistas_ids = conferencistas_ids|merge([docente_id]) %}
-
-                                    {% set conferencistas_evento = conferencistas_evento|merge([{
-                                      'id': docente_id,
-                                      'nombre': docente_evento.title.value,
-                                      'pais': conferencia_evento.field_pais_conferencista.value|default('')
-                                    }]) %}
-                                  {% endif %}
-                                {% endif %}
+                              {% if docente_evento %}
+                                {% set conferencistas_validos = conferencistas_validos|merge([{
+                                  'id': docente_evento.id(),
+                                  'nombre': docente_evento.label,
+                                  'pais': pais_evento
+                                }]) %}
                               {% endif %}
-                            {% endfor %}
+                            {% endif %}
+                          {% endfor %}
 
-                            <div class="du-congreso__speaker-list">
-                              {% for conferencista in conferencistas_evento %}
-                                <button
-                                  type="button"
-                                  class="du-congreso__speaker js-conferencista-modal-open"
-                                  data-modal-target="conferencista-modal-{{ conferencista.id }}"
-                                  aria-haspopup="dialog"
-                                  aria-controls="conferencista-modal-{{ conferencista.id }}"
-                                >
-                                  <span class="du-congreso__speaker-name">
-                                    {{ conferencista.nombre }}
-                                  </span>
+                          {% if conferencistas_validos|length > 0 %}
+                            <div class="du-congreso__card-detail-item du-congreso__card-speakers">
+                              <span
+                                class="du-icon__micro"
+                                aria-hidden="true"
+                              ></span>
 
-                                  {% if conferencista.pais %}
-                                    <span
-                                      class="du-icon__flag-{{ conferencista.pais|lower|clean_class }}"
-                                      title="{{ conferencista.pais }}"
-                                      aria-label="{{ conferencista.pais }}"
-                                    ></span>
+                              <strong>Conferencistas:</strong>
+
+                              <div class="du-congreso__speaker-list">
+                                {% for conferencista in conferencistas_validos %}
+                                  <button
+                                    type="button"
+                                    class="du-congreso__speaker js-conferencista-modal-open"
+                                    data-modal-target="conferencista-modal-{{ conferencista.id }}"
+                                    aria-haspopup="dialog"
+                                    aria-controls="conferencista-modal-{{ conferencista.id }}"
+                                  >
+                                    <span class="du-congreso__speaker-name">
+                                      {{ conferencista.nombre }}
+                                    </span>
+
+                                    {% if conferencista.pais %}
+                                      <span
+                                        class="du-icon__flag-{{ conferencista.pais|lower|clean_class }}"
+                                        title="{{ conferencista.pais }}"
+                                        aria-label="{{ conferencista.pais }}"
+                                      ></span>
+                                    {% endif %}
+                                  </button>
+
+                                  {% if not loop.last %}
+                                    <span class="du-congreso__speaker-separator">,</span>
                                   {% endif %}
-                                </button>
-
-                                {% if not loop.last %}
-                                  <span class="du-congreso__speaker-separator">,</span>
-                                {% endif %}
-                              {% endfor %}
+                                {% endfor %}
+                              </div>
                             </div>
-                          </div>
+                          {% endif %}
                         </div>
                       </div>
 
