@@ -326,7 +326,7 @@
 
                   {% if evento_encontrado %}
                     {# ---- CARD DEL EVENTO ---- #}
-                    <div class="du-congreso__card" id="simposio-{{ evento_encontrado.id.value }}">
+                    <div class="du-congreso__card" id="simposio-{{ evento_encontrado.id() }}">
 
                       <button class="du-congreso__card-trigger">
                         <div class="du-congreso__card-header">
@@ -382,36 +382,55 @@
 
                             <strong>Conferencistas:</strong>
 
-                            <div class="du-congreso__speaker-list">
-                              {% for conferencista_item in evento_encontrado.field_conferencistas_del_evento %}
-                                {% set conferencista_paragraph = conferencista_item.entity %}
-                                {% set docente = conferencista_paragraph.field_conferencista.entity %}
-                                {% set pais = conferencista_paragraph.field_pais_conferencista.value|default('') %}
+                            {% set conferencistas_evento = [] %}
+                            {% set conferencistas_ids = [] %}
 
-                                {% if docente %}
-                                  <button
-                                    type="button"
-                                    class="du-congreso__speaker js-conferencista-modal-open"
-                                    data-modal-target="conferencista-modal-{{ docente.id() }}"
-                                    aria-haspopup="dialog"
-                                    aria-controls="conferencista-modal-{{ docente.id() }}"
-                                  >
-                                    <span class="du-congreso__speaker-name">
-                                      {{ docente.label }}
-                                    </span>
+                            {% for conferencia_item in evento_encontrado.field_listado_conferencias %}
+                              {% set conferencia_evento = conferencia_item.entity %}
 
-                                    {% if pais %}
-                                      <span
-                                        class="du-icon__flag-{{ pais|clean_class }}"
-                                        title="{{ pais }}"
-                                        aria-label="{{ pais }}"
-                                      ></span>
-                                    {% endif %}
-                                  </button>
+                              {% if conferencia_evento %}
+                                {% set docente_evento = conferencia_evento.field_conferencista_conferencia.entity %}
 
-                                  {% if not loop.last %}
-                                    <span class="du-congreso__speaker-separator">,</span>
+                                {% if docente_evento %}
+                                  {% set docente_id = docente_evento.id() %}
+
+                                  {% if docente_id not in conferencistas_ids %}
+                                    {% set conferencistas_ids = conferencistas_ids|merge([docente_id]) %}
+
+                                    {% set conferencistas_evento = conferencistas_evento|merge([{
+                                      'id': docente_id,
+                                      'nombre': docente_evento.title.value,
+                                      'pais': conferencia_evento.field_pais_conferencista.value|default('')
+                                    }]) %}
                                   {% endif %}
+                                {% endif %}
+                              {% endif %}
+                            {% endfor %}
+
+                            <div class="du-congreso__speaker-list">
+                              {% for conferencista in conferencistas_evento %}
+                                <button
+                                  type="button"
+                                  class="du-congreso__speaker js-conferencista-modal-open"
+                                  data-modal-target="conferencista-modal-{{ conferencista.id }}"
+                                  aria-haspopup="dialog"
+                                  aria-controls="conferencista-modal-{{ conferencista.id }}"
+                                >
+                                  <span class="du-congreso__speaker-name">
+                                    {{ conferencista.nombre }}
+                                  </span>
+
+                                  {% if conferencista.pais %}
+                                    <span
+                                      class="du-icon__flag-{{ conferencista.pais|lower|clean_class }}"
+                                      title="{{ conferencista.pais }}"
+                                      aria-label="{{ conferencista.pais }}"
+                                    ></span>
+                                  {% endif %}
+                                </button>
+
+                                {% if not loop.last %}
+                                  <span class="du-congreso__speaker-separator">,</span>
                                 {% endif %}
                               {% endfor %}
                             </div>
@@ -422,41 +441,54 @@
                       <div class="du-congreso__card-desglose">
                         {% for conf_item in evento_encontrado.field_listado_conferencias %}
                           {% set conferencia = conf_item.entity %}
-                          {% set docente_conferencia = conferencia.field_conferencista_conferencia.entity %}
 
-                          <div class="du-congreso__card-desglose-item">
-                            <div class="tag-flex">
-                              <span class="du-icon__clock"></span>
-                              {{ conferencia.field_hora_conferencia.value }}
+                          {% if conferencia %}
+                            {% set docente_conferencia = conferencia.field_conferencista_conferencia.entity %}
+                            {% set pais_conferencia = conferencia.field_pais_conferencista.value|default('') %}
+
+                            <div class="du-congreso__card-desglose-item">
+                              {% if conferencia.field_hora_conferencia.value %}
+                                <div class="tag-flex">
+                                  <span class="du-icon__clock"></span>
+                                  {{ conferencia.field_hora_conferencia.value }}
+                                </div>
+                              {% endif %}
+
+                              <h3>
+                                <span class="blink">Conferencia:</span>
+                                {{ conferencia.field_titulo_conferencia.value }}
+                              </h3>
+
+                              {% if conferencia.field_descripcion_conferencia.value %}
+                                <p>
+                                  {{ conferencia.field_descripcion_conferencia.value }}
+                                </p>
+                              {% endif %}
+
+                              {% if docente_conferencia %}
+                                <div class="du-congreso__card-detail-item">
+                                  <span class="blink">Conferencista:</span>
+
+                                  <span>
+                                    {{ docente_conferencia.title.value }}
+                                  </span>
+
+                                  {% if pais_conferencia %}
+                                    <span
+                                      class="du-icon__flag-{{ pais_conferencia|lower|clean_class }}"
+                                      title="{{ pais_conferencia }}"
+                                      aria-label="{{ pais_conferencia }}"
+                                    ></span>
+                                  {% endif %}
+                                </div>
+                              {% endif %}
                             </div>
-
-                            <h3>
-                              <span class="blink">Conferencia:</span>
-                              {{ conferencia.field_titulo_conferencia.value }}
-                            </h3>
-
-                            <p>{{ conferencia.field_descripcion_conferencia.value }}</p>
-
-                            <div class="du-congreso__card-detail-item">
-                              <span class="blink">Conferencista:</span>
-
-                              <span>
-                                {% if docente_conferencia %}
-                                  {{ docente_conferencia.label }}
-                                {% endif %}
-                              </span>
-
-                              <span
-                                class="du-icon__flag-{{ conferencia.field_pais_conferencista.value|clean_class }}"
-                                title="País"
-                              ></span>
-                            </div>
-                          </div>
+                          {% endif %}
                         {% endfor %}
                       </div>
 
                       <div class="du-congreso__card-top">
-                        <a href="#simposio-{{ evento_encontrado.id.value }}" class="du-icon__top"></a>
+                        <a href="#simposio-{{ evento_encontrado.id() }}" class="du-icon__top"></a>
                       </div>
 
                     </div>
