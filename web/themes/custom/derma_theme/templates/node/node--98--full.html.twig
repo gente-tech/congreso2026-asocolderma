@@ -754,78 +754,78 @@
             </h3>
 
             <div class="du-conferencista-modal__events">
-              {% set tiene_eventos_vinculados = false %}
+              {% set tiene_conferencias_vinculadas = false %}
 
               {% for evento_item in node.field_listado_eventos_congreso %}
                 {% set evento_vinculado = evento_item.entity %}
-                {% set docente_vinculado = false %}
 
-                {% for relacion_item in evento_vinculado.field_conferencistas_del_evento %}
-                  {% set relacion = relacion_item.entity %}
-
-                  {% if relacion.field_conferencista.target_id == docente.id() %}
-                    {% set docente_vinculado = true %}
-                  {% endif %}
-                {% endfor %}
-
-                {% if docente_vinculado %}
-                  {% set tiene_eventos_vinculados = true %}
+                {% if evento_vinculado %}
                   {% set sala_evento = evento_vinculado.field_sala_evento.value %}
                   {% set dia_evento = evento_vinculado.field_dia_evento.value %}
 
-                  <a
-                    href="#simposio-{{ evento_vinculado.id.value }}"
-                    class="du-conferencista-event js-conferencista-event-link"
-                  >
-                    <div class="du-conferencista-event__tags">
+                  {% for conferencia_item in evento_vinculado.field_listado_conferencias %}
+                    {% set conferencia_vinculada = conferencia_item.entity %}
+                    {% set docente_conferencia = conferencia_vinculada.field_conferencista_conferencia.0.entity %}
 
-                      {% if evento_vinculado.field_tipo_evento.entity %}
-                        <span class="du-conferencista-event__tag">
-                          {{ evento_vinculado.field_tipo_evento.entity.name.value }}
-                        </span>
-                      {% endif %}
+                    {% if docente_conferencia and docente_conferencia.id() == docente.id() %}
+                      {% set tiene_conferencias_vinculadas = true %}
 
-                      {% if evento_vinculado.field_tematica_evento.entity %}
-                        <span class="du-conferencista-event__tag du-conferencista-event__tag--orange">
-                          {{ evento_vinculado.field_tematica_evento.entity.name.value }}
-                        </span>
-                      {% endif %}
+                      <a
+                        href="#simposio-{{ evento_vinculado.id() }}"
+                        class="du-conferencista-event js-conferencista-event-link"
+                      >
+                        <div class="du-conferencista-event__tags">
 
-                      {% if sala_evento %}
-                        <span class="du-conferencista-event__tag du-conferencista-event__tag--room">
-                          {{ salas[sala_evento]|default(sala_evento) }}
-                        </span>
-                      {% endif %}
+                          {% if evento_vinculado.field_tipo_evento.entity %}
+                            <span class="du-conferencista-event__tag">
+                              {{ evento_vinculado.field_tipo_evento.entity.name.value }}
+                            </span>
+                          {% endif %}
 
-                      {% if dia_evento %}
-                        <span class="du-conferencista-event__date">
-                          {{ dia_evento|date('d/m/Y', 'UTC') }}
-                        </span>
-                      {% endif %}
+                          {% if evento_vinculado.field_tematica_evento.entity %}
+                            <span class="du-conferencista-event__tag du-conferencista-event__tag--orange">
+                              {{ evento_vinculado.field_tematica_evento.entity.name.value }}
+                            </span>
+                          {% endif %}
 
-                      {% if evento_vinculado.field_hora_evento.from %}
-                        <span class="du-conferencista-event__time">
-                          <span class="du-icon__clock" aria-hidden="true"></span>
+                          {% if sala_evento %}
+                            <span class="du-conferencista-event__tag du-conferencista-event__tag--room">
+                              {{ salas[sala_evento]|default(sala_evento) }}
+                            </span>
+                          {% endif %}
 
-                          {{ evento_vinculado.field_hora_evento.from|date('g:i', 'UTC') }}
-                          -
-                          {{ evento_vinculado.field_hora_evento.to|date('g:i A', 'UTC') }}
-                        </span>
-                      {% endif %}
+                          {% if dia_evento %}
+                            <span class="du-conferencista-event__date">
+                              {{ dia_evento|date('d/m/Y', 'UTC') }}
+                            </span>
+                          {% endif %}
 
-                    </div>
+                          {% if conferencia_vinculada.field_hora_conferencia.value %}
+                            <span class="du-conferencista-event__time">
+                              <span
+                                class="du-icon__clock"
+                                aria-hidden="true"
+                              ></span>
 
-                    <div class="du-conferencista-event__title">
-                      <strong>Conferencia:</strong>
-                      {{ evento_vinculado.title.value }}
-                    </div>
-                  </a>
+                              {{ conferencia_vinculada.field_hora_conferencia.value }}
+                            </span>
+                          {% endif %}
+
+                        </div>
+
+                        <div class="du-conferencista-event__title">
+                          <strong>Conferencia:</strong>
+                          {{ conferencia_vinculada.field_titulo_conferencia.value }}
+                        </div>
+                      </a>
+                    {% endif %}
+                  {% endfor %}
                 {% endif %}
               {% endfor %}
 
-              {% if not tiene_eventos_vinculados %}
+              {% if not tiene_conferencias_vinculadas %}
                 <p class="du-conferencista-modal__empty">
-                  No existen conferencias vinculadas.
+                  Sin conferencias vinculadas
                 </p>
               {% endif %}
             </div>
