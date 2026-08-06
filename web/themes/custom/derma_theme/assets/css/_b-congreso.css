@@ -417,9 +417,6 @@
 }
 
 @media (max-width: 768px) {
-  .du-congreso__card-header .sala{
-    display:block;
-  }
   .du-congreso-section-register{
     background-image: url(../img/bg-onda-sm.png);
     background-position: 0;
