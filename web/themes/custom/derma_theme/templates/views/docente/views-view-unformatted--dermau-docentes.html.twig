@@ -186,70 +186,109 @@
   'Dec': 'DIC'
 } %}
 
-							{% if conferencias_relacionadas %}
-								<div class="du-card__expert-conferences">
-									<h4 class="du-card__expert-conferences-title">
-										<span class="du-card__expert-conferences-icon" aria-hidden="true">
-											<svg width="28" height="24" viewbox="0 0 28 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-												<path d="M14 4.5C11.4 2.5 7.6 1.5 2 2.2V19.5C7.6 18.8 11.4 19.8 14 21.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<path d="M14 4.5C16.6 2.5 20.4 1.5 26 2.2V19.5C20.4 18.8 16.6 19.8 14 21.8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-												<path d="M14 4.5V21.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-											</svg>
-										</span>
-										Conferencias vinculadas
-									</h4>
+							<div class="du-card__expert-conferences">
+								<h4 class="du-card__expert-conferences-title">
+									<span
+									class="du-card__expert-conferences-icon"
+									aria-hidden="true"
+									>
+									<svg
+										width="28"
+										height="24"
+										viewbox="0 0 28 24"
+										fill="none"
+										xmlns="http://www.w3.org/2000/svg"
+									>
+										<path
+										d="M14 4.5C11.4 2.5 7.6 1.5 2 2.2V19.5C7.6 18.8 11.4 19.8 14 21.8"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										/>
+										<path
+										d="M14 4.5C16.6 2.5 20.4 1.5 26 2.2V19.5C20.4 18.8 16.6 19.8 14 21.8"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+										/>
+										<path
+										d="M14 4.5V21.8"
+										stroke="currentColor"
+										stroke-width="2"
+										stroke-linecap="round"
+										/>
+									</svg>
+									</span>
 
+									Conferencias vinculadas
+								</h4>
+
+								{% if conferencias_relacionadas %}
 									<div class="du-card__expert-conferences-list">
-										{% for conferencia in conferencias_relacionadas %}
-											<article class="du-card__expert-conference" data-evento-tipo="{{ conferencia.tipo }}" data-evento-tematica="{{ conferencia.tematica }}" data-evento-sala="{{ conferencia.sala_clase|replace({'sala-': 'sala_'}) }}" data-evento-fecha="{{ conferencia.dia }}">
-												<div class="du-card__expert-conference-meta">
+									{% for conferencia in conferencias_relacionadas %}
+										<article
+										class="du-card__expert-conference"
+										data-evento-tipo="{{ conferencia.tipo }}"
+										data-evento-tematica="{{ conferencia.tematica }}"
+										data-evento-sala="{{ conferencia.sala_clase|replace({'sala-': 'sala_'}) }}"
+										data-evento-fecha="{{ conferencia.dia }}"
+										>
+										<div class="du-card__expert-conference-meta">
 
-													{% if conferencia.tipo %}
-														<span class="du-conference-tag du-conference-tag--type">
-															{{ conferencia.tipo }}
-														</span>
-													{% endif %}
+											{% if conferencia.tipo %}
+											<span class="du-conference-tag du-conference-tag--type">
+												{{ conferencia.tipo }}
+											</span>
+											{% endif %}
 
-													{% if conferencia.tematica %}
-														<span class="du-conference-tag du-conference-tag--topic">
-															{{ conferencia.tematica }}
-														</span>
-													{% endif %}
+											{% if conferencia.tematica %}
+											<span class="du-conference-tag du-conference-tag--topic">
+												{{ conferencia.tematica }}
+											</span>
+											{% endif %}
 
-													{% if conferencia.sala %}
-														<span class="du-conference-tag du-conference-tag--room {{ conferencia.sala_clase }}">
-															{{ conferencia.sala }}
-														</span>
-													{% endif %}
+											{% if conferencia.sala %}
+											<span
+												class="du-conference-tag du-conference-tag--room {{ conferencia.sala_clase }}"
+											>
+												{{ conferencia.sala }}
+											</span>
+											{% endif %}
 
-													{% if conferencia.dia %}
-														<span class="du-conference-tag du-conference-tag--date">
-															{{ dias_cortos[conferencia.dia|date('D', 'UTC')] }}
-															{{ conferencia.dia|date('d', 'UTC') }}
-															{{ meses_cortos[conferencia.dia|date('M', 'UTC')] }}
-														</span>
-													{% endif %}
+											{% if conferencia.dia %}
+											<span class="du-conference-tag du-conference-tag--date">
+												{{ dias_cortos[conferencia.dia|date('D', 'UTC')] }}
+												{{ conferencia.dia|date('d', 'UTC') }}
+												{{ meses_cortos[conferencia.dia|date('M', 'UTC')] }}
+											</span>
+											{% endif %}
 
-													{% if conferencia.hora %}
-														<span class="du-conference-time">
-															<span class="du-icon__clock"></span>
-															{{ conferencia.hora }}
-														</span>
-													{% endif %}
+											{% if conferencia.hora %}
+											<span class="du-conference-time">
+												<span class="du-icon__clock"></span>
+												{{ conferencia.hora }}
+											</span>
+											{% endif %}
 
-												</div>
+										</div>
 
-												{% if conferencia.titulo %}
-													<p class="du-card__expert-conference-name">
-														<strong>Conferencia:</strong>
-														{{ conferencia.titulo|replace({'Conferencia: ': ''}) }}
-													</p>
-												{% endif %}
-											</article>
-										{% endfor %}
+										{% if conferencia.titulo %}
+											<p class="du-card__expert-conference-name">
+											<strong>Conferencia:</strong>
+											{{ conferencia.titulo|replace({'Conferencia: ': ''}) }}
+											</p>
+										{% endif %}
+										</article>
+									{% endfor %}
 									</div>
+								{% else %}
+									<p class="du-card__expert-conferences-empty">
+									Sin conferencias vinculadas
+									</p>
+								{% endif %}
 								</div>
-							{% endif %}
 						</article>
 
 					</div>
