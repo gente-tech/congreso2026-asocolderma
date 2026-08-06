@@ -343,45 +343,106 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
         $filtros_conferencias['salas'][$sala_value] = $sala_evento;
       }
 
-      foreach (
-        $evento->get('field_conferencistas_del_evento')->referencedEntities()
-        as $conferencista_item
+      /*
+      * Mantener el listado general de docentes asociados al evento
+      * para el filtro de conferencistas.
+      */
+      if (
+        $evento->hasField('field_conferencistas_del_evento')
+        && !$evento->get('field_conferencistas_del_evento')->isEmpty()
       ) {
-        $docente = $conferencista_item
-          ->get('field_conferencista')
-          ->entity;
-
-        if (!$docente) {
-          continue;
-        }
-        $filtros_conferencias['docentes'][$docente->id()] = $docente->label();
-
-        $hora_evento = '';
-        $hora_item = $evento->get('field_hora_evento')->first();
-
-        if ($hora_item) {
-          $hora_desde = (int) $hora_item->get('from')->getValue();
-          $hora_hasta = (int) $hora_item->get('to')->getValue();
-
-          if ($hora_desde && $hora_hasta) {
-            $hora_evento = gmdate('g:i A', $hora_desde)
-              . ' - '
-              . gmdate('g:i A', $hora_hasta);
+        foreach (
+          $evento->get('field_conferencistas_del_evento')->referencedEntities()
+          as $conferencista_item
+        ) {
+          if (
+            !$conferencista_item->hasField('field_conferencista')
+            || $conferencista_item->get('field_conferencista')->isEmpty()
+          ) {
+            continue;
           }
+
+          $docente = $conferencista_item
+            ->get('field_conferencista')
+            ->entity;
+
+          if (!$docente) {
+            continue;
+          }
+
+          $filtros_conferencias['docentes'][$docente->id()] = $docente->label();
         }
-
-        $clave = (string) $evento->id();
-
-        $conferencias_docentes[$docente->id()][$clave] = [
-          'titulo' => $evento->label(),
-          'hora' => $hora_evento,
-          'tipo' => $tipo_evento,
-          'tematica' => $tematica_evento,
-          'sala' => $sala_evento,
-          'sala_clase' => str_replace('_', '-', $sala_value),
-          'dia' => $dia_evento,
-        ];
       }
+
+      /*
+      * Construir las conferencias vinculadas desde los paragraphs
+      * del campo field_listado_conferencias.
+      */
+      if (
+        $evento->hasField('field_listado_conferencias')
+        && !$evento->get('field_listado_conferencias')->isEmpty()
+      ) {
+        foreach (
+          $evento->get('field_listado_conferencias')->referencedEntities()
+          as $conferencia
+        ) {
+          if (
+            !$conferencia->hasField('field_conferencista_conferencia')
+            || $conferencia->get('field_conferencista_conferencia')->isEmpty()
+          ) {
+            continue;
+          }
+
+          $docente = $conferencia
+            ->get('field_conferencista_conferencia')
+            ->entity;
+
+          if (!$docente) {
+            continue;
+          }
+
+          $filtros_conferencias['docentes'][$docente->id()] = $docente->label();
+
+          $titulo_conferencia = '';
+
+          if (
+            $conferencia->hasField('field_titulo_conferencia')
+            && !$conferencia->get('field_titulo_conferencia')->isEmpty()
+          ) {
+            $titulo_conferencia = $conferencia
+              ->get('field_titulo_conferencia')
+              ->value;
+          }
+
+          $hora_conferencia = '';
+
+          if (
+            $conferencia->hasField('field_hora_conferencia')
+            && !$conferencia->get('field_hora_conferencia')->isEmpty()
+          ) {
+            $hora_conferencia = $conferencia
+              ->get('field_hora_conferencia')
+              ->value;
+          }
+
+          /*
+          * Se incluye el ID del paragraph para evitar que dos
+          * conferencias del mismo evento se sobrescriban.
+          */
+          $clave = $evento->id() . ':' . $conferencia->id();
+
+          $conferencias_docentes[$docente->id()][$clave] = [
+            'titulo' => $titulo_conferencia,
+            'hora' => $hora_conferencia,
+            'tipo' => $tipo_evento,
+            'tematica' => $tematica_evento,
+            'sala' => $sala_evento,
+            'sala_clase' => str_replace('_', '-', $sala_value),
+            'dia' => $dia_evento,
+          ];
+        }
+      }
+
     }
 
     foreach ($filtros_conferencias as &$opciones) {
