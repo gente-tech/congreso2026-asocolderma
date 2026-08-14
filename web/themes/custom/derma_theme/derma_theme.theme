@@ -442,7 +442,6 @@ function derma_theme_preprocess_views_view_unformatted(array &$variables)
           ];
         }
       }
-
     }
 
     foreach ($filtros_conferencias as &$opciones) {
@@ -587,5 +586,29 @@ function derma_theme_form_views_exposed_form_alter(array &$form, FormStateInterf
   $form['tipo_conferencista'] = [
     '#type' => 'hidden',
     '#value' => $tipo_conferencista,
+  ];
+}
+
+/**
+ * Implements hook_theme().
+ */
+function derma_theme_theme($existing, $type, $theme, $path)
+{
+  return [
+    'dermau_footer' => [
+      'variables' => [
+        'logo' => [
+          'url' => '',
+          'alt' => '',
+        ],
+        'footer_text' => '',
+        'linkedin_url' => '',
+        'instagram_url' => '',
+        'youtube_url' => '',
+        'facebook_url' => '',
+      ],
+      'template' => 'footer',
+      'path' => $path . '/templates/includes',
+    ],
   ];
 }
