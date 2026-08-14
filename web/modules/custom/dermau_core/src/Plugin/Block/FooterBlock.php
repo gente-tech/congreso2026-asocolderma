@@ -43,11 +43,6 @@ class FooterBlock extends BlockBase
 			'#title' => $this->t('Logo del footer'),
 			'#upload_location' => 'public://footer/',
 			'#default_value' => $this->configuration['logo'] ?? [],
-			'#upload_validators' => [
-				'FileExtension' => [
-					'extensions' => 'svg png jpg jpeg webp',
-				],
-			],
 		];
 
 		$form['logo_alt'] = [
