@@ -157,17 +157,25 @@
   <section class="du-patrocinadores-plan" id="planostands">
 
     <div class="du-patrocinadores-plan__header">
-      <span class="du-patrocinadores-plan__eyebrow">
-        Ubicación
-      </span>
 
-      <h2 class="du-patrocinadores-plan__title">
-        Plano de patrocinadores
-      </h2>
+      {% if plan_eyebrow_text %}
+        <span class="du-patrocinadores-plan__eyebrow">
+          {{ plan_eyebrow_text }}
+        </span>
+      {% endif %}
 
-      <p class="du-patrocinadores-plan__description">
-        Consulta la ubicación de los stands dentro del congreso.
-      </p>
+      {% if plan_title %}
+        <h2 class="du-patrocinadores-plan__title">
+          {{ plan_title }}
+        </h2>
+      {% endif %}
+
+      {% if plan_description %}
+        <p class="du-patrocinadores-plan__description">
+          {{ plan_description }}
+        </p>
+      {% endif %}
+
     </div>
 
     {% if plano_imagen.url %}
@@ -181,7 +189,7 @@
       </div>
     {% endif %}
 
-    {% if plano_pdf.url %}
+    {% if plano_pdf.url and plan_button_label %}
       <div class="du-patrocinadores-plan__download">
         <a
           href="{{ plano_pdf.url }}"
@@ -219,7 +227,7 @@
             />
           </svg>
 
-          Descargar plano completo
+          {{ plan_button_label }}
         </a>
       </div>
     {% endif %}

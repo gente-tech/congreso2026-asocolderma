@@ -112,6 +112,22 @@ final class PatrocinadoresController extends ControllerBase
       (string) ($settings->get('page_title') ?? '')
     );
 
+    $plan_eyebrow_text = trim(
+      (string) ($settings->get('plan_eyebrow_text') ?? '')
+    );
+
+    $plan_title = trim(
+      (string) ($settings->get('plan_title') ?? '')
+    );
+
+    $plan_description = trim(
+      (string) ($settings->get('plan_description') ?? '')
+    );
+
+    $plan_button_label = trim(
+      (string) ($settings->get('plan_button_label') ?? '')
+    );
+
     $intro_text = trim(
       (string) ($settings->get('intro_text') ?? '')
     );
@@ -143,6 +159,10 @@ final class PatrocinadoresController extends ControllerBase
       '#eyebrow_text' => $eyebrow_text,
       '#page_title' => $page_title,
       '#intro_text' => $intro_text,
+      '#plan_eyebrow_text' => $plan_eyebrow_text,
+      '#plan_title' => $plan_title,
+      '#plan_description' => $plan_description,
+      '#plan_button_label' => $plan_button_label,
       '#plano_imagen' => $plano_imagen,
       '#plano_pdf' => $plano_pdf,
       '#attached' => [

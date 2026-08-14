@@ -60,6 +60,30 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase
       '#description' => $this->t('Título principal de la página de patrocinadores.'),
     ];
 
+    $form['plan_eyebrow_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texto superior del plano'),
+      '#default_value' => (string) ($config->get('plan_eyebrow_text') ?? ''),
+    ];
+
+    $form['plan_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Título del plano'),
+      '#default_value' => (string) ($config->get('plan_title') ?? ''),
+    ];
+
+    $form['plan_description'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Descripción del plano'),
+      '#default_value' => (string) ($config->get('plan_description') ?? ''),
+    ];
+
+    $form['plan_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texto del botón de descarga'),
+      '#default_value' => (string) ($config->get('plan_button_label') ?? ''),
+    ];
+
     $form['intro_text'] = [
       '#type' => 'textarea',
       '#title' => $this->t('Texto introductorio'),
@@ -141,6 +165,22 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase
       ->set(
         'page_title',
         trim((string) $form_state->getValue('page_title')),
+      )
+      ->set(
+        'plan_eyebrow_text',
+        trim((string) $form_state->getValue('plan_eyebrow_text')),
+      )
+      ->set(
+        'plan_title',
+        trim((string) $form_state->getValue('plan_title')),
+      )
+      ->set(
+        'plan_description',
+        trim((string) $form_state->getValue('plan_description')),
+      )
+      ->set(
+        'plan_button_label',
+        trim((string) $form_state->getValue('plan_button_label')),
       )
       ->set(
         'intro_text',
