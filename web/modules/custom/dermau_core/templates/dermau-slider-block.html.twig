@@ -38,7 +38,11 @@
 									</a>
 								{% endif %}
 
-								<a href="https://catalogo.dermau.net/dermau/convenios" class="du-btn du-btn--secundary-dark"> Conoce los convenios  </a>
+								{% if show_convenios_button and convenios_button_label and convenios_button_url %}
+									<a href="{{ convenios_button_url }}" class="du-btn du-btn--secundary-dark">
+										{{ convenios_button_label }}
+									</a>
+								{% endif %}
 
 							</div>
 

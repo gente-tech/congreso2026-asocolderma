@@ -23,6 +23,9 @@ class SliderBlock extends BlockBase
     return [
       'float_chat_image' => [],
       'float_chat_image_alt' => '',
+      'show_convenios_button' => FALSE,
+      'convenios_button_label' => '',
+      'convenios_button_url' => '',
     ];
   }
 
@@ -42,6 +45,24 @@ class SliderBlock extends BlockBase
       '#type' => 'textfield',
       '#title' => $this->t('Texto alternativo'),
       '#default_value' => $this->configuration['float_chat_image_alt'] ?? '',
+    ];
+
+    $form['show_convenios_button'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Mostrar botón secundario'),
+      '#default_value' => $this->configuration['show_convenios_button'] ?? FALSE,
+    ];
+
+    $form['convenios_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texto del botón secundario'),
+      '#default_value' => $this->configuration['convenios_button_label'] ?? '',
+    ];
+
+    $form['convenios_button_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('URL del botón secundario'),
+      '#default_value' => $this->configuration['convenios_button_url'] ?? '',
     ];
 
     return $form;
@@ -74,6 +95,10 @@ class SliderBlock extends BlockBase
 
     $this->configuration['float_chat_image'] = $float_chat_image;
     $this->configuration['float_chat_image_alt'] = $form_state->getValue('float_chat_image_alt');
+
+    $this->configuration['show_convenios_button'] = (bool) $form_state->getValue('show_convenios_button');
+    $this->configuration['convenios_button_label'] = trim((string) $form_state->getValue('convenios_button_label'));
+    $this->configuration['convenios_button_url'] = trim((string) $form_state->getValue('convenios_button_url'));
   }
 
   /**
@@ -134,6 +159,10 @@ class SliderBlock extends BlockBase
       }
     }
 
+    $show_convenios_button = (bool) ($this->configuration['show_convenios_button'] ?? FALSE);
+    $convenios_button_label = trim((string) ($this->configuration['convenios_button_label'] ?? ''));
+    $convenios_button_url = trim((string) ($this->configuration['convenios_button_url'] ?? ''));
+
     return [
       '#theme' => 'dermau_slider_block',
       '#sliders' => $sliders,
@@ -141,6 +170,9 @@ class SliderBlock extends BlockBase
         'url' => $float_chat_image_url,
         'alt' => $float_chat_image_alt,
       ],
+      '#show_convenios_button' => $show_convenios_button,
+      '#convenios_button_label' => $convenios_button_label,
+      '#convenios_button_url' => $convenios_button_url,
       '#cache' => [
         'tags' => ['node_list:slider'],
         'max-age' => 0,
