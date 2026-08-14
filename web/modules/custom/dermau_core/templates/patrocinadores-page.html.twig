@@ -2,13 +2,17 @@
   <div class="du-patrocinadores__container">
 
     <header class="du-patrocinadores__header">
-      <span class="du-patrocinadores__eyebrow">
-        Congreso 2026
-      </span>
+      {% if eyebrow_text %}
+        <span class="du-patrocinadores__eyebrow">
+          {{ eyebrow_text }}
+        </span>
+      {% endif %}
 
-      <h1 class="du-patrocinadores__title">
-        Patrocinadores del Congreso
-      </h1>
+      {% if page_title %}
+        <h1 class="du-patrocinadores__title">
+          {{ page_title }}
+        </h1>
+      {% endif %}
 
       {% if intro_text %}
   <p class="du-patrocinadores__description">

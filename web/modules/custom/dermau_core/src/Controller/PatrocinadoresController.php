@@ -104,25 +104,16 @@ final class PatrocinadoresController extends ControllerBase
       'dermau_core.patrocinadores_settings'
     );
 
-    $intro_text = trim(
-      (string) $settings->get('intro_text')
+    $eyebrow_text = trim(
+      (string) ($settings->get('eyebrow_text') ?? '')
     );
 
-    if ($intro_text === '') {
-      $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
-    }
-
-    $cache_tags = Cache::mergeTags(
-      $cache_tags,
-      $settings->getCacheTags(),
-    );
-
-    $settings = $this->configFactoryService->get(
-      'dermau_core.patrocinadores_settings'
+    $page_title = trim(
+      (string) ($settings->get('page_title') ?? '')
     );
 
     $intro_text = trim(
-      (string) $settings->get('intro_text')
+      (string) ($settings->get('intro_text') ?? '')
     );
 
     if ($intro_text === '') {
@@ -149,6 +140,8 @@ final class PatrocinadoresController extends ControllerBase
     return [
       '#theme' => 'patrocinadores_page',
       '#patrocinadores' => $patrocinadores,
+      '#eyebrow_text' => $eyebrow_text,
+      '#page_title' => $page_title,
       '#intro_text' => $intro_text,
       '#plano_imagen' => $plano_imagen,
       '#plano_pdf' => $plano_pdf,
@@ -255,7 +248,6 @@ final class PatrocinadoresController extends ControllerBase
       'Content-Type',
       'text/html; charset=UTF-8',
     );
-    $response->addCacheableDependency($settings);
     return $response;
   }
 
