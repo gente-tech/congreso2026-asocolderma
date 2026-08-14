@@ -1,0 +1,39 @@
+<section class="du-congreso-section-footer">
+	<div class="du-congreso__container container">
+
+		{% if image.url %}
+			<div class="du-congreso-section-footer__image">
+				<img src="{{ image.url }}" alt="{{ image.alt }}"/>
+			</div>
+		{% endif %}
+
+		<div class="du-congreso-section-footer__content">
+
+			{% if title %}
+				<h2 class="du-congreso__title">
+					{{ title }}
+				</h2>
+			{% endif %}
+
+			{% if benefits %}
+				<ul class="du-congreso-section-footer__list">
+					{% for benefit in benefits %}
+						<li>
+							<span class="du-icon__check"></span>
+							{{ benefit }}
+						</li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+
+			{% if button_label and button_url %}
+				<div class="du-congreso-section-footer__actions">
+					<a href="{{ button_url }}" class="du-btn min300 du-btn--primary">
+						{{ button_label }}
+					</a>
+				</div>
+			{% endif %}
+
+		</div>
+	</div>
+</section>

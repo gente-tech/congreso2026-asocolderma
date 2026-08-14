@@ -177,6 +177,20 @@ function dermau_core_theme($existing, $type, $theme, $path)
       ],
       'template' => 'dermau-mission-vision-block',
     ],
+    'dermau_congreso_benefits_block' => [
+      'variables' => [
+        'title' => '',
+        'benefits' => [],
+        'image' => [
+          'url' => '',
+          'alt' => '',
+        ],
+        'button_label' => '',
+        'button_url' => '',
+      ],
+      'template' => 'dermau-congreso-benefits-block',
+      'path' => $path . '/templates',
+    ],
   ];
 }
 
