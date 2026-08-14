@@ -96,7 +96,16 @@ class FooterBlock extends BlockBase
 	 */
 	public function blockSubmit($form, FormStateInterface $form_state)
 	{
-		$logo = $form_state->getValue('logo') ?: [];
+		$logo_value = (array) $form_state->getValue('logo');
+
+		$logo = array_values(
+			array_filter(
+				array_map(
+					'intval',
+					$logo_value['fids'] ?? []
+				)
+			)
+		);
 
 		if (!empty($logo[0])) {
 			$file = File::load($logo[0]);
