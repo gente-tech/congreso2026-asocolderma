@@ -74,13 +74,8 @@ class SliderBlock extends BlockBase
 
     if (!empty($float_chat_image[0])) {
       $file = File::load($float_chat_image[0]);
+      
       if ($file) {
-        \Drupal::logger('dermaU-file')->info(
-          'file: @der',
-          [
-            '@der' => $file,
-          ]
-        );
         $file->setPermanent();
         $file->save();
       }

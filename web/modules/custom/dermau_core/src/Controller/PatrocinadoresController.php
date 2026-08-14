@@ -26,7 +26,8 @@ use Drupal\Core\Config\ImmutableConfig;
 /**
  * Controlador público de patrocinadores.
  */
-final class PatrocinadoresController extends ControllerBase {
+final class PatrocinadoresController extends ControllerBase
+{
 
   /**
    * Constructor.
@@ -43,7 +44,8 @@ final class PatrocinadoresController extends ControllerBase {
   /**
    * {@inheritdoc}
    */
-  public static function create(ContainerInterface $container): static {
+  public static function create(ContainerInterface $container): static
+  {
     return new static(
       $container->get('entity_type.manager'),
       $container->get('file_url_generator'),
@@ -57,7 +59,8 @@ final class PatrocinadoresController extends ControllerBase {
   /**
    * Página principal.
    */
-  public function page(): array {
+  public function page(): array
+  {
     $node_storage = $this->entityTypeManagerService
       ->getStorage('node');
 
@@ -100,74 +103,75 @@ final class PatrocinadoresController extends ControllerBase {
     $settings = $this->configFactoryService->get(
       'dermau_core.patrocinadores_settings'
     );
-    
+
     $intro_text = trim(
       (string) $settings->get('intro_text')
     );
-    
+
     if ($intro_text === '') {
       $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
     }
-    
+
     $cache_tags = Cache::mergeTags(
       $cache_tags,
       $settings->getCacheTags(),
     );
 
     $settings = $this->configFactoryService->get(
-  'dermau_core.patrocinadores_settings'
-);
+      'dermau_core.patrocinadores_settings'
+    );
 
-$intro_text = trim(
-  (string) $settings->get('intro_text')
-);
+    $intro_text = trim(
+      (string) $settings->get('intro_text')
+    );
 
-if ($intro_text === '') {
-  $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
-}
+    if ($intro_text === '') {
+      $intro_text = 'Conoce las organizaciones que apoyan el desarrollo académico, científico y profesional del Congreso.';
+    }
 
-$plano_imagen = $this->getConfiguredFileData(
-  $settings,
-  'plano_imagen_fid',
-  $cache_tags,
-);
+    $plano_imagen = $this->getConfiguredFileData(
+      $settings,
+      'plano_imagen_fid',
+      $cache_tags,
+    );
 
-$plano_pdf = $this->getConfiguredFileData(
-  $settings,
-  'plano_pdf_fid',
-  $cache_tags,
-);
+    $plano_pdf = $this->getConfiguredFileData(
+      $settings,
+      'plano_pdf_fid',
+      $cache_tags,
+    );
 
-$cache_tags = Cache::mergeTags(
-  $cache_tags,
-  $settings->getCacheTags(),
-);
+    $cache_tags = Cache::mergeTags(
+      $cache_tags,
+      $settings->getCacheTags(),
+    );
 
     return [
-  '#theme' => 'patrocinadores_page',
-  '#patrocinadores' => $patrocinadores,
-  '#intro_text' => $intro_text,
-  '#plano_imagen' => $plano_imagen,
-  '#plano_pdf' => $plano_pdf,
-  '#attached' => [
-    'library' => [
-      'dermau_core/patrocinadores',
-    ],
-  ],
-  '#cache' => [
-    'tags' => $cache_tags,
-    'contexts' => [
-      'languages:language_content',
-      'user.permissions',
-    ],
-  ],
-];
+      '#theme' => 'patrocinadores_page',
+      '#patrocinadores' => $patrocinadores,
+      '#intro_text' => $intro_text,
+      '#plano_imagen' => $plano_imagen,
+      '#plano_pdf' => $plano_pdf,
+      '#attached' => [
+        'library' => [
+          'dermau_core/patrocinadores',
+        ],
+      ],
+      '#cache' => [
+        'tags' => $cache_tags,
+        'contexts' => [
+          'languages:language_content',
+          'user.permissions',
+        ],
+      ],
+    ];
   }
 
   /**
    * Contenido HTML del popup.
    */
-  public function detail(NodeInterface $convenio): Response {
+  public function detail(NodeInterface $convenio): Response
+  {
     if (
       $convenio->bundle() !== 'convenio'
       || !$convenio->isPublished()
@@ -184,7 +188,7 @@ $cache_tags = Cache::mergeTags(
 
     $cache_dependencies = [$convenio];
 
-   
+
 
     $relaciones = $this->getEventosYConferencistas(
       $convenio,
@@ -193,7 +197,7 @@ $cache_tags = Cache::mergeTags(
 
     $patrocinador = [
       'id' => (int) $convenio->id(),
-      
+
       'nombre' => $convenio->label(),
       'logo' => $this->getImageData(
         $convenio,
@@ -329,7 +333,8 @@ $cache_tags = Cache::mergeTags(
   /**
    * Link externo.
    */
-  private function getLinkData(NodeInterface $node): array {
+  private function getLinkData(NodeInterface $node): array
+  {
     if (
       !$node->hasField('field_link')
       || $node->get('field_link')->isEmpty()
@@ -345,8 +350,7 @@ $cache_tags = Cache::mergeTags(
         'title' => trim((string) $item->title)
           ?: 'Visitar sitio web',
       ];
-    }
-    catch (\Throwable) {
+    } catch (\Throwable) {
       return [];
     }
   }
@@ -361,8 +365,8 @@ $cache_tags = Cache::mergeTags(
     if (
       !$convenio->hasField('field_programas_vinculados_conve')
       || $convenio
-        ->get('field_programas_vinculados_conve')
-        ->isEmpty()
+      ->get('field_programas_vinculados_conve')
+      ->isEmpty()
     ) {
       return [];
     }
@@ -405,8 +409,8 @@ $cache_tags = Cache::mergeTags(
     if (
       !$convenio->hasField('field_docentes_vinculados')
       || $convenio
-        ->get('field_docentes_vinculados')
-        ->isEmpty()
+      ->get('field_docentes_vinculados')
+      ->isEmpty()
     ) {
       return [];
     }
@@ -474,506 +478,507 @@ $cache_tags = Cache::mergeTags(
   }
 
   /**
- * Obtiene los simposios vinculados al patrocinador.
- */
-private function getSimposios(
-  NodeInterface $convenio,
-  array &$cache_dependencies,
-): array {
-  if (
-    !$convenio->hasField('field_simposios_vinculados')
-    || $convenio->get('field_simposios_vinculados')->isEmpty()
-  ) {
-    return [];
-  }
-
-  $salas = [
-    'sala_1' => 'Sala 1',
-    'sala_2' => 'Sala 2',
-    'sala_3' => 'Sala 3',
-  ];
-
-  $simposios = [];
-
-  foreach (
-    $convenio
-      ->get('field_simposios_vinculados')
-      ->referencedEntities() as $evento
-  ) {
+   * Obtiene los simposios vinculados al patrocinador.
+   */
+  private function getSimposios(
+    NodeInterface $convenio,
+    array &$cache_dependencies,
+  ): array {
     if (
-      !$evento instanceof NodeInterface
-      || !$evento->isPublished()
-      || !$evento->access('view')
+      !$convenio->hasField('field_simposios_vinculados')
+      || $convenio->get('field_simposios_vinculados')->isEmpty()
     ) {
-      continue;
+      return [];
     }
 
-    $evento = $this->getCurrentTranslation($evento);
-    $cache_dependencies[] = $evento;
-
-    $tipo = $this->getReferenceLabel(
-      $evento,
-      'field_tipo_evento',
-      $cache_dependencies,
-    );
-
-    $tematica = $this->getReferenceLabel(
-      $evento,
-      'field_tematica_evento',
-      $cache_dependencies,
-    );
-
-    $sala_key = $this->getFieldValue(
-      $evento,
-      'field_sala_evento',
-    );
-
-    $fecha_value = $this->getFieldValue(
-      $evento,
-      'field_dia_evento',
-    );
-
-    $hora = $this->getEventTime($evento);
-
-    $simposios[] = [
-      'id' => (int) $evento->id(),
-      'nombre' => $evento->label(),
-      'tipo' => $tipo,
-      'tematica' => $tematica,
-      'sala' => $salas[$sala_key] ?? $sala_key,
-      'sala_class' => str_replace('_', '-', $sala_key),
-      'fecha' => $this->formatEventDate($fecha_value),
-      'hora' => $hora,
-      'url' => $evento->toUrl()->toString(),
-    ];
-  }
-
-  return $simposios;
-}
-
-/**
- * Obtiene la etiqueta de una referencia.
- */
-private function getReferenceLabel(
-  NodeInterface $node,
-  string $field_name,
-  array &$cache_dependencies,
-): string {
-  if (
-    !$node->hasField($field_name)
-    || $node->get($field_name)->isEmpty()
-  ) {
-    return '';
-  }
-
-  $entity = $node->get($field_name)->entity;
-
-  if (!$entity instanceof EntityInterface) {
-    return '';
-  }
-
-  $cache_dependencies[] = $entity;
-
-  return $entity->label();
-}
-
-/**
- * Formatea la fecha del evento.
- */
-private function formatEventDate(string $value): string {
-  if ($value === '') {
-    return '';
-  }
-
-  try {
-    $date = new \DateTimeImmutable(
-      $value,
-      new \DateTimeZone('UTC'),
-    );
-  }
-  catch (\Throwable) {
-    return '';
-  }
-
-  $dias = [
-    1 => 'LUN',
-    2 => 'MAR',
-    3 => 'MIÉ',
-    4 => 'JUE',
-    5 => 'VIE',
-    6 => 'SÁB',
-    7 => 'DOM',
-  ];
-
-  $meses = [
-    1 => 'ENE',
-    2 => 'FEB',
-    3 => 'MAR',
-    4 => 'ABR',
-    5 => 'MAY',
-    6 => 'JUN',
-    7 => 'JUL',
-    8 => 'AGO',
-    9 => 'SEP',
-    10 => 'OCT',
-    11 => 'NOV',
-    12 => 'DIC',
-  ];
-
-  $dia_semana = (int) $date->format('N');
-  $mes = (int) $date->format('n');
-
-  return sprintf(
-    '%s %d %s',
-    $dias[$dia_semana],
-    (int) $date->format('j'),
-    $meses[$mes],
-  );
-}
-
-/**
- * Formatea la hora del evento.
- */
-private function getEventTime(NodeInterface $evento): string {
-  if (
-    !$evento->hasField('field_hora_evento')
-    || $evento->get('field_hora_evento')->isEmpty()
-  ) {
-    return '';
-  }
-
-  $item = $evento
-    ->get('field_hora_evento')
-    ->first();
-
-  $values = $item?->getValue() ?? [];
-
-  $from = (int) ($values['from'] ?? 0);
-  $to = (int) ($values['to'] ?? 0);
-
-  if (!$from || !$to) {
-    return '';
-  }
-
-  return sprintf(
-    '%s - %s',
-    gmdate('g:i', $from),
-    gmdate('g:i A', $to),
-  );
-}
-
-  /**
- * Obtiene eventos y conferencistas desde field_programas_vinculados_conve.
- */
-private function getEventosYConferencistas(
-  NodeInterface $convenio,
-  array &$cache_dependencies,
-): array {
-  if (
-    !$convenio->hasField('field_programas_vinculados_conve')
-    || $convenio
-      ->get('field_programas_vinculados_conve')
-      ->isEmpty()
-  ) {
-    return [
-      'eventos' => [],
-      'docentes' => [],
-    ];
-  }
-
-  $salas = [
-    'sala_1' => 'Sala 1',
-    'sala_2' => 'Sala 2',
-    'sala_3' => 'Sala 3',
-  ];
-
-  $eventos = [];
-  $docentes = [];
-
-  foreach (
-    $convenio
-      ->get('field_programas_vinculados_conve')
-      ->referencedEntities() as $evento
-  ) {
-    if (
-      !$evento instanceof NodeInterface
-      || $evento->bundle() !== 'evento'
-      || !$evento->isPublished()
-      || !$evento->access('view')
-    ) {
-      continue;
-    }
-
-    $evento = $this->getCurrentTranslation($evento);
-    $cache_dependencies[] = $evento;
-
-    $tipo = $this->getReferenceLabel(
-      $evento,
-      'field_tipo_evento',
-      $cache_dependencies,
-    );
-
-    $tematica = $this->getReferenceLabel(
-      $evento,
-      'field_tematica_evento',
-      $cache_dependencies,
-    );
-
-    $sala_key = $this->getFieldValue(
-      $evento,
-      'field_sala_evento',
-    );
-
-    $fecha_value = $this->getFieldValue(
-      $evento,
-      'field_dia_evento',
-    );
-
-    $eventos[] = [
-      'id' => (int) $evento->id(),
-      'nombre' => $evento->label(),
-      'descripcion' => $this->getFieldValue(
-        $evento,
-        'field_descripcion_evento',
-      ),
-      'tipo' => $tipo,
-      'tematica' => $tematica,
-      'sala' => $salas[$sala_key] ?? $sala_key,
-      'sala_class' => Html::getClass($sala_key),
-      'fecha' => $this->formatEventDate($fecha_value),
-      'hora' => $this->getEventTime($evento),
-      'url' => $evento->toUrl()->toString(),
+    $salas = [
+      'sala_1' => 'Sala 1',
+      'sala_2' => 'Sala 2',
+      'sala_3' => 'Sala 3',
     ];
 
-    if (
-      !$evento->hasField('field_conferencistas_del_evento')
-      || $evento
-        ->get('field_conferencistas_del_evento')
-        ->isEmpty()
-    ) {
-      continue;
-    }
+    $simposios = [];
 
     foreach (
-      $evento
-        ->get('field_conferencistas_del_evento')
-        ->referencedEntities() as $relacion
+      $convenio
+        ->get('field_simposios_vinculados')
+        ->referencedEntities() as $evento
     ) {
-      $cache_dependencies[] = $relacion;
-
       if (
-        !$relacion->hasField('field_conferencista')
-        || $relacion->get('field_conferencista')->isEmpty()
+        !$evento instanceof NodeInterface
+        || !$evento->isPublished()
+        || !$evento->access('view')
       ) {
         continue;
       }
 
-      $docente = $relacion
-        ->get('field_conferencista')
-        ->entity;
+      $evento = $this->getCurrentTranslation($evento);
+      $cache_dependencies[] = $evento;
 
-      if (
-        !$docente instanceof NodeInterface
-        || $docente->bundle() !== 'docente'
-        || !$docente->isPublished()
-        || !$docente->access('view')
-      ) {
-        continue;
-      }
-
-      $docente = $this->getCurrentTranslation($docente);
-      $cache_dependencies[] = $docente;
-
-      $docente_id = (int) $docente->id();
-
-      $pais_value = '';
-
-      if (
-        $relacion->hasField('field_pais_conferencista')
-        && !$relacion
-          ->get('field_pais_conferencista')
-          ->isEmpty()
-      ) {
-        $pais_value = trim(
-          (string) $relacion
-            ->get('field_pais_conferencista')
-            ->value
-        );
-      }
-
-      $pais = $this->getCountryData($pais_value);
-
-      if (isset($docentes[$docente_id])) {
-        if (
-          empty($docentes[$docente_id]['pais'])
-          && !empty($pais['label'])
-        ) {
-          $docentes[$docente_id]['pais'] = $pais['label'];
-          $docentes[$docente_id]['pais_class'] = $pais['class'];
-        }
-
-        continue;
-      }
-
-      $especialidad = '';
-
-      if (
-        $docente->hasField('field_especialidad')
-        && !$docente->get('field_especialidad')->isEmpty()
-      ) {
-        $especialidad_entity = $docente
-          ->get('field_especialidad')
-          ->entity;
-
-        if ($especialidad_entity instanceof EntityInterface) {
-          $especialidad = $especialidad_entity->label();
-          $cache_dependencies[] = $especialidad_entity;
-        }
-      }
-
-      $perfil = $this->getFieldValue(
-        $docente,
-        'field_perfil_profesional',
+      $tipo = $this->getReferenceLabel(
+        $evento,
+        'field_tipo_evento',
+        $cache_dependencies,
       );
 
-      $docentes[$docente_id] = [
-        'id' => $docente_id,
-        'nombre' => $docente->label(),
-        'foto' => $this->getImageData(
-          $docente,
-          'field_foto_docente',
-          $cache_dependencies,
-        ),
-        'especialidad' => $especialidad,
-        'pais' => $pais['label'],
-        'pais_class' => $pais['class'],
-        'perfil' => $perfil,
-        'perfil_resumen' => mb_strimwidth(
-          $perfil,
-          0,
-          235,
-          '…',
-          'UTF-8',
-        ),
-        'url' => $docente->toUrl()->toString(),
+      $tematica = $this->getReferenceLabel(
+        $evento,
+        'field_tematica_evento',
+        $cache_dependencies,
+      );
+
+      $sala_key = $this->getFieldValue(
+        $evento,
+        'field_sala_evento',
+      );
+
+      $fecha_value = $this->getFieldValue(
+        $evento,
+        'field_dia_evento',
+      );
+
+      $hora = $this->getEventTime($evento);
+
+      $simposios[] = [
+        'id' => (int) $evento->id(),
+        'nombre' => $evento->label(),
+        'tipo' => $tipo,
+        'tematica' => $tematica,
+        'sala' => $salas[$sala_key] ?? $sala_key,
+        'sala_class' => str_replace('_', '-', $sala_key),
+        'fecha' => $this->formatEventDate($fecha_value),
+        'hora' => $hora,
+        'url' => $evento->toUrl()->toString(),
       ];
     }
+
+    return $simposios;
   }
 
-  return [
-    'eventos' => $eventos,
-    'docentes' => array_values($docentes),
-  ];
-}
-
-/**
- * Obtiene nombre y clase CSS del país.
- */
-private function getCountryData(string $value): array {
-  $value = trim($value);
-
-  if ($value === '') {
-    return [
-      'label' => '',
-      'class' => '',
-    ];
-  }
-
-  $countries = $this->countryManagerService->getList();
-  $candidate_code = strtoupper($value);
-
-  if (isset($countries[$candidate_code])) {
-    return [
-      'label' => (string) $countries[$candidate_code],
-      'class' => strtolower($candidate_code),
-    ];
-  }
-
-  foreach ($countries as $code => $country_label) {
+  /**
+   * Obtiene la etiqueta de una referencia.
+   */
+  private function getReferenceLabel(
+    NodeInterface $node,
+    string $field_name,
+    array &$cache_dependencies,
+  ): string {
     if (
-      mb_strtolower((string) $country_label, 'UTF-8')
-      === mb_strtolower($value, 'UTF-8')
+      !$node->hasField($field_name)
+      || $node->get($field_name)->isEmpty()
+    ) {
+      return '';
+    }
+
+    $entity = $node->get($field_name)->entity;
+
+    if (!$entity instanceof EntityInterface) {
+      return '';
+    }
+
+    $cache_dependencies[] = $entity;
+
+    return $entity->label();
+  }
+
+  /**
+   * Formatea la fecha del evento.
+   */
+  private function formatEventDate(string $value): string
+  {
+    if ($value === '') {
+      return '';
+    }
+
+    try {
+      $date = new \DateTimeImmutable(
+        $value,
+        new \DateTimeZone('UTC'),
+      );
+    } catch (\Throwable) {
+      return '';
+    }
+
+    $dias = [
+      1 => 'LUN',
+      2 => 'MAR',
+      3 => 'MIÉ',
+      4 => 'JUE',
+      5 => 'VIE',
+      6 => 'SÁB',
+      7 => 'DOM',
+    ];
+
+    $meses = [
+      1 => 'ENE',
+      2 => 'FEB',
+      3 => 'MAR',
+      4 => 'ABR',
+      5 => 'MAY',
+      6 => 'JUN',
+      7 => 'JUL',
+      8 => 'AGO',
+      9 => 'SEP',
+      10 => 'OCT',
+      11 => 'NOV',
+      12 => 'DIC',
+    ];
+
+    $dia_semana = (int) $date->format('N');
+    $mes = (int) $date->format('n');
+
+    return sprintf(
+      '%s %d %s',
+      $dias[$dia_semana],
+      (int) $date->format('j'),
+      $meses[$mes],
+    );
+  }
+
+  /**
+   * Formatea la hora del evento.
+   */
+  private function getEventTime(NodeInterface $evento): string
+  {
+    if (
+      !$evento->hasField('field_hora_evento')
+      || $evento->get('field_hora_evento')->isEmpty()
+    ) {
+      return '';
+    }
+
+    $item = $evento
+      ->get('field_hora_evento')
+      ->first();
+
+    $values = $item?->getValue() ?? [];
+
+    $from = (int) ($values['from'] ?? 0);
+    $to = (int) ($values['to'] ?? 0);
+
+    if (!$from || !$to) {
+      return '';
+    }
+
+    return sprintf(
+      '%s - %s',
+      gmdate('g:i', $from),
+      gmdate('g:i A', $to),
+    );
+  }
+
+  /**
+   * Obtiene eventos y conferencistas desde field_programas_vinculados_conve.
+   */
+  private function getEventosYConferencistas(
+    NodeInterface $convenio,
+    array &$cache_dependencies,
+  ): array {
+    if (
+      !$convenio->hasField('field_programas_vinculados_conve')
+      || $convenio
+      ->get('field_programas_vinculados_conve')
+      ->isEmpty()
     ) {
       return [
-        'label' => (string) $country_label,
-        'class' => strtolower((string) $code),
+        'eventos' => [],
+        'docentes' => [],
       ];
     }
-  }
 
-  return [
-    'label' => $value,
-    'class' => Html::getClass($value),
-  ];
-}
+    $salas = [
+      'sala_1' => 'Sala 1',
+      'sala_2' => 'Sala 2',
+      'sala_3' => 'Sala 3',
+    ];
+
+    $eventos = [];
+    $docentes = [];
+
+    foreach (
+      $convenio
+        ->get('field_programas_vinculados_conve')
+        ->referencedEntities() as $evento
+    ) {
+      if (
+        !$evento instanceof NodeInterface
+        || $evento->bundle() !== 'evento'
+        || !$evento->isPublished()
+        || !$evento->access('view')
+      ) {
+        continue;
+      }
+
+      $evento = $this->getCurrentTranslation($evento);
+      $cache_dependencies[] = $evento;
+
+      $tipo = $this->getReferenceLabel(
+        $evento,
+        'field_tipo_evento',
+        $cache_dependencies,
+      );
+
+      $tematica = $this->getReferenceLabel(
+        $evento,
+        'field_tematica_evento',
+        $cache_dependencies,
+      );
+
+      $sala_key = $this->getFieldValue(
+        $evento,
+        'field_sala_evento',
+      );
+
+      $fecha_value = $this->getFieldValue(
+        $evento,
+        'field_dia_evento',
+      );
+
+      $eventos[] = [
+        'id' => (int) $evento->id(),
+        'nombre' => $evento->label(),
+        'descripcion' => $this->getFieldValue(
+          $evento,
+          'field_descripcion_evento',
+        ),
+        'tipo' => $tipo,
+        'tematica' => $tematica,
+        'sala' => $salas[$sala_key] ?? $sala_key,
+        'sala_class' => Html::getClass($sala_key),
+        'fecha' => $this->formatEventDate($fecha_value),
+        'hora' => $this->getEventTime($evento),
+        'url' => $evento->toUrl()->toString(),
+      ];
+
+      if (
+        !$evento->hasField('field_conferencistas_del_evento')
+        || $evento
+        ->get('field_conferencistas_del_evento')
+        ->isEmpty()
+      ) {
+        continue;
+      }
+
+      foreach (
+        $evento
+          ->get('field_conferencistas_del_evento')
+          ->referencedEntities() as $relacion
+      ) {
+        $cache_dependencies[] = $relacion;
+
+        if (
+          !$relacion->hasField('field_conferencista')
+          || $relacion->get('field_conferencista')->isEmpty()
+        ) {
+          continue;
+        }
+
+        $docente = $relacion
+          ->get('field_conferencista')
+          ->entity;
+
+        if (
+          !$docente instanceof NodeInterface
+          || $docente->bundle() !== 'docente'
+          || !$docente->isPublished()
+          || !$docente->access('view')
+        ) {
+          continue;
+        }
+
+        $docente = $this->getCurrentTranslation($docente);
+        $cache_dependencies[] = $docente;
+
+        $docente_id = (int) $docente->id();
+
+        $pais_value = '';
+
+        if (
+          $relacion->hasField('field_pais_conferencista')
+          && !$relacion
+            ->get('field_pais_conferencista')
+            ->isEmpty()
+        ) {
+          $pais_value = trim(
+            (string) $relacion
+              ->get('field_pais_conferencista')
+              ->value
+          );
+        }
+
+        $pais = $this->getCountryData($pais_value);
+
+        if (isset($docentes[$docente_id])) {
+          if (
+            empty($docentes[$docente_id]['pais'])
+            && !empty($pais['label'])
+          ) {
+            $docentes[$docente_id]['pais'] = $pais['label'];
+            $docentes[$docente_id]['pais_class'] = $pais['class'];
+          }
+
+          continue;
+        }
+
+        $especialidad = '';
+
+        if (
+          $docente->hasField('field_especialidad')
+          && !$docente->get('field_especialidad')->isEmpty()
+        ) {
+          $especialidad_entity = $docente
+            ->get('field_especialidad')
+            ->entity;
+
+          if ($especialidad_entity instanceof EntityInterface) {
+            $especialidad = $especialidad_entity->label();
+            $cache_dependencies[] = $especialidad_entity;
+          }
+        }
+
+        $perfil = $this->getFieldValue(
+          $docente,
+          'field_perfil_profesional',
+        );
+
+        $docentes[$docente_id] = [
+          'id' => $docente_id,
+          'nombre' => $docente->label(),
+          'foto' => $this->getImageData(
+            $docente,
+            'field_foto_docente',
+            $cache_dependencies,
+          ),
+          'especialidad' => $especialidad,
+          'pais' => $pais['label'],
+          'pais_class' => $pais['class'],
+          'perfil' => $perfil,
+          'perfil_resumen' => mb_strimwidth(
+            $perfil,
+            0,
+            235,
+            '…',
+            'UTF-8',
+          ),
+          'url' => $docente->toUrl()->toString(),
+        ];
+      }
+    }
+
+    return [
+      'eventos' => $eventos,
+      'docentes' => array_values($docentes),
+    ];
+  }
 
   /**
- * Obtiene el PDF global del plano.
- */
-private function getPlanoPdfData(
-  ImmutableConfig $settings,
-  array &$cache_dependencies,
-): array {
-  $fid = (int) (
-    $settings->get('plano_pdf_fid') ?? 0
-  );
+   * Obtiene nombre y clase CSS del país.
+   */
+  private function getCountryData(string $value): array
+  {
+    $value = trim($value);
 
-  if ($fid <= 0) {
-    return [];
+    if ($value === '') {
+      return [
+        'label' => '',
+        'class' => '',
+      ];
+    }
+
+    $countries = $this->countryManagerService->getList();
+    $candidate_code = strtoupper($value);
+
+    if (isset($countries[$candidate_code])) {
+      return [
+        'label' => (string) $countries[$candidate_code],
+        'class' => strtolower($candidate_code),
+      ];
+    }
+
+    foreach ($countries as $code => $country_label) {
+      if (
+        mb_strtolower((string) $country_label, 'UTF-8')
+        === mb_strtolower($value, 'UTF-8')
+      ) {
+        return [
+          'label' => (string) $country_label,
+          'class' => strtolower((string) $code),
+        ];
+      }
+    }
+
+    return [
+      'label' => $value,
+      'class' => Html::getClass($value),
+    ];
   }
-
-  $file = $this->entityTypeManagerService
-    ->getStorage('file')
-    ->load($fid);
-
-  if (!$file instanceof FileInterface) {
-    return [];
-  }
-
-  $cache_dependencies[] = $file;
-
-  return [
-    'url' => $this->fileUrlGeneratorService
-      ->generateString($file->getFileUri()),
-    'filename' => $file->getFilename(),
-  ];
-}
 
   /**
- * Obtiene un archivo configurado globalmente.
- */
-private function getConfiguredFileData(
-  ImmutableConfig $settings,
-  string $config_key,
-  array &$cache_tags,
-): array {
-  $fid = (int) (
-    $settings->get($config_key) ?? 0
-  );
+   * Obtiene el PDF global del plano.
+   */
+  private function getPlanoPdfData(
+    ImmutableConfig $settings,
+    array &$cache_dependencies,
+  ): array {
+    $fid = (int) (
+      $settings->get('plano_pdf_fid') ?? 0
+    );
 
-  if ($fid <= 0) {
-    return [];
+    if ($fid <= 0) {
+      return [];
+    }
+
+    $file = $this->entityTypeManagerService
+      ->getStorage('file')
+      ->load($fid);
+
+    if (!$file instanceof FileInterface) {
+      return [];
+    }
+
+    $cache_dependencies[] = $file;
+
+    return [
+      'url' => $this->fileUrlGeneratorService
+        ->generateString($file->getFileUri()),
+      'filename' => $file->getFilename(),
+    ];
   }
 
-  $file = $this->entityTypeManagerService
-    ->getStorage('file')
-    ->load($fid);
+  /**
+   * Obtiene un archivo configurado globalmente.
+   */
+  private function getConfiguredFileData(
+    ImmutableConfig $settings,
+    string $config_key,
+    array &$cache_tags,
+  ): array {
+    $fid = (int) (
+      $settings->get($config_key) ?? 0
+    );
 
-  if (!$file instanceof FileInterface) {
-    return [];
+    if ($fid <= 0) {
+      return [];
+    }
+
+    $file = $this->entityTypeManagerService
+      ->getStorage('file')
+      ->load($fid);
+
+    if (!$file instanceof FileInterface) {
+      return [];
+    }
+
+    $cache_tags = Cache::mergeTags(
+      $cache_tags,
+      $file->getCacheTags(),
+    );
+
+    return [
+      'url' => $this->fileUrlGeneratorService
+        ->generateString($file->getFileUri()),
+      'filename' => $file->getFilename(),
+      'mime_type' => $file->getMimeType(),
+    ];
   }
-
-  $cache_tags = Cache::mergeTags(
-    $cache_tags,
-    $file->getCacheTags(),
-  );
-
-  return [
-    'url' => $this->fileUrlGeneratorService
-      ->generateString($file->getFileUri()),
-    'filename' => $file->getFilename(),
-    'mime_type' => $file->getMimeType(),
-  ];
-}
-
 }

@@ -11,21 +11,24 @@ use Drupal\file\Entity\File;
 /**
  * Configuración de la página de patrocinadores.
  */
-final class PatrocinadoresSettingsForm extends ConfigFormBase {
+final class PatrocinadoresSettingsForm extends ConfigFormBase
+{
 
   private const CONFIG_NAME = 'dermau_core.patrocinadores_settings';
 
   /**
    * {@inheritdoc}
    */
-  public function getFormId(): string {
+  public function getFormId(): string
+  {
     return 'dermau_core_patrocinadores_settings_form';
   }
 
   /**
    * {@inheritdoc}
    */
-  protected function getEditableConfigNames(): array {
+  protected function getEditableConfigNames(): array
+  {
     return [
       self::CONFIG_NAME,
     ];
@@ -42,6 +45,20 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
 
     $plano_imagen_fid = (int) ($config->get('plano_imagen_fid') ?? 0);
     $plano_pdf_fid = (int) ($config->get('plano_pdf_fid') ?? 0);
+
+    $form['eyebrow_text'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texto superior'),
+      '#default_value' => (string) ($config->get('eyebrow_text') ?? ''),
+      '#description' => $this->t('Texto mostrado encima del título principal.'),
+    ];
+
+    $form['page_title'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Título principal'),
+      '#default_value' => (string) ($config->get('page_title') ?? ''),
+      '#description' => $this->t('Título principal de la página de patrocinadores.'),
+    ];
 
     $form['intro_text'] = [
       '#type' => 'textarea',
@@ -118,6 +135,14 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
 
     $config
       ->set(
+        'eyebrow_text',
+        trim((string) $form_state->getValue('eyebrow_text')),
+      )
+      ->set(
+        'page_title',
+        trim((string) $form_state->getValue('page_title')),
+      )
+      ->set(
         'intro_text',
         trim((string) $form_state->getValue('intro_text')),
       )
@@ -176,5 +201,4 @@ final class PatrocinadoresSettingsForm extends ConfigFormBase {
       1,
     );
   }
-
 }
