@@ -44,8 +44,8 @@ class FooterBlock extends BlockBase
 			'#upload_location' => 'public://footer/',
 			'#default_value' => $this->configuration['logo'] ?? [],
 			'#upload_validators' => [
-				'file_validate_extensions' => [
-					'svg png jpg jpeg webp',
+				'FileExtension' => [
+					'extensions' => 'svg png jpg jpeg webp',
 				],
 			],
 		];
