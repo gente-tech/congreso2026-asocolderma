@@ -5,6 +5,8 @@ function derma_menu_theme($existing, $type, $theme, $path) {
     'derma_menu_block' => [
       'variables' => [
         'items' => NULL,
+        'campus_button_label' => '',
+        'campus_button_url' => '',
       ],
       'template' => 'derma-menu-block',
       'path' => $path . '/templates',

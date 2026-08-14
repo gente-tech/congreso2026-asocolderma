@@ -38,10 +38,12 @@
 		{% endfor %}
 
 		<li class="du-header__nav-item du-header__nav-item--campus">
-			<a target="_blank" href="https://campus.dermau.net/d2l/login" class="du-btn-campus">
-				Inscribirse
-				<span class="du-icon__next"></span>
-			</a>
+			{% if campus_button_label and campus_button_url %}
+				<a target="_blank" href="{{ campus_button_url }}" class="du-btn-campus">
+					{{ campus_button_label }}
+					<span class="du-icon__next"></span>
+				</a>
+			{% endif %}
 		</li>
 
 	</ul>

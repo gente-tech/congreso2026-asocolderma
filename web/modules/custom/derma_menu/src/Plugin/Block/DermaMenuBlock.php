@@ -7,6 +7,7 @@ use Drupal\Core\Menu\MenuTreeParameters;
 use Drupal\Core\Plugin\ContainerFactoryPluginInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Menu\MenuLinkTreeInterface;
+use Drupal\Core\Form\FormStateInterface;
 
 /**
  * @Block(
@@ -14,7 +15,8 @@ use Drupal\Core\Menu\MenuLinkTreeInterface;
  *   admin_label = @Translation("Derma Custom Menu")
  * )
  */
-class DermaMenuBlock extends BlockBase implements ContainerFactoryPluginInterface {
+class DermaMenuBlock extends BlockBase implements ContainerFactoryPluginInterface
+{
 
   protected MenuLinkTreeInterface $menuTree;
 
@@ -42,7 +44,44 @@ class DermaMenuBlock extends BlockBase implements ContainerFactoryPluginInterfac
     );
   }
 
-  public function build() {
+  public function defaultConfiguration()
+  {
+    return [
+      'campus_button_label' => '',
+      'campus_button_url' => '',
+    ];
+  }
+
+  public function blockForm($form, FormStateInterface $form_state)
+  {
+    $form['campus_button_label'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Texto del botón Campus'),
+      '#default_value' => $this->configuration['campus_button_label'] ?? '',
+    ];
+
+    $form['campus_button_url'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('URL del botón Campus'),
+      '#default_value' => $this->configuration['campus_button_url'] ?? '',
+    ];
+
+    return $form;
+  }
+
+  public function blockSubmit($form, FormStateInterface $form_state)
+  {
+    $this->configuration['campus_button_label'] = trim(
+      (string) $form_state->getValue('campus_button_label')
+    );
+
+    $this->configuration['campus_button_url'] = trim(
+      (string) $form_state->getValue('campus_button_url')
+    );
+  }
+
+  public function build()
+  {
 
     $menu_name = 'main';
 
@@ -62,6 +101,12 @@ class DermaMenuBlock extends BlockBase implements ContainerFactoryPluginInterfac
     return [
       '#theme' => 'derma_menu_block',
       '#items' => $tree,
+      '#campus_button_label' => trim(
+        (string) ($this->configuration['campus_button_label'] ?? '')
+      ),
+      '#campus_button_url' => trim(
+        (string) ($this->configuration['campus_button_url'] ?? '')
+      ),
       '#cache' => [
         'contexts' => ['route'],
         'tags' => ['config:system.menu.' . $menu_name],
