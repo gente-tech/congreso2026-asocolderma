@@ -1,0 +1,68 @@
+{{ attach_library('derma_theme/global') }}
+
+{% include '@derma_theme/includes/header.html.twig' %}
+
+<main class="du-main du-error-page">
+
+	<section class="du-error-404">
+
+		<div class="du-error-404__container">
+
+			<div class="du-error-404__content">
+
+				<div class="du-error-404__code" aria-label="Error 404">
+
+					<span class="du-error-404__number">
+						4
+					</span>
+
+					<span class="du-error-404__symbol" aria-hidden="true">
+						<img src="{{ base_path ~ directory }}/assets/img/logo-congreso7-sm.png" alt="">
+					</span>
+
+					<span class="du-error-404__number">
+						4
+					</span>
+
+				</div>
+
+				<div class="du-error-404__label">
+					Página no encontrada
+				</div>
+
+				<h1 class="du-error-404__title">
+					Parece que esta página tomó otro camino
+				</h1>
+
+				<p class="du-error-404__description">
+					La página que estás buscando no existe,
+					          fue movida o ya no está disponible.
+					          Puedes regresar al inicio o continuar
+					          consultando la agenda académica del congreso.
+				</p>
+
+				<div class="du-error-404__actions">
+
+					<a href="{{ path('<front>') }}" class="du-btn du-btn--primary du-error-404__button">
+						Volver al inicio
+					</a>
+
+					<a href="{{ path('entity.node.canonical', {'node': 98}) }}" class="du-btn du-btn--secundary-dark du-error-404__button">
+						Ir a la agenda
+					</a>
+
+				</div>
+
+				<div class="du-error-404__congress">
+					7° Congreso Colombiano de Especialidades Dermatológicas
+				</div>
+
+			</div>
+
+		</div>
+
+	</section>
+
+</main>
+
+{{ page.footer }}

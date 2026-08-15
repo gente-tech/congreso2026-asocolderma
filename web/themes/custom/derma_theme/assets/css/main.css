@@ -40,3 +40,6 @@
 
 /* --- CONGRESO --- */
 @import url('./_b-congreso.css');
+
+/* --- ERROR 404 --- */
+@import url('./_b-404.css');
