@@ -303,15 +303,15 @@
               </p>
             {% endif %}
 
-            <a
-              href="#conferencista-modal-{{ docente.id }}"
+            <button
+              type="button"
               class="du-sponsor-teacher__link js-conferencista-modal-open"
               data-modal-target="conferencista-modal-{{ docente.id }}"
               aria-haspopup="dialog"
               aria-controls="conferencista-modal-{{ docente.id }}"
             >
               Ver detalle
-            </a>
+            </button>
 
           </article>
         {% endfor %}

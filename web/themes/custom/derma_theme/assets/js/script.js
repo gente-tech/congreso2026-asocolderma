@@ -497,18 +497,18 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function initConferencistaModals(context = document) {
-    const triggers = context.querySelectorAll(
-      '.js-conferencista-modal-open'
-    );
+  function initConferencistaModals() {
 
-    const modals = context.querySelectorAll(
-      '.du-conferencista-modal'
-    );
-
-    if (!triggers.length || !modals.length) {
+    // Esta función solo debe registrar los eventos globales una vez.
+    if (
+      document.documentElement.dataset
+        .conferencistaModalsInitialized === 'true'
+    ) {
       return;
     }
+
+    document.documentElement.dataset
+      .conferencistaModalsInitialized = 'true';
 
     let activeTrigger = null;
 
@@ -531,8 +531,8 @@ document.addEventListener("DOMContentLoaded", () => {
         'du-modal-is-open'
       );
 
-      // Si el modal de patrocinador sigue abierto,
-      // no restaurar todavía el scroll de la página.
+      // Si el modal de patrocinador continúa abierto,
+      // la página de fondo debe seguir bloqueada.
       const patrocinadorModal = document.getElementById(
         'du-patrocinador-modal'
       );
@@ -548,6 +548,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function openModal(trigger) {
       const modalId = trigger.dataset.modalTarget;
+
+      if (!modalId) {
+        return;
+      }
+
       const modal = document.getElementById(modalId);
 
       if (!modal) {
@@ -561,10 +566,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       activeTrigger = trigger;
 
-      if (typeof modal.showModal === 'function') {
+      if (
+        typeof modal.showModal === 'function'
+        && !modal.open
+      ) {
         modal.showModal();
       }
-      else {
+      else if (!modal.open) {
         modal.setAttribute('open', 'open');
       }
 
@@ -581,7 +589,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    function closeModal(modal, restoreFocus = true) {
+    function closeModal(
+      modal,
+      restoreFocus = true
+    ) {
       if (!modal) {
         return;
       }
@@ -598,79 +609,126 @@ document.addEventListener("DOMContentLoaded", () => {
 
       restorePageScroll();
 
-      if (restoreFocus && activeTrigger) {
+      if (
+        restoreFocus
+        && activeTrigger
+      ) {
         activeTrigger.focus();
       }
 
       activeTrigger = null;
     }
 
-    triggers.forEach((trigger) => {
+    /*
+     * Delegación de eventos.
+     *
+     * Esto funciona tanto para los conferencistas
+     * presentes al cargar la página como para los que
+     * llegan posteriormente mediante AJAX.
+     */
+    document.addEventListener('click', (event) => {
 
-      // Evita registrar el mismo listener más de una vez.
-      if (trigger.dataset.conferencistaModalInitialized) {
+      const target = event.target instanceof Element
+        ? event.target
+        : null;
+
+      if (!target) {
         return;
       }
 
-      trigger.dataset.conferencistaModalInitialized = 'true';
+      /*
+       * ABRIR MODAL
+       */
+      const trigger = target.closest(
+        '.js-conferencista-modal-open'
+      );
 
-      trigger.addEventListener('click', (event) => {
+      if (trigger) {
         event.preventDefault();
         event.stopPropagation();
 
         openModal(trigger);
-      });
-    });
 
-    modals.forEach((modal) => {
-
-      // Evita registrar listeners duplicados.
-      if (modal.dataset.conferencistaModalInitialized) {
         return;
       }
 
-      modal.dataset.conferencistaModalInitialized = 'true';
-
-      const closeButtons = modal.querySelectorAll(
+      /*
+       * CERRAR DESDE BOTÓN X
+       */
+      const closeButton = target.closest(
         '[data-modal-close]'
       );
 
-      closeButtons.forEach((closeButton) => {
-        closeButton.addEventListener('click', () => {
-          closeModal(modal);
-        });
-      });
+      if (closeButton) {
+        const modal = closeButton.closest(
+          '.du-conferencista-modal'
+        );
 
-      // Cerrar al hacer clic en el fondo oscuro.
-      modal.addEventListener('click', (event) => {
-        if (event.target === modal) {
+        if (modal) {
+          event.preventDefault();
+          event.stopPropagation();
+
           closeModal(modal);
         }
-      });
 
-      // Escape.
-      modal.addEventListener('cancel', (event) => {
-        event.preventDefault();
-        closeModal(modal);
-      });
+        return;
+      }
 
-      modal.addEventListener('close', () => {
-        restorePageScroll();
-      });
+      /*
+       * CLICK SOBRE UNA CONFERENCIA DEL DOCENTE.
+       * Se permite continuar la navegación normalmente.
+       */
+      const eventLink = target.closest(
+        '.js-conferencista-event-link'
+      );
 
-      modal
-        .querySelectorAll('.js-conferencista-event-link')
-        .forEach((eventLink) => {
-          eventLink.addEventListener('click', () => {
-            closeModal(modal, false);
-          });
-        });
+      if (eventLink) {
+        const modal = eventLink.closest(
+          '.du-conferencista-modal'
+        );
+
+        if (modal) {
+          closeModal(modal, false);
+        }
+
+        return;
+      }
+
+      /*
+       * CERRAR AL HACER CLICK EN EL BACKDROP
+       */
+      if (
+        target.matches(
+          '.du-conferencista-modal'
+        )
+      ) {
+        closeModal(target);
+      }
     });
-  }
 
-  // Permite inicializar modales que llegan posteriormente por AJAX.
-  window.DermaUInitConferencistaModals =
-    initConferencistaModals;
+    /*
+     * CERRAR CON ESC
+     */
+    document.addEventListener(
+      'cancel',
+      (event) => {
+
+        const modal = event.target;
+
+        if (
+          modal instanceof HTMLDialogElement
+          && modal.classList.contains(
+            'du-conferencista-modal'
+          )
+        ) {
+          event.preventDefault();
+
+          closeModal(modal);
+        }
+      },
+      true
+    );
+  }
 
   document.addEventListener('DOMContentLoaded', function () {
     deduplicarSelect('simposio');
