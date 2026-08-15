@@ -202,7 +202,23 @@ final class PatrocinadoresController extends ControllerBase
 
     $cache_dependencies = [$convenio];
 
+    // Agenda principal del Congreso.
+    // Se usa para mostrar en el modal del conferencista
+    // todas sus conferencias vinculadas.
+    $agenda = $this->entityTypeManagerService
+      ->getStorage('node')
+      ->load(98);
 
+    if (
+      $agenda instanceof NodeInterface
+      && $agenda->isPublished()
+      && $agenda->access('view')
+    ) {
+      $agenda = $this->getCurrentTranslation($agenda);
+      $cache_dependencies[] = $agenda;
+    } else {
+      $agenda = NULL;
+    }
 
     $relaciones = $this->getEventosYConferencistas(
       $convenio,
@@ -253,6 +269,7 @@ final class PatrocinadoresController extends ControllerBase
     $build = [
       '#theme' => 'patrocinador_modal',
       '#patrocinador' => $patrocinador,
+      '#agenda' => $agenda,
     ];
 
     $html = (string) $this->rendererService->renderRoot($build);
