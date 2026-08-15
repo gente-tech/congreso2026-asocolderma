@@ -1,3 +1,10 @@
 services:
   dermau_core.helper:
     class: Drupal\dermau_core\Service\DermauHelper
+
+  dermau_core.block_direct_node_subscriber:
+    class: Drupal\dermau_core\EventSubscriber\BlockDirectNodeSubscriber
+    arguments:
+      - '@current_user'
+    tags:
+      - { name: event_subscriber }
