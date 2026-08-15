@@ -22,6 +22,7 @@ use Drupal\Component\Utility\Html;
 use Drupal\Core\Locale\CountryManagerInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Config\ImmutableConfig;
+use Drupal\Core\Url;
 
 /**
  * Controlador público de patrocinadores.
@@ -759,7 +760,11 @@ final class PatrocinadoresController extends ControllerBase
         'sala_class' => Html::getClass($sala_key),
         'fecha' => $this->formatEventDate($fecha_value),
         'hora' => $this->getEventTime($evento),
-        'url' => $evento->toUrl()->toString(),
+        'url' => Url::fromRoute(
+          'entity.node.canonical',
+          ['node' => 98],
+          ['fragment' => 'simposio-' . $evento->id()]
+        )->toString(),
       ];
 
       if (

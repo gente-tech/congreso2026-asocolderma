@@ -275,9 +275,49 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    // Activar el primer día por defecto
-    const primerDia = secciones[0].id;
-    activarDia(primerDia);
+    // Si llegamos directamente a un evento desde otra página,
+    // activar primero el día al que pertenece ese evento.
+    function activarEventoDesdeHash() {
+      const hash = window.location.hash;
+
+      if (!hash || !hash.startsWith('#simposio-')) {
+        return false;
+      }
+
+      const evento = document.getElementById(
+        hash.substring(1)
+      );
+
+      if (!evento) {
+        return false;
+      }
+
+      const seccionDia = evento.closest(
+        '.du-congreso-section-calendar'
+      );
+
+      if (!seccionDia) {
+        return false;
+      }
+
+      activarDia(seccionDia.id);
+
+      window.requestAnimationFrame(function () {
+        evento.scrollIntoView({
+          behavior: 'auto',
+          block: 'center'
+        });
+      });
+
+      return true;
+    }
+
+    // Si no se solicitó un evento específico,
+    // mantener el comportamiento normal y abrir el primer día.
+    if (!activarEventoDesdeHash()) {
+      const primerDia = secciones[0].id;
+      activarDia(primerDia);
+    }
 
     // Escuchar clicks en el menú
     menuLinks.forEach(function (link) {
@@ -287,6 +327,12 @@ document.addEventListener("DOMContentLoaded", () => {
         activarDia(diaId);
       });
     });
+
+    // También soporta navegación a eventos mediante #simposio-ID.
+    window.addEventListener(
+      'hashchange',
+      activarEventoDesdeHash
+    );
   }
 
   function deduplicarSelect(selectId) {
