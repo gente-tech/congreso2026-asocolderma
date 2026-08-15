@@ -190,25 +190,42 @@
   </div>
 </section>
 
+{# ============================================================
+   DÍAS DEL CONGRESO ORDENADOS CRONOLÓGICAMENTE
+   ============================================================ #}
+{% set dias_ordenados = [] %}
+
+{% for evento_item in node.field_listado_eventos_congreso %}
+  {% set evento = evento_item.entity %}
+  {% set dia = evento.field_dia_evento.value %}
+
+  {% if dia and dia not in dias_ordenados %}
+    {% set dias_ordenados = dias_ordenados|merge([dia]) %}
+  {% endif %}
+{% endfor %}
+
+{% set dias_ordenados = dias_ordenados|sort %}
+
 <section class="du-bar-menu">
   <ul class="du-bar-menu__list">
-    {% set dias_vistos = [] %}
-    {% for evento_item in node.field_listado_eventos_congreso %}
-      {% set evento = evento_item.entity %}
-      {% set dia = evento.field_dia_evento.value %}
-      {% if dia and dia not in dias_vistos %}
-        {% set dias_vistos = dias_vistos|merge([dia]) %}
-        <li class="du-bar-menu__item{% if loop.first %} active{% endif %}">
-          <a href="#dia-{{ dia|replace({'-': ''}) }}" class="du-bar-menu__link">
-            {# <span class="du-bar-menu__text">{{ dia|date('l j \\d\\e F', 'UTC') }}</span> #}
-            <span class="du-bar-menu__text">{{ dias_es[dia|date('l', 'UTC')] }} {{ dia|date('j', 'UTC') }} de {{ meses_es[dia|date('F', 'UTC')] }}</span>
-          </a>
-        </li>
-        {% if not loop.last %}
-          <div class="du-bar-menu__divider"></div>
-        {% endif %}
+
+    {% for dia in dias_ordenados %}
+      <li class="du-bar-menu__item{% if loop.first %} active{% endif %}">
+        <a href="#dia-{{ dia|replace({'-': ''}) }}" class="du-bar-menu__link">
+          <span class="du-bar-menu__text">
+            {{ dias_es[dia|date('l', 'UTC')] }}
+            {{ dia|date('j', 'UTC') }}
+            de
+            {{ meses_es[dia|date('F', 'UTC')] }}
+          </span>
+        </a>
+      </li>
+
+      {% if not loop.last %}
+        <div class="du-bar-menu__divider"></div>
       {% endif %}
     {% endfor %}
+
   </ul>
 </section>
 
@@ -255,17 +272,7 @@
   </div>
 </section>
 
-{% set dias_procesados = [] %}
-
-{% for evento_item in node.field_listado_eventos_congreso %}
-  {% set evento = evento_item.entity %}
-  {% set dia = evento.field_dia_evento.value %}
-  {% if dia and dia not in dias_procesados %}
-    {% set dias_procesados = dias_procesados|merge([dia]) %}
-  {% endif %}
-{% endfor %}
-
-{% for dia in dias_procesados %}
+{% for dia in dias_ordenados %}
 
   {# Franjas propias de este día, ordenadas y formateadas #}
   {% set horas_eventos = (horas_por_dia[dia] ?? [])|sort %}
