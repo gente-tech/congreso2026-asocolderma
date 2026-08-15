@@ -19,23 +19,6 @@
 			#ffffff 100%);
 }
 
-.du-error-404::before {
-	content: "";
-	position: absolute;
-	top: -80px;
-	left: -120px;
-	width: 520px;
-	height: 520px;
-
-	background-image: url('../img/bg-reference.png');
-	background-repeat: no-repeat;
-	background-size: contain;
-	background-position: center;
-
-	opacity: 0.16;
-	pointer-events: none;
-}
-
 .du-error-404::after {
 	content: "";
 	position: absolute;
@@ -204,11 +187,6 @@
 		padding: 65px 24px 80px;
 	}
 
-	.du-error-404::before {
-		width: 380px;
-		height: 380px;
-	}
-
 	.du-error-404::after {
 		width: 420px;
 		height: 280px;
@@ -225,16 +203,6 @@
 	.du-error-404 {
 		min-height: 520px;
 		padding: 50px 20px 65px;
-	}
-
-	.du-error-404::before {
-		top: -40px;
-		left: -130px;
-
-		width: 300px;
-		height: 300px;
-
-		opacity: 0.1;
 	}
 
 	.du-error-404::after {
