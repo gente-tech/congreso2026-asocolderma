@@ -303,10 +303,28 @@ document.addEventListener("DOMContentLoaded", () => {
       activarDia(seccionDia.id);
 
       window.requestAnimationFrame(function () {
+
+        // Llevar la card al inicio de la pantalla.
+        // El espacio del header se controla con scroll-margin-top en CSS.
         evento.scrollIntoView({
           behavior: 'auto',
-          block: 'center'
+          block: 'start'
         });
+
+        // Reiniciar animación si el usuario vuelve a navegar
+        // al mismo evento.
+        evento.classList.remove('du-congreso__card--destacado');
+
+        // Forzar reflow para permitir repetir la animación.
+        void evento.offsetWidth;
+
+        evento.classList.add('du-congreso__card--destacado');
+
+        // Limpiar la clase después de las 2 pulsaciones.
+        window.setTimeout(function () {
+          evento.classList.remove('du-congreso__card--destacado');
+        }, 1400);
+
       });
 
       return true;

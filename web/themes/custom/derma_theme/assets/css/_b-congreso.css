@@ -305,12 +305,41 @@
   padding: 10px !important;
   margin: 5px;
 }
+
 .du-congreso__card {
-    background: #F7F7F7;
-    width: 100%;
-    min-height: 100%;
-    border-radius: 8px;
-    box-shadow: 0px 4px 4px 0px #00000014;
+  background: #F7F7F7;
+  width: 100%;
+  min-height: 100%;
+  border-radius: 8px;
+  box-shadow: 0px 4px 4px 0px #00000014;
+
+  /*
+    * Compensa el header sticky y deja un pequeño
+    * espacio antes de la card seleccionada.
+    */
+  scroll-margin-top: 85px;
+}
+
+/* Evento al que se llega desde patrocinadores */
+.du-congreso__card--destacado {
+    position: relative;
+    z-index: 2;
+    animation: du-congreso-evento-pulse 0.6s ease-in-out 2;
+}
+
+@keyframes du-congreso-evento-pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        box-shadow: 0px 4px 4px 0px #00000014;
+    }
+
+    50% {
+        transform: scale(1.015);
+        box-shadow:
+            0 0 0 4px rgba(240, 127, 22, 0.30),
+            0 8px 18px rgba(0, 0, 0, 0.16);
+    }
 }
 
 .du-congreso__card-trigger {
