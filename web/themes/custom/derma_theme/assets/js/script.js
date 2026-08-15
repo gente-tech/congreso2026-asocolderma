@@ -311,19 +311,15 @@ document.addEventListener("DOMContentLoaded", () => {
           block: 'start'
         });
 
-        // Reiniciar animación si el usuario vuelve a navegar
-        // al mismo evento.
-        evento.classList.remove('du-congreso__card--destacado');
+        // Quitar cualquier resaltado anterior.
+        document
+          .querySelectorAll('.du-congreso__card--destacado')
+          .forEach(function (card) {
+            card.classList.remove('du-congreso__card--destacado');
+          });
 
-        // Forzar reflow para permitir repetir la animación.
-        void evento.offsetWidth;
-
+        // Mantener resaltado el evento al que llegó el usuario.
         evento.classList.add('du-congreso__card--destacado');
-
-        // Limpiar la clase después de las 2 pulsaciones.
-        window.setTimeout(function () {
-          evento.classList.remove('du-congreso__card--destacado');
-        }, 1400);
 
       });
 
