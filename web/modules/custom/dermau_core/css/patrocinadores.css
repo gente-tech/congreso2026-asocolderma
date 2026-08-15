@@ -703,16 +703,27 @@ body.du-patrocinador-is-open {
 
 .du-sponsor-teacher__link {
   display: block;
+  width: 100%;
   margin-top: 14px;
-  padding-top: 14px;
+  padding: 14px 0 0;
+
+  border: 0;
   border-top: 1px solid #edf0f3;
+  background: transparent;
+
   color: #f27d0d;
+  font-family: inherit;
   font-size: 16px;
   font-weight: 700;
+  line-height: inherit;
+
   text-align: right;
   text-decoration: none;
-}
 
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
 .du-sponsor-teacher__link:hover {
   color: #d86600;
 }
