@@ -749,6 +749,7 @@ final class PatrocinadoresController extends ControllerBase
 
       $eventos[] = [
         'id' => (int) $evento->id(),
+        'entity' => $evento,
         'nombre' => $evento->label(),
         'descripcion' => $this->getFieldValue(
           $evento,
@@ -860,6 +861,7 @@ final class PatrocinadoresController extends ControllerBase
 
         $docentes[$docente_id] = [
           'id' => $docente_id,
+          'entity' => $docente,
           'nombre' => $docente->label(),
           'foto' => $this->getImageData(
             $docente,
