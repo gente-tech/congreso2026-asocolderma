@@ -373,29 +373,29 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initFiltrosBusqueda() {
-    const selectSimposio     = document.getElementById('simposio');
-    const selectTema         = document.getElementById('tema');
-    const selectSala         = document.getElementById('sala');
+    const selectSimposio = document.getElementById('simposio');
+    const selectTema = document.getElementById('tema');
+    const selectSala = document.getElementById('sala');
     const selectConferencista = document.getElementById('conferencista');
-    const items              = document.querySelectorAll('.du-panel-block__item');
+    const items = document.querySelectorAll('.du-panel-block__item');
 
     if (!items.length) return;
 
     function filtrar() {
-      const valorSimposio      = selectSimposio ? selectSimposio.value : '';
-      const valorTema          = selectTema ? selectTema.value : '';
-      const valorSala          = selectSala ? selectSala.value : '';
+      const valorSimposio = selectSimposio ? selectSimposio.value : '';
+      const valorTema = selectTema ? selectTema.value : '';
+      const valorSala = selectSala ? selectSala.value : '';
       const valorConferencista = selectConferencista ? selectConferencista.value : '';
 
       items.forEach(function (item) {
-        const tipo          = item.dataset.tipo || '';
-        const tematica      = item.dataset.tematica || '';
-        const sala          = item.dataset.sala || '';
+        const tipo = item.dataset.tipo || '';
+        const tematica = item.dataset.tematica || '';
+        const sala = item.dataset.sala || '';
         const conferencistas = item.dataset.conferencistas || '';
 
-        const matchSimposio      = !valorSimposio      || tipo === valorSimposio;
-        const matchTema          = !valorTema          || tematica === valorTema;
-        const matchSala          = !valorSala          || sala === valorSala;
+        const matchSimposio = !valorSimposio || tipo === valorSimposio;
+        const matchTema = !valorTema || tematica === valorTema;
+        const matchSala = !valorSala || sala === valorSala;
         const matchConferencista = !valorConferencista || conferencistas.split('|').some(function (c) {
           return c.trim() === valorConferencista.trim();
         });
@@ -411,10 +411,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function mostrarMensajeVacio() {
-      const wrapper    = document.querySelector('.du-panel-block__wrapper');
+      const wrapper = document.querySelector('.du-panel-block__wrapper');
       if (!wrapper) return;
 
-      const existente  = wrapper.querySelector('.du-panel-block__empty');
+      const existente = wrapper.querySelector('.du-panel-block__empty');
       const hayVisibles = Array.from(items).some(function (item) {
         return item.style.display !== 'none';
       });
@@ -497,136 +497,180 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function initConferencistaModals() {
-  const triggers = document.querySelectorAll(
-    '.js-conferencista-modal-open'
-  );
+  function initConferencistaModals(context = document) {
+    const triggers = context.querySelectorAll(
+      '.js-conferencista-modal-open'
+    );
 
-  const modals = document.querySelectorAll(
-    '.du-conferencista-modal'
-  );
+    const modals = context.querySelectorAll(
+      '.du-conferencista-modal'
+    );
 
-  if (!triggers.length || !modals.length) {
-    return;
-  }
+    if (!triggers.length || !modals.length) {
+      return;
+    }
 
-  let activeTrigger = null;
+    let activeTrigger = null;
 
-  function blockPageScroll() {
-    document.documentElement.classList.add('du-modal-is-open');
-    document.body.classList.add('du-modal-is-open');
-  }
-
-  function restorePageScroll() {
-    document.documentElement.classList.remove('du-modal-is-open');
-    document.body.classList.remove('du-modal-is-open');
-
-    // Evita conflicto con las cards de agenda.
-    document.body.style.overflow = 'auto';
-  }
-
-  function openModal(trigger) {
-    const modalId = trigger.dataset.modalTarget;
-    const modal = document.getElementById(modalId);
-
-    if (!modal) {
-      console.warn(
-        'No se encontró el modal del conferencista:',
-        modalId
+    function blockPageScroll() {
+      document.documentElement.classList.add(
+        'du-modal-is-open'
       );
 
-      return;
+      document.body.classList.add(
+        'du-modal-is-open'
+      );
     }
 
-    activeTrigger = trigger;
+    function restorePageScroll() {
+      document.documentElement.classList.remove(
+        'du-modal-is-open'
+      );
 
-    if (typeof modal.showModal === 'function') {
-      modal.showModal();
-    }
-    else {
-      modal.setAttribute('open', 'open');
-    }
+      document.body.classList.remove(
+        'du-modal-is-open'
+      );
 
-    blockPageScroll();
+      // Si el modal de patrocinador sigue abierto,
+      // no restaurar todavía el scroll de la página.
+      const patrocinadorModal = document.getElementById(
+        'du-patrocinador-modal'
+      );
 
-    const closeButton = modal.querySelector(
-      '[data-modal-close]'
-    );
+      const patrocinadorAbierto =
+        patrocinadorModal &&
+        patrocinadorModal.open;
 
-    if (closeButton) {
-      window.requestAnimationFrame(() => {
-        closeButton.focus();
-      });
-    }
-  }
-
-  function closeModal(modal, restoreFocus = true) {
-    if (!modal) {
-      return;
-    }
-
-    if (typeof modal.close === 'function' && modal.open) {
-      modal.close();
-    }
-    else {
-      modal.removeAttribute('open');
-    }
-
-    restorePageScroll();
-
-    if (restoreFocus && activeTrigger) {
-      activeTrigger.focus();
-    }
-
-    activeTrigger = null;
-  }
-
-  triggers.forEach((trigger) => {
-    trigger.addEventListener('click', (event) => {
-      event.preventDefault();
-      event.stopPropagation();
-
-      openModal(trigger);
-    });
-  });
-
-  modals.forEach((modal) => {
-    const closeButtons = modal.querySelectorAll(
-      '[data-modal-close]'
-    );
-
-    closeButtons.forEach((closeButton) => {
-      closeButton.addEventListener('click', () => {
-        closeModal(modal);
-      });
-    });
-
-    // Cerrar al hacer clic en el fondo oscuro.
-    modal.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        closeModal(modal);
+      if (!patrocinadorAbierto) {
+        document.body.style.overflow = 'auto';
       }
-    });
+    }
 
-    // El evento cancel se dispara al presionar Escape.
-    modal.addEventListener('cancel', (event) => {
-      event.preventDefault();
-      closeModal(modal);
-    });
+    function openModal(trigger) {
+      const modalId = trigger.dataset.modalTarget;
+      const modal = document.getElementById(modalId);
 
-    modal.addEventListener('close', () => {
+      if (!modal) {
+        console.warn(
+          'No se encontró el modal del conferencista:',
+          modalId
+        );
+
+        return;
+      }
+
+      activeTrigger = trigger;
+
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      }
+      else {
+        modal.setAttribute('open', 'open');
+      }
+
+      blockPageScroll();
+
+      const closeButton = modal.querySelector(
+        '[data-modal-close]'
+      );
+
+      if (closeButton) {
+        window.requestAnimationFrame(() => {
+          closeButton.focus();
+        });
+      }
+    }
+
+    function closeModal(modal, restoreFocus = true) {
+      if (!modal) {
+        return;
+      }
+
+      if (
+        typeof modal.close === 'function'
+        && modal.open
+      ) {
+        modal.close();
+      }
+      else {
+        modal.removeAttribute('open');
+      }
+
       restorePageScroll();
+
+      if (restoreFocus && activeTrigger) {
+        activeTrigger.focus();
+      }
+
+      activeTrigger = null;
+    }
+
+    triggers.forEach((trigger) => {
+
+      // Evita registrar el mismo listener más de una vez.
+      if (trigger.dataset.conferencistaModalInitialized) {
+        return;
+      }
+
+      trigger.dataset.conferencistaModalInitialized = 'true';
+
+      trigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+
+        openModal(trigger);
+      });
     });
 
-    modal
-      .querySelectorAll('.js-conferencista-event-link')
-      .forEach((eventLink) => {
-        eventLink.addEventListener('click', () => {
-          closeModal(modal, false);
+    modals.forEach((modal) => {
+
+      // Evita registrar listeners duplicados.
+      if (modal.dataset.conferencistaModalInitialized) {
+        return;
+      }
+
+      modal.dataset.conferencistaModalInitialized = 'true';
+
+      const closeButtons = modal.querySelectorAll(
+        '[data-modal-close]'
+      );
+
+      closeButtons.forEach((closeButton) => {
+        closeButton.addEventListener('click', () => {
+          closeModal(modal);
         });
       });
-  });
-}
+
+      // Cerrar al hacer clic en el fondo oscuro.
+      modal.addEventListener('click', (event) => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+
+      // Escape.
+      modal.addEventListener('cancel', (event) => {
+        event.preventDefault();
+        closeModal(modal);
+      });
+
+      modal.addEventListener('close', () => {
+        restorePageScroll();
+      });
+
+      modal
+        .querySelectorAll('.js-conferencista-event-link')
+        .forEach((eventLink) => {
+          eventLink.addEventListener('click', () => {
+            closeModal(modal, false);
+          });
+        });
+    });
+  }
+
+  // Permite inicializar modales que llegan posteriormente por AJAX.
+  window.DermaUInitConferencistaModals =
+    initConferencistaModals;
 
   document.addEventListener('DOMContentLoaded', function () {
     deduplicarSelect('simposio');

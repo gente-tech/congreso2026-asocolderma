@@ -150,6 +150,14 @@
             }
 
             modalContent.innerHTML = await response.text();
+
+            // Inicializar los modales de conferencistas que
+            // acaban de llegar dentro del contenido AJAX.
+            if (
+              typeof window.DermaUInitConferencistaModals === 'function'
+            ) {
+              window.DermaUInitConferencistaModals(modalContent);
+            }
           }
           catch (error) {
             if (error.name === 'AbortError') {
