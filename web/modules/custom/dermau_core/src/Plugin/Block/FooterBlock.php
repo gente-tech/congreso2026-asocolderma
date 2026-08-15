@@ -43,6 +43,7 @@ class FooterBlock extends BlockBase
 			'#title' => $this->t('Logo del footer'),
 			'#upload_location' => 'public://footer/',
 			'#default_value' => $this->configuration['logo'] ?? [],
+			'#multiple' => FALSE,
 		];
 
 		$form['logo_alt'] = [
@@ -91,16 +92,11 @@ class FooterBlock extends BlockBase
 	 */
 	public function blockSubmit($form, FormStateInterface $form_state)
 	{
-		$logo_value = (array) $form_state->getValue('logo');
+		$logo = $form_state->getValue('logo');
 
-		$logo = array_values(
-			array_filter(
-				array_map(
-					'intval',
-					$logo_value['fids'] ?? []
-				)
-			)
-		);
+		if (empty($logo) && !empty($this->configuration['logo'])) {
+			$logo = $this->configuration['logo'];
+		}
 
 		if (!empty($logo[0])) {
 			$file = File::load($logo[0]);
@@ -111,7 +107,7 @@ class FooterBlock extends BlockBase
 			}
 		}
 
-		$this->configuration['logo'] = $logo;
+		$this->configuration['logo'] = $logo ?: [];
 
 		$this->configuration['logo_alt'] = trim(
 			(string) $form_state->getValue('logo_alt')
