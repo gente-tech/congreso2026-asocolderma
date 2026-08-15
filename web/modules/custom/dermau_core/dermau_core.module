@@ -15,6 +15,7 @@ function dermau_core_theme($existing, $type, $theme, $path)
     'patrocinador_modal' => [
       'variables' => [
         'patrocinador' => [],
+        'agenda' => NULL,
       ],
       'template' => 'patrocinador-modal',
       'path' => $path . '/templates',
