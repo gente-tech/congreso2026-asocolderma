@@ -327,18 +327,14 @@
     background:
         linear-gradient(
             135deg,
-            rgba(240, 127, 22, 0.12) 0%,
-            rgba(240, 127, 22, 0.06) 55%,
-            rgba(255, 255, 255, 0.85) 100%
+            rgba(240, 127, 22, 0.24) 0%,
+            rgba(240, 127, 22, 0.16) 55%,
+            rgba(240, 127, 22, 0.08) 100%
         );
 
     box-shadow:
-        0 0 0 2px rgba(240, 127, 22, 0.22),
-        0 6px 18px rgba(240, 127, 22, 0.16);
-
-    transition:
-        background 0.25s ease,
-        box-shadow 0.25s ease;
+        0 0 0 2px rgba(240, 127, 22, 0.45),
+        0 8px 22px rgba(240, 127, 22, 0.24);
 }
 
 .du-congreso__card-trigger {

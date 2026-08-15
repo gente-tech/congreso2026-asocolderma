@@ -311,13 +311,6 @@ document.addEventListener("DOMContentLoaded", () => {
           block: 'start'
         });
 
-        // Quitar cualquier resaltado anterior.
-        document
-          .querySelectorAll('.du-congreso__card--destacado')
-          .forEach(function (card) {
-            card.classList.remove('du-congreso__card--destacado');
-          });
-
         // Mantener resaltado el evento al que llegó el usuario.
         evento.classList.add('du-congreso__card--destacado');
 
